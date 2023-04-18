@@ -6,7 +6,7 @@ public partial class Tile : Node2D
 {
 	private Suit _suit = Suit.Man;
 	private int _rank = 1;
-	private bool _tileFaceUp = true;
+	private bool _faceUp = true;
 
 	[Export]
 	public Suit Suit
@@ -40,6 +40,20 @@ public partial class Tile : Node2D
 		}
 	}
 
+	[Export]
+	public bool FaceUp
+	{
+		get => _faceUp;
+		set
+		{
+			var needUpdate = value != _faceUp;
+			_faceUp = value;
+			if (needUpdate) {
+				UpdateTileSprite();
+			}
+		}
+	}
+
 	public int RawRank
 	{
 		get => _rank == 0 ? 5 : _rank;
@@ -48,7 +62,14 @@ public partial class Tile : Node2D
 	private void UpdateTileSprite()
 	{
 		var sprite = GetNode<Sprite2D>("Sprite2D");
-		sprite.Texture = GD.Load<CompressedTexture2D>($"res://Sprites/Tiles/{Rank}{Suit.ToString().ToLower()}.png");
+		if (FaceUp)
+		{
+			sprite.Texture = GD.Load<CompressedTexture2D>($"res://Sprites/Tiles/{Rank}{Suit.ToString().ToLower()}.png");
+		}
+		else
+		{
+			sprite.Texture = GD.Load<CompressedTexture2D>($"res://Sprites/Tiles/back.png");
+		}
 	}
 
 	public override void _Ready()
