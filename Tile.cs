@@ -6,6 +6,7 @@ public partial class Tile : Node2D
 {
 	private Suit _suit = Suit.Man;
 	private int _rank = 1;
+	private bool _tileFaceUp = true;
 
 	[Export]
 	public Suit Suit
@@ -37,6 +38,11 @@ public partial class Tile : Node2D
 				UpdateTileSprite();
 			}
 		}
+	}
+
+	public int RawRank
+	{
+		get => _rank == 0 ? 5 : _rank;
 	}
 
 	private void UpdateTileSprite()
