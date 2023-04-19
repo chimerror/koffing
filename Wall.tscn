@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://en441bre5wvc"]
+
+[ext_resource type="Script" path="res://Wall.cs" id="1_qvj25"]
+
+[node name="Wall" type="Node2D"]
+script = ExtResource("1_qvj25")

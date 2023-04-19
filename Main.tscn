@@ -1,3 +1,9 @@
-[gd_scene format=3 uid="uid://py0dwdqcdqno"]
+[gd_scene load_steps=2 format=3 uid="uid://py0dwdqcdqno"]
+
+[ext_resource type="PackedScene" uid="uid://en441bre5wvc" path="res://Wall.tscn" id="1_ulbkl"]
 
 [node name="Node2D" type="Node2D"]
+scale = Vector2(0.316, 0.316)
+
+[node name="Wall" parent="." instance=ExtResource("1_ulbkl")]
+position = Vector2(1162.65, 1921.69)
