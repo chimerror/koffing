@@ -1,8 +1,7 @@
 using Godot;
-using System;
 
 [Tool]
-public partial class Tile : Node2D
+public partial class Tile : Sprite2D
 {
 	private Suit _suit = Suit.Man;
 	private int _rank = 1;
@@ -61,23 +60,18 @@ public partial class Tile : Node2D
 
 	private void UpdateTileSprite()
 	{
-		var sprite = GetNode<Sprite2D>("Sprite2D");
 		if (FaceUp)
 		{
-			sprite.Texture = GD.Load<CompressedTexture2D>($"res://Sprites/Tiles/{Rank}{Suit.ToString().ToLower()}.png");
+			Texture = GD.Load<CompressedTexture2D>($"res://Sprites/Tiles/{Rank}{Suit.ToString().ToLower()}.png");
 		}
 		else
 		{
-			sprite.Texture = GD.Load<CompressedTexture2D>($"res://Sprites/Tiles/back.png");
+			Texture = GD.Load<CompressedTexture2D>($"res://Sprites/Tiles/back.png");
 		}
 	}
 
 	public override void _Ready()
 	{
 		UpdateTileSprite();
-	}
-
-	public override void _Process(double delta)
-	{
 	}
 }

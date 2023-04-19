@@ -3,8 +3,6 @@
 [ext_resource type="Script" path="res://Tile.cs" id="1_pg2uw"]
 [ext_resource type="Texture2D" uid="uid://dngohff32h87v" path="res://Sprites/Tiles/1man.png" id="2_scstk"]
 
-[node name="Tile" type="Node2D"]
-script = ExtResource("1_pg2uw")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Tile" type="Sprite2D"]
 texture = ExtResource("2_scstk")
+script = ExtResource("1_pg2uw")
