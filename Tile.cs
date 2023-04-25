@@ -1,4 +1,5 @@
 using Godot;
+using System;
 
 [Tool]
 public partial class Tile : Sprite2D
@@ -56,6 +57,42 @@ public partial class Tile : Sprite2D
 	public int RawRank
 	{
 		get => _rank == 0 ? 5 : _rank;
+	}
+
+	public override bool Equals(Object obj)
+	{
+		if (obj == null)
+		{
+			return false;
+		}
+
+		var objTile = obj as Tile;
+		if (objTile == null)
+		{
+			return false;
+		}
+
+		// Face-up doesn't count for this equals.
+		return (Suit == objTile.Suit) && (Rank == objTile.Rank);
+	}
+
+	public bool Equals(Tile otherTile)
+	{
+		if (otherTile == null)
+		{
+			return false;
+		}
+
+		// Face-up doesn't count for this equals.
+		return (Suit == otherTile.Suit) && (Rank == otherTile.Rank);
+	}
+
+
+	public override int GetHashCode()
+	{
+		var suitInt = (int)Suit;
+		var rankInt = Rank + 1; // Increment so the range is 1-10 instead of 0-9
+		return suitInt ^ rankInt;
 	}
 
 	private void UpdateTileSprite()
