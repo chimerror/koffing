@@ -2,7 +2,7 @@ using Godot;
 using System;
 
 [Tool]
-public partial class Tile : Sprite2D
+public partial class Tile : Sprite2D, IComparable<Tile>
 {
 	private Suit _suit = Suit.Man;
 	private int _rank = 1;
@@ -59,40 +59,74 @@ public partial class Tile : Sprite2D
 		get => _rank == 0 ? 5 : _rank;
 	}
 
-	public override bool Equals(Object obj)
+	public override bool Equals(Object that)
 	{
-		if (obj == null)
+		if (that == null)
 		{
 			return false;
 		}
 
-		var objTile = obj as Tile;
-		if (objTile == null)
+		var thatTile = that as Tile;
+		if (thatTile == null)
 		{
 			return false;
 		}
 
 		// Face-up doesn't count for this equals.
-		return (Suit == objTile.Suit) && (Rank == objTile.Rank);
+		return (Suit == thatTile.Suit) && (Rank == thatTile.Rank);
 	}
 
-	public bool Equals(Tile otherTile)
+	public bool Equals(Tile that)
 	{
-		if (otherTile == null)
+		if (that == null)
 		{
 			return false;
 		}
 
 		// Face-up doesn't count for this equals.
-		return (Suit == otherTile.Suit) && (Rank == otherTile.Rank);
+		return (Suit == that.Suit) && (Rank == that.Rank);
 	}
 
+	public bool RawEquals(Tile that)
+	{
+		if (that == null)
+		{
+			return false;
+		}
+
+		// Face-up doesn't count for this equals.
+		return (Suit == that.Suit) && (RawRank == that.RawRank);
+	}
 
 	public override int GetHashCode()
 	{
 		var suitInt = (int)Suit;
-		var rankInt = Rank + 1; // Increment so the range is 1-10 instead of 0-9
+		var rankInt = Rank + 1; // Increment so the range is 1-10 instead of 0-9, to keep each suit with unique hashes
 		return suitInt ^ rankInt;
+	}
+
+	public int CompareTo(Tile that)
+	{
+		if (this.Suit != that.Suit)
+		{
+			return this.Suit.CompareTo(that.Suit);
+		}
+		else if (this.Rank == that.Rank)
+		{
+			return 0;
+		}
+		else if (this.Rank == 0)
+		{
+			return that.Rank <= 5 ? 1 : -1;
+		}
+		else if (that.Rank == 0)
+		{
+			return this.Rank <= 5 ? 1 : -1;
+		}
+		else
+		{
+			return this.Rank.CompareTo(that.Rank);
+		}
 	}
 
 	private void UpdateTileSprite()
