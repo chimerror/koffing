@@ -59,6 +59,16 @@ public partial class Tile : Sprite2D, IComparable<Tile>
 		get => _rank == 0 ? 5 : _rank;
 	}
 
+	public Tile() : this(Suit.Man, 1)
+	{
+	}
+
+	public Tile(Suit suit, int rank)
+	{
+		Suit = suit;
+		Rank = rank;
+	}
+
 	public override bool Equals(Object that)
 	{
 		if (that == null)
