@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GdUnit4;
 using static GdUnit4.Assertions;
 
@@ -111,6 +112,17 @@ public class TileTests
 		AssertThat(tileA.CompareTo(tileB)).IsEqual(expectedComparisonValue);
 	}
 
+	[TestCase]
+	[DataPoint(nameof(TileNotationTestCases))]
+	public static void ToTilesAndNotationFromTilesAreCorrect(string notation, List<Tile> tiles)
+	{
+		var actualToTilesOutput = notation.ToTiles().ToList();
+		AssertArray(actualToTilesOutput).ContainsExactly(tiles);
+
+		var actualNotationFromTilesOutput = tiles.NotationFromTiles();
+		AssertThat(actualNotationFromTilesOutput).IsEqual(notation);
+	}
+
 	private static bool IsValidTile(Suit suit, int rank)
 	{
 		return suit != Suit.Zi ? (rank >= 0 && rank <= 9) : (rank >= 1 && rank <= 7);
@@ -135,5 +147,72 @@ public class TileTests
 		yield return [new Tile(Suit.Man, 7), new Tile(Suit.Man, 0), 1]; // comparing 7 to red 5
 		yield return [new Tile(Suit.Man, 2), new Tile(Suit.Man, 7), -1]; // comparing 2 to 7
 		yield return [new Tile(Suit.Man, 7), new Tile(Suit.Man, 2), 1]; // comparing 7 to 2
+	}
+
+	private static IEnumerable<object[]> TileNotationTestCases()
+	{
+		yield return ["1p", new List<Tile> { new(Suit.Pin, 1) }]; // when provided single number tile
+		yield return ["4z", new List<Tile> { new(Suit.Zi, 4) }]; // when provided single honor tile
+
+		// when provided multiple tiles in one suit
+		yield return ["123p", new List<Tile> { new(Suit.Pin, 1), new(Suit.Pin, 2), new(Suit.Pin, 3) }];
+
+		// when keeping order of multiple out-of-order tiles in one suit
+		yield return ["729p", new List<Tile> { new(Suit.Pin, 7), new(Suit.Pin, 2), new(Suit.Pin, 9) }];
+
+		// when keeping order of multiple out-of-order suits with out-of-order tiles
+		yield return [
+			"724z729p",
+			new List<Tile>
+			{
+				new(Suit.Zi, 7),
+				new(Suit.Zi, 2),
+				new(Suit.Zi, 4),
+				new(Suit.Pin, 7),
+				new(Suit.Pin, 2),
+				new(Suit.Pin, 9),
+			}
+		];
+
+		// when provided multiple suits, some with single tiles
+		yield return [
+			"123p3z5m",
+			new List<Tile>
+			{
+				new(Suit.Pin, 1),
+				new(Suit.Pin, 2),
+				new(Suit.Pin, 3),
+				new(Suit.Zi, 3),
+				new(Suit.Man, 5),
+			}
+		];
+
+		// when provided multiple suits, all with multiple tiles
+		yield return [
+			"123p333z45m",
+			new List<Tile>
+			{
+				new(Suit.Pin, 1),
+				new(Suit.Pin, 2),
+				new(Suit.Pin, 3),
+				new(Suit.Zi, 3),
+				new(Suit.Zi, 3),
+				new(Suit.Zi, 3),
+				new(Suit.Man, 4),
+				new(Suit.Man, 5),
+			}
+		];
+
+		// when provided kong of 5s (one red 5)
+		yield return [
+			"5055p",
+			new List<Tile>
+			{
+				new(Suit.Pin, 5),
+				new(Suit.Pin, 0),
+				new(Suit.Pin, 5),
+				new(Suit.Pin, 5),
+			}
+		];
 	}
 }
