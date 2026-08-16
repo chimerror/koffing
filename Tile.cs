@@ -117,6 +117,11 @@ public partial class Tile : Sprite2D, IComparable<Tile>
 
 	public int CompareTo(Tile that)
 	{
+		if (that == null)
+		{
+			return 1;
+		}
+
 		if (this.Suit != that.Suit)
 		{
 			return this.Suit.CompareTo(that.Suit);
@@ -131,7 +136,7 @@ public partial class Tile : Sprite2D, IComparable<Tile>
 		}
 		else if (that.Rank == 0)
 		{
-			return this.Rank <= 5 ? 1 : -1;
+			return this.Rank <= 5 ? -1 : 1;
 		}
 		else
 		{
