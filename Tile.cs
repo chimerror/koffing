@@ -63,7 +63,7 @@ public partial class Tile : Sprite2D, IComparable<Tile>
 	{
 	}
 
-	public Tile(Suit suit, int rank)
+	public Tile(Suit suit, int rank = 1)
 	{
 		Suit = suit;
 		Rank = rank;
