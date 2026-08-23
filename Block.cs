@@ -127,6 +127,11 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 		return 0;
 	}
 
+	public override string ToString()
+	{
+		return base.ToString() + ": " + this.NotationFromTiles();
+	}
+
 	private int GetActualHashCodeBasis()
 	{
 		var blockType = GetType();
