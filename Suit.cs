@@ -1,7 +1,7 @@
 public enum Suit
 {
-	Man = 1,
-	Pin = 2,
-	Sou = 3,
-	Zi = 5
+	Man = 2,
+	Pin = 3,
+	Sou = 5,
+	Zi = 7
 }
