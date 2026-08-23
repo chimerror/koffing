@@ -20,6 +20,11 @@ public static partial class Extensions
 		return result;
 	}
 
+	public static Tile ToTile(this string input)
+	{
+		return input.ToTiles().Single();
+	}
+
 	public static IEnumerable<Tile> ToTiles(this string input)
 	{
 		foreach (Match match in TileNotationRegex().Matches(input))
