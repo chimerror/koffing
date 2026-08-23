@@ -138,6 +138,11 @@ public partial class Tile : Sprite2D, IComparable<Tile>
 		}
 	}
 
+	public override string ToString()
+	{
+		return base.ToString() + ": " + this.NotationFromTile();
+	}
+
 	private void UpdateTileSprite()
 	{
 		if (FaceUp)
