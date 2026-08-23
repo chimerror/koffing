@@ -1,0 +1,7 @@
+[*.cs]
+
+# CA1050: Declare types in namespaces
+dotnet_diagnostic.CA1050.severity = silent
+
+# IDE0290: Use primary constructor
+dotnet_diagnostic.IDE0290.severity = silent
