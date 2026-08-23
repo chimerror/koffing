@@ -1,7 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class MadeBlockContext
+public class MadeBlockContext : IComparable<MadeBlockContext>, IEquatable<MadeBlockContext>
 {
 	private readonly Block _madeBlock;
 	private readonly IEnumerable<Tile> _remainingTiles;
@@ -18,8 +19,17 @@ public class MadeBlockContext
 	public override bool Equals(object that)
 	{
 		if ((that == null) ||
-			(that is not MadeBlockContext thatContext) ||
-			(_madeBlock != thatContext._madeBlock))
+			(that is not MadeBlockContext thatContext))
+		{
+			return false;
+		}
+
+		return this.Equals(thatContext);
+	}
+
+	public bool Equals(MadeBlockContext thatContext)
+	{
+		if (!_madeBlock.Equals(thatContext._madeBlock))
 		{
 			return false;
 		}
@@ -35,7 +45,7 @@ public class MadeBlockContext
 		{
 			var currentThis = sortedThis[i];
 			var currentThat = sortedThat[i];
-			if (currentThis != currentThat)
+			if (!currentThis.Equals(currentThat))
 			{
 				return false;
 			}
@@ -55,5 +65,37 @@ public class MadeBlockContext
 
 		// This is not guaranteed to be under max int, but our numbers are pretty low so I'm not that worried about it.
 		return hashCodeBasis ^ hashCodeExponent;
+	}
+
+	public int CompareTo(MadeBlockContext that)
+	{
+		if (that == null)
+		{
+			return 1;
+		}
+
+		if (!MadeBlock.Equals(that.MadeBlock))
+		{
+			return MadeBlock.CompareTo(that.MadeBlock);
+		}
+
+		var thisTiles = this.RemainingTiles.Order().ToArray();
+		var thatTiles = that.RemainingTiles.Order().ToArray();
+		if (thisTiles.Length != thatTiles.Length)
+		{
+			return thisTiles.Length.CompareTo(thatTiles.Length);
+		}
+
+		for (int i = 0; i < thisTiles.Length; i++)
+		{
+			var thisTile = thisTiles[i];
+			var thatTile = thatTiles[i];
+			if (thisTile != thatTile)
+			{
+				return thisTile.CompareTo(thatTile);
+			}
+		}
+
+		return 0;
 	}
 }

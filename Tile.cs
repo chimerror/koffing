@@ -2,7 +2,7 @@ using Godot;
 using System;
 
 [Tool]
-public partial class Tile : Sprite2D, IComparable<Tile>
+public partial class Tile : Sprite2D, IComparable<Tile>, IEquatable<Tile>
 {
 	private Suit _suit = Suit.Man;
 	private int _rank = 1;
@@ -77,7 +77,7 @@ public partial class Tile : Sprite2D, IComparable<Tile>
 		}
 
 		// Face-up doesn't count for this equals.
-		return (Suit == thatTile.Suit) && (Rank == thatTile.Rank);
+		return this.Equals(thatTile);
 	}
 
 	public bool Equals(Tile that)

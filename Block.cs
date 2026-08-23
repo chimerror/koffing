@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public abstract class Block : IEnumerable<Tile>, IBlock
+public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEquatable<Block>
 {
 	private readonly List<Tile> _tiles;
 
@@ -40,8 +40,17 @@ public abstract class Block : IEnumerable<Tile>, IBlock
 	{
 		if ((that == null) ||
 			(GetType() != that.GetType()) ||
-			(that is not Block thatBlock) ||
-			(_tiles.Count != thatBlock._tiles.Count))
+			(that is not Block thatBlock))
+		{
+			return false;
+		}
+
+		return this.Equals(thatBlock);
+	}
+
+	public bool Equals(Block thatBlock)
+	{
+		if (_tiles.Count != thatBlock._tiles.Count)
 		{
 			return false;
 		}
@@ -52,7 +61,7 @@ public abstract class Block : IEnumerable<Tile>, IBlock
 		{
 			var currentThis = sortedThis[i];
 			var currentThat = sortedThat[i];
-			if (currentThis != currentThat)
+			if (!currentThis.Equals(currentThat))
 			{
 				return false;
 			}
@@ -63,7 +72,7 @@ public abstract class Block : IEnumerable<Tile>, IBlock
 
 	public override int GetHashCode()
 	{
-		var hashCodeBasis = GetHashCodeBasis();
+		var hashCodeBasis = GetActualHashCodeBasis();
 		var hashCodeExponent = 1;
 		foreach (var tile in _tiles)
 		{
@@ -82,5 +91,46 @@ public abstract class Block : IEnumerable<Tile>, IBlock
 	IEnumerator IEnumerable.GetEnumerator()
 	{
 		return this.GetEnumerator();
+	}
+
+	public int CompareTo(Block that)
+	{
+		if (that == null)
+		{
+			return 1;
+		}
+
+		if (GetType() != that.GetType())
+		{
+			var thisBasis = GetActualHashCodeBasis();
+			var thatBasis = that.GetActualHashCodeBasis();
+			return thisBasis.CompareTo(thatBasis);
+		}
+
+		var thisTiles = this.Order().ToArray();
+		var thatTiles = that.Order().ToArray();
+		if (thisTiles.Length != thatTiles.Length)
+		{
+			return thisTiles.Length.CompareTo(thatTiles.Length);
+		}
+
+		for (int i = 0; i < thisTiles.Length; i++)
+		{
+			var thisTile = thisTiles[i];
+			var thatTile = thatTiles[i];
+			if (thisTile != thatTile)
+			{
+				return thisTile.CompareTo(thatTile);
+			}
+		}
+
+		return 0;
+	}
+
+	private int GetActualHashCodeBasis()
+	{
+		var blockType = GetType();
+		var hashCodeBasisMethod = blockType.GetMethod(nameof(GetHashCodeBasis));
+		return (int)hashCodeBasisMethod.Invoke(null, null);
 	}
 }
