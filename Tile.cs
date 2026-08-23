@@ -71,13 +71,7 @@ public partial class Tile : Sprite2D, IComparable<Tile>
 
 	public override bool Equals(Object that)
 	{
-		if (that == null)
-		{
-			return false;
-		}
-
-		var thatTile = that as Tile;
-		if (thatTile == null)
+		if ((that == null) || (that is not Tile thatTile))
 		{
 			return false;
 		}
