@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using static GdUnit4.Assertions;
 
 public static partial class Extensions
 {
@@ -20,12 +21,13 @@ public static partial class Extensions
 		return result;
 	}
 
-	public static Tile ToTile(this string input)
+	public static Tile ToTile(this string input, bool autoFree = false)
 	{
-		return input.ToTiles().Single();
+		var tiles = input.ToTiles(autoFree).ToList();
+		return tiles.Single();
 	}
 
-	public static IEnumerable<Tile> ToTiles(this string input)
+	public static IEnumerable<Tile> ToTiles(this string input, bool autoFree = false)
 	{
 		foreach (Match match in TileNotationRegex().Matches(input))
 		{
@@ -43,10 +45,22 @@ public static partial class Extensions
 			foreach (var charRank in stringRanks)
 			{
 				var rank = int.Parse(charRank.ToString());
-				yield return new Tile(suit, rank);
+				if (autoFree)
+				{
+					yield return AutoFree(new Tile(suit, rank));
+				}
+				else
+				{
+					yield return new Tile(suit, rank);
+				}
 			}
 		}
 		yield break;
+	}
+
+	public static string NotationFromTile(this Tile input)
+	{
+		return new Tile[] { input }.NotationFromTiles();
 	}
 
 	public static string NotationFromTiles(this IEnumerable<Tile> input)

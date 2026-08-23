@@ -5,6 +5,7 @@ using GdUnit4;
 using static GdUnit4.Assertions;
 
 [TestSuite]
+[RequireGodotRuntime]
 public class TileTests
 {
 	[TestCase]
@@ -19,7 +20,7 @@ public class TileTests
 					continue;
 				}
 
-				var tile = new Tile(suit, rank);
+				var tile = AutoFree(new Tile(suit, rank));
 				var expectedRawRank = rank == 0 ? 5 : rank;
 				AssertThat(tile.RawRank).IsEqual(expectedRawRank);
 			}
@@ -38,15 +39,15 @@ public class TileTests
 					continue;
 				}
 
-				var tileA = new Tile(suit, rank);
-				var tileB = new Tile(suit, rank);
+				var tileA = AutoFree(new Tile(suit, rank));
+				var tileB = AutoFree(new Tile(suit, rank));
 
 				AssertThat(tileA.RawEquals(tileB)).IsTrue(); // tile A should rawly equal identical tile B
 				AssertThat(tileB.RawEquals(tileA)).IsTrue(); // tile B should rawly equal identical tile A
 
 				if (rank == 0)
 				{
-					var tileC = new Tile(suit, 5);
+					var tileC = AutoFree(new Tile(suit, 5));
 					AssertThat(tileA.RawEquals(tileC)).IsTrue(); // red five A should rawly equal non-red five C
 					AssertThat(tileC.RawEquals(tileA)).IsTrue(); // non-red five C should rawly equal red five A
 				}
@@ -66,7 +67,7 @@ public class TileTests
 					continue;
 				}
 
-				var tileA = new Tile(suitA, rankA);
+				var tileA = AutoFree(new Tile(suitA, rankA));
 				foreach (var suitB in Enum.GetValues<Suit>())
 				{
 					if (suitA == suitB || !IsValidTile(suitB, rankA))
@@ -74,7 +75,7 @@ public class TileTests
 						continue;
 					}
 
-					var tileB = new Tile(suitB, rankA);
+					var tileB = AutoFree(new Tile(suitB, rankA));
 
 					// tile A should not rawly equal tile B with a different suit but the same rank
 					AssertThat(tileA.RawEquals(tileB)).IsFalse();
@@ -93,7 +94,7 @@ public class TileTests
 						continue;
 					}
 
-					var tileC = new Tile(suitA, rankC);
+					var tileC = AutoFree(new Tile(suitA, rankC));
 
 					// tile A should not rawly equal tile C with a different rank but the same suit
 					AssertThat(tileA.RawEquals(tileC)).IsFalse();
@@ -110,17 +111,24 @@ public class TileTests
 	public static void CompareTilesIsCorrect(Tile tileA, Tile tileB, int expectedComparisonValue)
 	{
 		AssertThat(tileA.CompareTo(tileB)).IsEqual(expectedComparisonValue);
+		AutoFree(tileA);
+		AutoFree(tileB);
 	}
 
 	[TestCase]
 	[DataPoint(nameof(TileNotationTestCases))]
 	public static void ToTilesAndNotationFromTilesAreCorrect(string notation, List<Tile> tiles)
 	{
-		var actualToTilesOutput = notation.ToTiles().ToList();
+		var actualToTilesOutput = notation.ToTiles(true).ToList();
 		AssertArray(actualToTilesOutput).ContainsExactly(tiles);
 
 		var actualNotationFromTilesOutput = tiles.NotationFromTiles();
 		AssertThat(actualNotationFromTilesOutput).IsEqual(notation);
+
+		foreach (var tile in tiles)
+		{
+			AutoFree(tile);
+		}
 	}
 
 	private static bool IsValidTile(Suit suit, int rank)
