@@ -21,10 +21,20 @@ public static partial class Extensions
 		return result;
 	}
 
+	public static Tile ToAutoFreeTile(this string input)
+	{
+		return input.ToTile(true);
+	}
+
 	public static Tile ToTile(this string input, bool autoFree = false)
 	{
 		var tiles = input.ToTiles(autoFree).ToList();
 		return tiles.Single();
+	}
+
+	public static IEnumerable<Tile> ToAutoFreeTiles(this string input)
+	{
+		return input.ToTiles(true);
 	}
 
 	public static IEnumerable<Tile> ToTiles(this string input, bool autoFree = false)
