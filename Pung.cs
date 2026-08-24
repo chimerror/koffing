@@ -29,7 +29,7 @@ public class Pung : Block, IBlock
 			);
 			yield return new MadeBlockContext(
 				new Pung(matchingFives.Take(1).Append(matchingRedFive).Append(tile)),
-				matchingFives.TakeLast(2)
+				nonMatchingTiles.Concat(matchingFives.Skip(1))
 			);
 		}
 		else
