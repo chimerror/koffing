@@ -31,9 +31,9 @@ public partial class GdUnit4CSharpApi : RefCounted
     public delegate void ExecutionCompletedEventHandler();
 #pragma warning restore CA1711
 
-#pragma warning disable CA2213, SA1201, CS8632
+#pragma warning disable CA2213, SA1201
     private CancellationTokenSource? executionCts;
-#pragma warning restore CA2213, SA1201, CS8632
+#pragma warning restore CA2213, SA1201
 
     /// <summary>
     ///     Indicates if the API loaded.
