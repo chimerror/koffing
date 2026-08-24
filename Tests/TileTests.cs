@@ -111,8 +111,6 @@ public class TileTests
 	public static void CompareTilesIsCorrect(Tile tileA, Tile tileB, int expectedComparisonValue)
 	{
 		AssertThat(tileA.CompareTo(tileB)).IsEqual(expectedComparisonValue);
-		AutoFree(tileA);
-		AutoFree(tileB);
 	}
 
 	[TestCase]
@@ -124,11 +122,6 @@ public class TileTests
 
 		var actualNotationFromTilesOutput = tiles.NotationFromTiles();
 		AssertThat(actualNotationFromTilesOutput).IsEqual(notation);
-
-		foreach (var tile in tiles)
-		{
-			AutoFree(tile);
-		}
 	}
 
 	private static bool IsValidTile(Suit suit, int rank)
@@ -138,47 +131,57 @@ public class TileTests
 
 	private static IEnumerable<object[]> CompareTileTestCases()
 	{
-		yield return [new Tile(), null, 1]; // comparing to null tile
-		yield return [new Tile(Suit.Man), new Tile(Suit.Pin), -1]; // comparing man to pin
-		yield return [new Tile(Suit.Pin), new Tile(Suit.Man), 1]; // comparing pin to man
-		yield return [new Tile(Suit.Pin), new Tile(Suit.Sou), -1]; // comparing pin to sou
-		yield return [new Tile(Suit.Sou), new Tile(Suit.Pin), 1]; // comparing sou to pin
-		yield return [new Tile(Suit.Sou), new Tile(Suit.Zi), -1]; // comparing sou to zi
-		yield return [new Tile(Suit.Zi), new Tile(Suit.Sou), 1]; // comparing zi to sou
-		yield return [new Tile(Suit.Man, 5), new Tile(Suit.Man, 5), 0]; // comparing identical non-red 5s
-		yield return [new Tile(Suit.Man, 0), new Tile(Suit.Man, 0), 0]; // comparing identical red 5s
-		yield return [new Tile(Suit.Man, 0), new Tile(Suit.Man, 5), 1]; // comparing red 5 to non-red 5
-		yield return [new Tile(Suit.Man, 5), new Tile(Suit.Man, 0), -1]; // comparing non-red 5 to red 5
-		yield return [new Tile(Suit.Man, 0), new Tile(Suit.Man, 2), 1]; // comparing red 5 to 2
-		yield return [new Tile(Suit.Man, 2), new Tile(Suit.Man, 0), -1]; // comparing 2 to red 5
-		yield return [new Tile(Suit.Man, 0), new Tile(Suit.Man, 7), -1]; // comparing red 5 to 7
-		yield return [new Tile(Suit.Man, 7), new Tile(Suit.Man, 0), 1]; // comparing 7 to red 5
-		yield return [new Tile(Suit.Man, 2), new Tile(Suit.Man, 7), -1]; // comparing 2 to 7
-		yield return [new Tile(Suit.Man, 7), new Tile(Suit.Man, 2), 1]; // comparing 7 to 2
+		yield return [AutoFree(new Tile()), null, 1]; // comparing to null tile
+		yield return [AutoFree(new Tile(Suit.Man)), AutoFree(new Tile(Suit.Pin)), -1]; // comparing man to pin
+		yield return [AutoFree(new Tile(Suit.Pin)), AutoFree(new Tile(Suit.Man)), 1]; // comparing pin to man
+		yield return [AutoFree(new Tile(Suit.Pin)), AutoFree(new Tile(Suit.Sou)), -1]; // comparing pin to sou
+		yield return [AutoFree(new Tile(Suit.Sou)), AutoFree(new Tile(Suit.Pin)), 1]; // comparing sou to pin
+		yield return [AutoFree(new Tile(Suit.Sou)), AutoFree(new Tile(Suit.Zi)), -1]; // comparing sou to zi
+		yield return [AutoFree(new Tile(Suit.Zi)), AutoFree(new Tile(Suit.Sou)), 1]; // comparing zi to sou
+		yield return [AutoFree(new Tile(Suit.Man, 5)), AutoFree(new Tile(Suit.Man, 5)), 0]; // comparing identical non-red 5s
+		yield return [AutoFree(new Tile(Suit.Man, 0)), AutoFree(new Tile(Suit.Man, 0)), 0]; // comparing identical red 5s
+		yield return [AutoFree(new Tile(Suit.Man, 0)), AutoFree(new Tile(Suit.Man, 5)), 1]; // comparing red 5 to non-red 5
+		yield return [AutoFree(new Tile(Suit.Man, 5)), AutoFree(new Tile(Suit.Man, 0)), -1]; // comparing non-red 5 to red 5
+		yield return [AutoFree(new Tile(Suit.Man, 0)), AutoFree(new Tile(Suit.Man, 2)), 1]; // comparing red 5 to 2
+		yield return [AutoFree(new Tile(Suit.Man, 2)), AutoFree(new Tile(Suit.Man, 0)), -1]; // comparing 2 to red 5
+		yield return [AutoFree(new Tile(Suit.Man, 0)), AutoFree(new Tile(Suit.Man, 7)), -1]; // comparing red 5 to 7
+		yield return [AutoFree(new Tile(Suit.Man, 7)), AutoFree(new Tile(Suit.Man, 0)), 1]; // comparing 7 to red 5
+		yield return [AutoFree(new Tile(Suit.Man, 2)), AutoFree(new Tile(Suit.Man, 7)), -1]; // comparing 2 to 7
+		yield return [AutoFree(new Tile(Suit.Man, 7)), AutoFree(new Tile(Suit.Man, 2)), 1]; // comparing 7 to 2
 	}
 
 	private static IEnumerable<object[]> TileNotationTestCases()
 	{
-		yield return ["1p", new List<Tile> { new(Suit.Pin, 1) }]; // when provided single number tile
-		yield return ["4z", new List<Tile> { new(Suit.Zi, 4) }]; // when provided single honor tile
+		yield return ["1p", new List<Tile> { AutoFree(new Tile(Suit.Pin, 1)) }]; // when provided single number tile
+		yield return ["4z", new List<Tile> { AutoFree(new Tile(Suit.Zi, 4)) }]; // when provided single honor tile
 
 		// when provided multiple tiles in one suit
-		yield return ["123p", new List<Tile> { new(Suit.Pin, 1), new(Suit.Pin, 2), new(Suit.Pin, 3) }];
+		yield return [
+			"123p",
+			new List<Tile> {
+				AutoFree(new Tile(Suit.Pin, 1)),
+				AutoFree(new Tile(Suit.Pin, 2)),
+				AutoFree(new Tile(Suit.Pin, 3)), }];
 
 		// when keeping order of multiple out-of-order tiles in one suit
-		yield return ["729p", new List<Tile> { new(Suit.Pin, 7), new(Suit.Pin, 2), new(Suit.Pin, 9) }];
+		yield return [
+			"729p",
+			new List<Tile> {
+				AutoFree(new Tile(Suit.Pin, 7)),
+				AutoFree(new Tile(Suit.Pin, 2)),
+				AutoFree(new Tile(Suit.Pin, 9)) }];
 
 		// when keeping order of multiple out-of-order suits with out-of-order tiles
 		yield return [
 			"724z729p",
 			new List<Tile>
 			{
-				new(Suit.Zi, 7),
-				new(Suit.Zi, 2),
-				new(Suit.Zi, 4),
-				new(Suit.Pin, 7),
-				new(Suit.Pin, 2),
-				new(Suit.Pin, 9),
+				AutoFree(new Tile(Suit.Zi, 7)),
+				AutoFree(new Tile(Suit.Zi, 2)),
+				AutoFree(new Tile(Suit.Zi, 4)),
+				AutoFree(new Tile(Suit.Pin, 7)),
+				AutoFree(new Tile(Suit.Pin, 2)),
+				AutoFree(new Tile(Suit.Pin, 9)),
 			}
 		];
 
@@ -187,11 +190,11 @@ public class TileTests
 			"123p3z5m",
 			new List<Tile>
 			{
-				new(Suit.Pin, 1),
-				new(Suit.Pin, 2),
-				new(Suit.Pin, 3),
-				new(Suit.Zi, 3),
-				new(Suit.Man, 5),
+				AutoFree(new Tile(Suit.Pin, 1)),
+				AutoFree(new Tile(Suit.Pin, 2)),
+				AutoFree(new Tile(Suit.Pin, 3)),
+				AutoFree(new Tile(Suit.Zi, 3)),
+				AutoFree(new Tile(Suit.Man, 5)),
 			}
 		];
 
@@ -200,14 +203,14 @@ public class TileTests
 			"123p333z45m",
 			new List<Tile>
 			{
-				new(Suit.Pin, 1),
-				new(Suit.Pin, 2),
-				new(Suit.Pin, 3),
-				new(Suit.Zi, 3),
-				new(Suit.Zi, 3),
-				new(Suit.Zi, 3),
-				new(Suit.Man, 4),
-				new(Suit.Man, 5),
+				AutoFree(new Tile(Suit.Pin, 1)),
+				AutoFree(new Tile(Suit.Pin, 2)),
+				AutoFree(new Tile(Suit.Pin, 3)),
+				AutoFree(new Tile(Suit.Zi, 3)),
+				AutoFree(new Tile(Suit.Zi, 3)),
+				AutoFree(new Tile(Suit.Zi, 3)),
+				AutoFree(new Tile(Suit.Man, 4)),
+				AutoFree(new Tile(Suit.Man, 5)),
 			}
 		];
 
@@ -216,10 +219,10 @@ public class TileTests
 			"5055p",
 			new List<Tile>
 			{
-				new(Suit.Pin, 5),
-				new(Suit.Pin, 0),
-				new(Suit.Pin, 5),
-				new(Suit.Pin, 5),
+				AutoFree(new Tile(Suit.Pin, 5)),
+				AutoFree(new Tile(Suit.Pin, 0)),
+				AutoFree(new Tile(Suit.Pin, 5)),
+				AutoFree(new Tile(Suit.Pin, 5)),
 			}
 		];
 	}
