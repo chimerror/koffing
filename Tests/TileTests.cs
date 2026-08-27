@@ -3,14 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using GdUnit4;
 using static GdUnit4.Assertions;
+using static TestLoggingHelpers;
 
 [TestSuite]
 [RequireGodotRuntime]
 public class TileTests
 {
+	[Before]
+	public static void Setup()
+	{
+		SetupLogging();
+	}
+
+	[After]
+	public static void TearDown()
+	{
+		TearDownLogging();
+	}
+
 	[TestCase]
 	public static void RawRanksAreCorrect()
 	{
+		LoggingPrefix = nameof(RawRanksAreCorrect);
 		foreach (var suit in Enum.GetValues<Suit>())
 		{
 			for (var rank = 0; rank <= 9; rank++)
@@ -22,6 +36,7 @@ public class TileTests
 
 				var tile = AutoFree(new Tile(suit, rank));
 				var expectedRawRank = rank == 0 ? 5 : rank;
+				PrefixInfo($"Checking that raw rank of {rank} {suit} is {expectedRawRank}...");
 				AssertThat(tile.RawRank).IsEqual(expectedRawRank);
 			}
 		}
@@ -30,6 +45,7 @@ public class TileTests
 	[TestCase]
 	public static void RawEqualsIsCorrectPositiveCases()
 	{
+		LoggingPrefix = nameof(RawEqualsIsCorrectPositiveCases);
 		foreach (var suit in Enum.GetValues<Suit>())
 		{
 			for (var rank = 0; rank <= 9; rank++)
@@ -42,14 +58,18 @@ public class TileTests
 				var tileA = AutoFree(new Tile(suit, rank));
 				var tileB = AutoFree(new Tile(suit, rank));
 
-				AssertThat(tileA.RawEquals(tileB)).IsTrue(); // tile A should rawly equal identical tile B
-				AssertThat(tileB.RawEquals(tileA)).IsTrue(); // tile B should rawly equal identical tile A
+				PrefixInfo($"Checking that tile A {tileA} should rawly equal identical tile B {tileB}");
+				AssertThat(tileA.RawEquals(tileB)).IsTrue();
+				PrefixInfo($"Checking that tile B {tileB} should rawly equal identical tile A {tileB}");
+				AssertThat(tileB.RawEquals(tileA)).IsTrue();
 
 				if (rank == 0)
 				{
 					var tileC = AutoFree(new Tile(suit, 5));
-					AssertThat(tileA.RawEquals(tileC)).IsTrue(); // red five A should rawly equal non-red five C
-					AssertThat(tileC.RawEquals(tileA)).IsTrue(); // non-red five C should rawly equal red five A
+					PrefixInfo($"Checking that red five A {tileA} should rawly equal non-red five C {tileC}");
+					AssertThat(tileA.RawEquals(tileC)).IsTrue();
+					PrefixInfo($"Checking that non-red five C {tileC} should rawly equal red five A {tileA}");
+					AssertThat(tileC.RawEquals(tileA)).IsTrue();
 				}
 			}
 		}
@@ -58,6 +78,7 @@ public class TileTests
 	[TestCase]
 	public static void RawEqualsIsCorrectNegativeCases()
 	{
+		LoggingPrefix = nameof(RawEqualsIsCorrectNegativeCases);
 		foreach (var suitA in Enum.GetValues<Suit>())
 		{
 			for (var rankA = 0; rankA <= 9; rankA++)
@@ -77,10 +98,11 @@ public class TileTests
 
 					var tileB = AutoFree(new Tile(suitB, rankA));
 
-					// tile A should not rawly equal tile B with a different suit but the same rank
+					PrefixInfo($"Checking that tile A {tileA} should NOT rawly equal different-suited same-rank B {tileB}");
 					AssertThat(tileA.RawEquals(tileB)).IsFalse();
 
 					// tile B should not rawly equal tile A with a different suit but the same rank
+					PrefixInfo($"Checking that tile B {tileB} should NOT rawly equal different-suited same-rank A {tileA}");
 					AssertThat(tileB.RawEquals(tileA)).IsFalse();
 				}
 
@@ -96,10 +118,10 @@ public class TileTests
 
 					var tileC = AutoFree(new Tile(suitA, rankC));
 
-					// tile A should not rawly equal tile C with a different rank but the same suit
+					PrefixInfo($"Checking that tile A {tileA} should NOT rawly equal different-rank same-suit C {tileC}");
 					AssertThat(tileA.RawEquals(tileC)).IsFalse();
 
-					// tile C should not rawly equal tile A with a different rank but the same suit
+					PrefixInfo($"Checking that tile C {tileC} should NOT rawly equal different-rank same-suit A {tileA}");
 					AssertThat(tileC.RawEquals(tileA)).IsFalse();
 				}
 			}
@@ -108,19 +130,25 @@ public class TileTests
 
 	[TestCase]
 	[DataPoint(nameof(CompareTileTestCases))]
-	public static void CompareTilesIsCorrect(Tile tileA, Tile tileB, int expectedComparisonValue)
+	public static void CompareTilesIsCorrect(Tile tileA, Tile tileB, int expectedComparisonValue, string because)
 	{
+		LoggingPrefix = nameof(CompareTilesIsCorrect);
+		PrefixInfo($"Checking that Tile.CompareTo is {expectedComparisonValue} when {because}");
 		AssertThat(tileA.CompareTo(tileB)).IsEqual(expectedComparisonValue);
 	}
 
 	[TestCase]
 	[DataPoint(nameof(TileNotationTestCases))]
-	public static void ToTilesAndNotationFromTilesAreCorrect(string notation, List<Tile> tiles)
+	public static void ToTilesAndNotationFromTilesAreCorrect(string notation, List<Tile> tiles, string because)
 	{
+		LoggingPrefix = nameof(ToTilesAndNotationFromTilesAreCorrect);
+
 		var actualToTilesOutput = notation.ToTiles(true).ToList();
+		PrefixInfo($"Checking that calling ToTiles on notation \"{notation}\"  produces correct tiles when {because}");
 		AssertArray(actualToTilesOutput).ContainsExactly(tiles);
 
 		var actualNotationFromTilesOutput = tiles.NotationFromTiles();
+		PrefixInfo($"Checking that NotationFromTiles produces matching notation \"{notation}\" when {because}");
 		AssertThat(actualNotationFromTilesOutput).IsEqual(notation);
 	}
 
@@ -131,47 +159,68 @@ public class TileTests
 
 	private static IEnumerable<object[]> CompareTileTestCases()
 	{
-		yield return [AutoFree(new Tile()), null, 1]; // comparing to null tile
-		yield return [AutoFree(new Tile(Suit.Man)), AutoFree(new Tile(Suit.Pin)), -1]; // comparing man to pin
-		yield return [AutoFree(new Tile(Suit.Pin)), AutoFree(new Tile(Suit.Man)), 1]; // comparing pin to man
-		yield return [AutoFree(new Tile(Suit.Pin)), AutoFree(new Tile(Suit.Sou)), -1]; // comparing pin to sou
-		yield return [AutoFree(new Tile(Suit.Sou)), AutoFree(new Tile(Suit.Pin)), 1]; // comparing sou to pin
-		yield return [AutoFree(new Tile(Suit.Sou)), AutoFree(new Tile(Suit.Zi)), -1]; // comparing sou to zi
-		yield return [AutoFree(new Tile(Suit.Zi)), AutoFree(new Tile(Suit.Sou)), 1]; // comparing zi to sou
-		yield return [AutoFree(new Tile(Suit.Man, 5)), AutoFree(new Tile(Suit.Man, 5)), 0]; // comparing identical non-red 5s
-		yield return [AutoFree(new Tile(Suit.Man, 0)), AutoFree(new Tile(Suit.Man, 0)), 0]; // comparing identical red 5s
-		yield return [AutoFree(new Tile(Suit.Man, 0)), AutoFree(new Tile(Suit.Man, 5)), 1]; // comparing red 5 to non-red 5
-		yield return [AutoFree(new Tile(Suit.Man, 5)), AutoFree(new Tile(Suit.Man, 0)), -1]; // comparing non-red 5 to red 5
-		yield return [AutoFree(new Tile(Suit.Man, 0)), AutoFree(new Tile(Suit.Man, 2)), 1]; // comparing red 5 to 2
-		yield return [AutoFree(new Tile(Suit.Man, 2)), AutoFree(new Tile(Suit.Man, 0)), -1]; // comparing 2 to red 5
-		yield return [AutoFree(new Tile(Suit.Man, 0)), AutoFree(new Tile(Suit.Man, 7)), -1]; // comparing red 5 to 7
-		yield return [AutoFree(new Tile(Suit.Man, 7)), AutoFree(new Tile(Suit.Man, 0)), 1]; // comparing 7 to red 5
-		yield return [AutoFree(new Tile(Suit.Man, 2)), AutoFree(new Tile(Suit.Man, 7)), -1]; // comparing 2 to 7
-		yield return [AutoFree(new Tile(Suit.Man, 7)), AutoFree(new Tile(Suit.Man, 2)), 1]; // comparing 7 to 2
+		yield return [AutoFree(new Tile()), null, 1, "comparing to null tile"];
+		yield return [AutoFree(new Tile(Suit.Man)), AutoFree(new Tile(Suit.Pin)), -1, "comparing man to pin"];
+		yield return [AutoFree(new Tile(Suit.Pin)), AutoFree(new Tile(Suit.Man)), 1, "comparing pin to man"];
+		yield return [AutoFree(new Tile(Suit.Pin)), AutoFree(new Tile(Suit.Sou)), -1, "comparing pin to sou"];
+		yield return [AutoFree(new Tile(Suit.Sou)), AutoFree(new Tile(Suit.Pin)), 1, "comparing sou to pin"];
+		yield return [AutoFree(new Tile(Suit.Sou)), AutoFree(new Tile(Suit.Zi)), -1, "comparing sou to zi"];
+		yield return [AutoFree(new Tile(Suit.Zi)), AutoFree(new Tile(Suit.Sou)), 1, "comparing zi to sou"];
+		yield return [
+			AutoFree(new Tile(Suit.Man, 5)),
+			AutoFree(new Tile(Suit.Man, 5)),
+			0,
+			"comparing identical non-red 5s"];
+		yield return [
+			AutoFree(new Tile(Suit.Man, 0)),
+			AutoFree(new Tile(Suit.Man, 0)),
+			0,
+			"comparing identical red 5s"];
+		yield return [
+			AutoFree(new Tile(Suit.Man, 0)),
+			AutoFree(new Tile(Suit.Man, 5)),
+			1,
+			"comparing red 5 to non-red 5"];
+		yield return [
+			AutoFree(new Tile(Suit.Man, 5)),
+			AutoFree(new Tile(Suit.Man, 0)),
+			-1,
+			"comparing non-red 5 to red 5"];
+		yield return [AutoFree(new Tile(Suit.Man, 0)), AutoFree(new Tile(Suit.Man, 2)), 1, "comparing red 5 to 2"];
+		yield return [AutoFree(new Tile(Suit.Man, 2)), AutoFree(new Tile(Suit.Man, 0)), -1, "comparing 2 to red 5"];
+		yield return [AutoFree(new Tile(Suit.Man, 0)), AutoFree(new Tile(Suit.Man, 7)), -1, "comparing red 5 to 7"];
+		yield return [AutoFree(new Tile(Suit.Man, 7)), AutoFree(new Tile(Suit.Man, 0)), 1, "comparing 7 to red 5"];
+		yield return [AutoFree(new Tile(Suit.Man, 2)), AutoFree(new Tile(Suit.Man, 7)), -1, "comparing 2 to 7"];
+		yield return [AutoFree(new Tile(Suit.Man, 7)), AutoFree(new Tile(Suit.Man, 2)), 1, "comparing 7 to 2"];
 	}
 
 	private static IEnumerable<object[]> TileNotationTestCases()
 	{
-		yield return ["1p", new List<Tile> { AutoFree(new Tile(Suit.Pin, 1)) }]; // when provided single number tile
-		yield return ["4z", new List<Tile> { AutoFree(new Tile(Suit.Zi, 4)) }]; // when provided single honor tile
+		yield return ["1p", new List<Tile> { AutoFree(new Tile(Suit.Pin, 1)) }, "provided single number tile"];
+		yield return ["4z", new List<Tile> { AutoFree(new Tile(Suit.Zi, 4)) }, "provided single honor tile"];
 
-		// when provided multiple tiles in one suit
 		yield return [
 			"123p",
-			new List<Tile> {
+			new List<Tile>
+			{
 				AutoFree(new Tile(Suit.Pin, 1)),
 				AutoFree(new Tile(Suit.Pin, 2)),
-				AutoFree(new Tile(Suit.Pin, 3)), }];
+				AutoFree(new Tile(Suit.Pin, 3)),
+			},
+			"provided multiple tiles in one suit",
+		];
 
-		// when keeping order of multiple out-of-order tiles in one suit
 		yield return [
 			"729p",
-			new List<Tile> {
+			new List<Tile>
+			{
 				AutoFree(new Tile(Suit.Pin, 7)),
 				AutoFree(new Tile(Suit.Pin, 2)),
-				AutoFree(new Tile(Suit.Pin, 9)) }];
+				AutoFree(new Tile(Suit.Pin, 9))
+			},
+			"keeping order of multiple out-of-order tiles in one suit",
+		];
 
-		// when keeping order of multiple out-of-order suits with out-of-order tiles
 		yield return [
 			"724z729p",
 			new List<Tile>
@@ -182,10 +231,10 @@ public class TileTests
 				AutoFree(new Tile(Suit.Pin, 7)),
 				AutoFree(new Tile(Suit.Pin, 2)),
 				AutoFree(new Tile(Suit.Pin, 9)),
-			}
+			},
+			"keeping order of multiple out-of-order suits with out-of-order tiles",
 		];
 
-		// when provided multiple suits, some with single tiles
 		yield return [
 			"123p3z5m",
 			new List<Tile>
@@ -195,10 +244,10 @@ public class TileTests
 				AutoFree(new Tile(Suit.Pin, 3)),
 				AutoFree(new Tile(Suit.Zi, 3)),
 				AutoFree(new Tile(Suit.Man, 5)),
-			}
+			},
+			"provided multiple suits, some with single tiles",
 		];
 
-		// when provided multiple suits, all with multiple tiles
 		yield return [
 			"123p333z45m",
 			new List<Tile>
@@ -211,10 +260,10 @@ public class TileTests
 				AutoFree(new Tile(Suit.Zi, 3)),
 				AutoFree(new Tile(Suit.Man, 4)),
 				AutoFree(new Tile(Suit.Man, 5)),
-			}
+			},
+			"provided multiple suits, all with multiple tiles",
 		];
 
-		// when provided kong of 5s (one red 5)
 		yield return [
 			"5055p",
 			new List<Tile>
@@ -223,7 +272,8 @@ public class TileTests
 				AutoFree(new Tile(Suit.Pin, 0)),
 				AutoFree(new Tile(Suit.Pin, 5)),
 				AutoFree(new Tile(Suit.Pin, 5)),
-			}
+			},
+			"provided kong of 5s (one red 5)",
 		];
 	}
 }

@@ -140,7 +140,7 @@ public partial class Tile : Sprite2D, IComparable<Tile>, IEquatable<Tile>
 
 	public override string ToString()
 	{
-		return base.ToString() + ": " + this.NotationFromTile();
+		return this.NotationFromTile();
 	}
 
 	private void UpdateTileSprite()
