@@ -24,7 +24,7 @@ public class MadeBlockContext : IComparable<MadeBlockContext>, IEquatable<MadeBl
 			return false;
 		}
 
-		return this.Equals(thatContext);
+		return Equals(thatContext);
 	}
 
 	public bool Equals(MadeBlockContext thatContext)
@@ -99,4 +99,10 @@ public class MadeBlockContext : IComparable<MadeBlockContext>, IEquatable<MadeBl
 
 		return 0;
 	}
+
+	public override string ToString()
+	{
+		return $"MadeBlockContext {_madeBlock.GetType().Name}: {_madeBlock.NotationFromTiles()}, {_remainingTiles.NotationFromTiles()}";
+	}
+
 }
