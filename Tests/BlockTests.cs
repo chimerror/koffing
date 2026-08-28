@@ -54,6 +54,23 @@ public class BlockTests
 		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
 	}
 
+	[TestCase]
+	[DataPoint(nameof(ChowGetPossibleForTileTestCases))]
+	public static void ChowGetPossibleForTileIsCorrect(
+		string tileNotation,
+		string otherTilesNotation,
+		List<MadeBlockContext> expectedOutput,
+		string because)
+	{
+		LoggingPrefix = nameof(ChowGetPossibleForTileIsCorrect);
+
+		var tile = tileNotation.ToAutoFreeTile();
+		var otherTiles = otherTilesNotation.ToAutoFreeTiles();
+		var actualOutput = Chow.GetPossibleForTile(tile, otherTiles).ToList();
+		PrefixInfo($"Checking that Chow.GetPossibleForTile with tile \"{tileNotation}\" and other tiles \"{otherTilesNotation}\" is correct when {because}");
+		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+	}
+
 	private static IEnumerable<object[]> KongGetPossibleForTileTestCases()
 	{
 		yield return ["5z", "2p3s11m55z", new List<MadeBlockContext>(), "there are only two matching tiles"];
@@ -185,6 +202,44 @@ public class BlockTests
 				new(new Pung("550s".ToAutoFreeTiles()), "067p12344s11m66z5s".ToAutoFreeTiles()),
 			},
 			"given non-red five and there are more than enough matching tiles with a red five",
+		];
+	}
+
+	private static IEnumerable<object[]> ChowGetPossibleForTileTestCases()
+	{
+		yield return ["5z", "2p3s11m34z", new List<MadeBlockContext>(), "given an honor tile with sequential neighbors"];
+		yield return ["7p", "46p3s1134z", new List<MadeBlockContext>(), "only one relevant tile is available"];
+		yield return [
+			"3m",
+			"1245m",
+			new List<MadeBlockContext>()
+			{
+				new(new Chow("123m".ToAutoFreeTiles()), "45m".ToAutoFreeTiles()),
+				new(new Chow("234m".ToAutoFreeTiles()), "15m".ToAutoFreeTiles()),
+				new(new Chow("345m".ToAutoFreeTiles()), "12m".ToAutoFreeTiles()),
+			},
+			"there are multiple possible chows with no five tiles",
+		];
+		yield return [
+			"4s",
+			"34067s",
+			new List<MadeBlockContext>()
+			{
+				new(new Chow("340s".ToAutoFreeTiles()), "467s".ToAutoFreeTiles()),
+				new(new Chow("406s".ToAutoFreeTiles()), "347s".ToAutoFreeTiles()),
+			},
+			"multiple chows can be made using a red five from the other tiles",
+		];
+		yield return [
+			"0p",
+			"34567p",
+			new List<MadeBlockContext>()
+			{
+				new(new Chow("340p".ToAutoFreeTiles()), "567p".ToAutoFreeTiles()),
+				new(new Chow("406p".ToAutoFreeTiles()), "357p".ToAutoFreeTiles()),
+				new(new Chow("067p".ToAutoFreeTiles()), "345p".ToAutoFreeTiles()),
+			},
+			"multiple chows can be made using a chosen red five",
 		];
 	}
 }
