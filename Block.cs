@@ -93,6 +93,7 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 		return this.GetEnumerator();
 	}
 
+	// TODO: Write tests for this
 	public int CompareTo(Block that)
 	{
 		if (that == null)

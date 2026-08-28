@@ -67,6 +67,7 @@ public class MadeBlockContext : IComparable<MadeBlockContext>, IEquatable<MadeBl
 		return hashCodeBasis ^ hashCodeExponent;
 	}
 
+	// TODO: Write tests for this
 	public int CompareTo(MadeBlockContext that)
 	{
 		if (that == null)
