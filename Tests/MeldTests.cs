@@ -6,7 +6,7 @@ using static TestLoggingHelpers;
 
 [TestSuite]
 [RequireGodotRuntime]
-public class BlockTests
+public class MeldTests
 {
 	[Before]
 	public static void Setup()
