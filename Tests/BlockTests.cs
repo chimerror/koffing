@@ -21,6 +21,23 @@ public class BlockTests
 	}
 
 	[TestCase]
+	[DataPoint(nameof(KongGetPossibleForTileTestCases))]
+	public static void KongGetPossibleForTileIsCorrect(
+		string tileNotation,
+		string otherTilesNotation,
+		List<MadeBlockContext> expectedOutput,
+		string because)
+	{
+		LoggingPrefix = nameof(KongGetPossibleForTileIsCorrect);
+
+		var tile = tileNotation.ToAutoFreeTile();
+		var otherTiles = otherTilesNotation.ToAutoFreeTiles();
+		var actualOutput = Kong.GetPossibleForTile(tile, otherTiles).ToList();
+		PrefixInfo($"Checking that Kong.GetPossibleForTile with tile \"{tileNotation}\" and other tiles \"{otherTilesNotation}\" is correct when {because}");
+		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+	}
+
+	[TestCase]
 	[DataPoint(nameof(PungGetPossibleForTileTestCases))]
 	public static void PungGetPossibleForTileIsCorrect(
 		string tileNotation,
@@ -35,6 +52,73 @@ public class BlockTests
 		var actualOutput = Pung.GetPossibleForTile(tile, otherTiles).ToList();
 		PrefixInfo($"Checking that Pung.GetPossibleForTile with tile \"{tileNotation}\" and other tiles \"{otherTilesNotation}\" is correct when {because}");
 		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+	}
+
+	private static IEnumerable<object[]> KongGetPossibleForTileTestCases()
+	{
+		yield return ["5z", "2p3s11m55z", new List<MadeBlockContext>(), "there are only two matching tiles"];
+		yield return ["5z", "2p3s11m5z", new List<MadeBlockContext>(), "there is only one matching tile"];
+		yield return ["5z", "2p3s11m", new List<MadeBlockContext>(), "there are no matching tiles"];
+		yield return
+		[
+			"7p",
+			"777p2s11m66z",
+			new List<MadeBlockContext>()
+			{
+				new(new Kong("7777p".ToAutoFreeTiles()), "2s11m66z".ToAutoFreeTiles()),
+			},
+			"there are enough matching pin tiles",
+		];
+		yield return
+		[
+			"4s",
+			"067p12344456s11m66z",
+			new List<MadeBlockContext>()
+			{
+				new(new Kong("4444s".ToAutoFreeTiles()), "067p12356s11m66z".ToAutoFreeTiles()),
+			},
+			"there are enough matching sou tiles",
+		];
+		yield return
+		[
+			"1m",
+			"2p3s111m66z",
+			new List<MadeBlockContext>()
+			{
+				new(new Kong("1111m".ToAutoFreeTiles()), "2p3s66z".ToAutoFreeTiles()),
+			},
+			"there are enough matching man tiles",
+		];
+		yield return
+		[
+			"5z",
+			"2p3s11m555z",
+			new List<MadeBlockContext>()
+			{
+				new(new Kong("5555z".ToAutoFreeTiles()), "2p3s11m".ToAutoFreeTiles()),
+			},
+			"there are enough matching zi tiles",
+		];
+		yield return
+		[
+			"0m",
+			"2p3s555m77z",
+			new List<MadeBlockContext>()
+			{
+				new(new Kong("0555m".ToAutoFreeTiles()), "2p3s77z".ToAutoFreeTiles()),
+			},
+			"given red five and there are enough matching tiles",
+		];
+		yield return
+		[
+			"5m",
+			"2p3s550m77z",
+			new List<MadeBlockContext>()
+			{
+				new(new Kong("0555m".ToAutoFreeTiles()), "2p3s77z".ToAutoFreeTiles()),
+			},
+			"given non-red five and there are enough matching tiles",
+		];
 	}
 
 	private static IEnumerable<object[]> PungGetPossibleForTileTestCases()
@@ -95,7 +179,8 @@ public class BlockTests
 		[
 			"5s",
 			"067p12344550s11m66z",
-			new List<MadeBlockContext>() {
+			new List<MadeBlockContext>()
+			{
 				new(new Pung("555s".ToAutoFreeTiles()), "067p12344s11m66z0s".ToAutoFreeTiles()),
 				new(new Pung("550s".ToAutoFreeTiles()), "067p12344s11m66z5s".ToAutoFreeTiles()),
 			},
