@@ -23,4 +23,10 @@ public class Kong : Block, IBlock
 			nonMatchingTiles
 		);
 	}
+
+	public static new int GetHashCodeBasis()
+	{
+		// TODO: Should we put this in an enum so we can make sure numbers are unique?
+		return 5;
+	}
 }

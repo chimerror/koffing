@@ -78,15 +78,21 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 
 	public override int GetHashCode()
 	{
-		var hashCodeBasis = GetActualHashCodeBasis();
-		var hashCodeExponent = 1;
-		foreach (var tile in _tiles)
+		unchecked
 		{
-			hashCodeExponent = hashCodeExponent * hashCodeBasis + tile.GetHashCode();
-		}
+			// WARNING: I am honestly unsure how good this hashing function is, or if it being bad will actually cause
+			// problems. Just keep an eye out.
+			var hashCodeBasis = GetActualHashCodeBasis();
+			var hashCodeExponent = 1;
+			foreach (var tile in _tiles)
+			{
+				hashCodeExponent = hashCodeExponent * hashCodeBasis + tile.GetHashCode();
+			}
 
-		// This is not guaranteed to be under max int, but our numbers are pretty low so I'm not that worried about it.
-		return hashCodeBasis ^ hashCodeExponent;
+			// WARNING: Also worried a bit about the likely conversions to and from float here, but I don't think this
+			// will be that used.
+			return (int)Math.Pow(hashCodeBasis, hashCodeExponent);
+		}
 	}
 
 	public IEnumerator<Tile> GetEnumerator()

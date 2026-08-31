@@ -45,6 +45,17 @@ public class BlockTests
 		}
 	}
 
+	[TestCase]
+	[DataPoint(nameof(GetBlockHashCodeTestCases))]
+	public static void GetBlockHashCodeIsCorrect(Block block, int expectedHashCode)
+	{
+		LoggingPrefix = nameof(GetBlockHashCodeIsCorrect);
+
+		PrefixInfo($"Checking that block of type {block.GetType()} has hash code {expectedHashCode}");
+		AssertThat(block.GetHashCode()).IsEqual(expectedHashCode);
+
+	}
+
 	private static IEnumerable<object[]> BlockEqualsEdgeTestCases()
 	{
 		yield return [new Chow("123s".ToAutoFreeTiles()), null, "null should not equal"];
@@ -100,5 +111,16 @@ public class BlockTests
 			false,
 			"they are the same type but not the same tiles",
 		];
+	}
+
+	private static IEnumerable<object[]> GetBlockHashCodeTestCases()
+	{
+		// No tiles in the blocks because that way the exponent remains 1 and we just get the basis, which is what we
+		// are really testing here.
+		// TODO: We do seem to have 3 orphans from this test, which is odd because we create a List<Tile>, but it never
+		// as anything in it, so I don't know why it gets noticed as a Godot object.
+		yield return [new Chow(), 2];
+		yield return [new Pung(), 3];
+		yield return [new Kong(), 5];
 	}
 }

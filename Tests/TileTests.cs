@@ -152,6 +152,16 @@ public class TileTests
 		AssertThat(actualNotationFromTilesOutput).IsEqual(notation);
 	}
 
+	[TestCase]
+	[DataPoint(nameof(GetTileHashCodeTestCases))]
+	public static void GetTileHashCodeIsCorrect(Tile tile, int expectedHashCode)
+	{
+		LoggingPrefix = nameof(GetTileHashCodeIsCorrect);
+
+		PrefixInfo($"Checking that GetHashCode for {tile} is {expectedHashCode}");
+		AssertThat(tile.GetHashCode()).IsEqual(expectedHashCode);
+	}
+
 	private static bool IsValidTile(Suit suit, int rank)
 	{
 		return suit != Suit.Zi ? (rank >= 0 && rank <= 9) : (rank >= 1 && rank <= 7);
@@ -275,5 +285,46 @@ public class TileTests
 			},
 			"provided kong of 5s (one red 5)",
 		];
+	}
+
+	private static IEnumerable<object[]> GetTileHashCodeTestCases()
+	{
+		yield return ["0m".ToAutoFreeTile(), 2];
+		yield return ["1m".ToAutoFreeTile(), 4];
+		yield return ["2m".ToAutoFreeTile(), 8];
+		yield return ["3m".ToAutoFreeTile(), 16];
+		yield return ["4m".ToAutoFreeTile(), 32];
+		yield return ["5m".ToAutoFreeTile(), 64];
+		yield return ["6m".ToAutoFreeTile(), 128];
+		yield return ["7m".ToAutoFreeTile(), 256];
+		yield return ["8m".ToAutoFreeTile(), 512];
+		yield return ["9m".ToAutoFreeTile(), 1024];
+		yield return ["0p".ToAutoFreeTile(), 3];
+		yield return ["1p".ToAutoFreeTile(), 9];
+		yield return ["2p".ToAutoFreeTile(), 27];
+		yield return ["3p".ToAutoFreeTile(), 81];
+		yield return ["4p".ToAutoFreeTile(), 243];
+		yield return ["5p".ToAutoFreeTile(), 729];
+		yield return ["6p".ToAutoFreeTile(), 2187];
+		yield return ["7p".ToAutoFreeTile(), 6561];
+		yield return ["8p".ToAutoFreeTile(), 19683];
+		yield return ["9p".ToAutoFreeTile(), 59049];
+		yield return ["0s".ToAutoFreeTile(), 5];
+		yield return ["1s".ToAutoFreeTile(), 25];
+		yield return ["2s".ToAutoFreeTile(), 125];
+		yield return ["3s".ToAutoFreeTile(), 625];
+		yield return ["4s".ToAutoFreeTile(), 3125];
+		yield return ["5s".ToAutoFreeTile(), 15625];
+		yield return ["6s".ToAutoFreeTile(), 78125];
+		yield return ["7s".ToAutoFreeTile(), 390625];
+		yield return ["8s".ToAutoFreeTile(), 1953125];
+		yield return ["9s".ToAutoFreeTile(), 9765625];
+		yield return ["1z".ToAutoFreeTile(), 49];
+		yield return ["2z".ToAutoFreeTile(), 343];
+		yield return ["3z".ToAutoFreeTile(), 2401];
+		yield return ["4z".ToAutoFreeTile(), 16807];
+		yield return ["5z".ToAutoFreeTile(), 117649];
+		yield return ["6z".ToAutoFreeTile(), 823543];
+		yield return ["7z".ToAutoFreeTile(), 5764801];
 	}
 }

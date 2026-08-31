@@ -106,7 +106,7 @@ public partial class Tile : Sprite2D, IComparable<Tile>, IEquatable<Tile>
 	{
 		var suitInt = (int)Suit;
 		var rankInt = Rank + 1; // Increment so the range is 1-10 instead of 0-9, to keep each suit with unique hashes
-		return suitInt ^ rankInt;
+		return unchecked((int)Math.Pow(suitInt, rankInt));
 	}
 
 	public int CompareTo(Tile that)
