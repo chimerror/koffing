@@ -45,12 +45,18 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 			return false;
 		}
 
-		return this.Equals(thatBlock);
+		return Equals(thatBlock);
 	}
 
 	public bool Equals(Block thatBlock)
 	{
-		if (_tiles.Count != thatBlock._tiles.Count)
+		if (thatBlock == null)
+		{
+			return false;
+		}
+
+		if ((GetType() != thatBlock.GetType()) ||
+			(_tiles.Count != thatBlock._tiles.Count))
 		{
 			return false;
 		}
