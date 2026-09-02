@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class Chow : Block, IBlock
+public class Chow : Meld, IBlock
 {
 	public Chow(IEnumerable<Tile> tiles = null) : base(tiles)
 	{

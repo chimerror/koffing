@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class Pung : Block, IBlock
+public class Pung : Meld, IBlock
 {
 	public Pung(IEnumerable<Tile> tiles = null) : base(tiles)
 	{

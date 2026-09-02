@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class Kong : Block, IBlock
+public class Kong : Meld, IBlock
 {
 	public Kong(IEnumerable<Tile> tiles = null) : base(tiles)
 	{
