@@ -137,79 +137,92 @@ public class BlockTests
 	{
 		// Some of these blocks are "wrong" compared to their names, but this is for the sake of testing.
 		yield return [new Chow("123s".ToAutoFreeTiles()), null, 1, "comparing to null block"];
-		yield return [
+		yield return 
+		[
 			new Chow("123s".ToAutoFreeTiles()),
 			new Chow("123s".ToAutoFreeTiles()),
 			0,
 			"comparing identical Chows",
 		];
-		yield return [
+		yield return
+		[
 			new Chow("123s".ToAutoFreeTiles()),
 			new Pung("111z".ToAutoFreeTiles()),
 			-1,
 			"comparing Chow to Pung",
 		];
-		yield return [
+		yield return
+		[
 			new Pung("111z".ToAutoFreeTiles()),
 			new Chow("123s".ToAutoFreeTiles()),
 			1,
 			"comparing Pung to Chow",
 		];
-		yield return [
+		yield return
+		[
 			new Chow("123s".ToAutoFreeTiles()),
 			new Kong("4444m".ToAutoFreeTiles()),
 			-1,
 			"comparing Chow to Kong",
 		];
-		yield return [
+		yield return
+		[
 			new Kong("4444m".ToAutoFreeTiles()),
 			new Chow("123s".ToAutoFreeTiles()),
 			1,
 			"comparing Kong to Chow",
 		];
-		yield return [
+		yield return
+		[
 			new Pung("111z".ToAutoFreeTiles()),
 			new Pung("111z".ToAutoFreeTiles()),
 			0,
 			"comparing identical Pungs",
 		];
-		yield return [
+		yield return
+		[
 			new Pung("111z".ToAutoFreeTiles()),
 			new Kong("4444m".ToAutoFreeTiles()),
 			-1,
 			"comparing Pung to Kong",
 		];
-		yield return [
+		yield return
+		[
 			new Kong("4444m".ToAutoFreeTiles()),
 			new Pung("111z".ToAutoFreeTiles()),
 			1,
 			"comparing Kong to Pung",
 		];
-		yield return [
+		yield return
+		[
 			new Kong("4444m".ToAutoFreeTiles()),
 			new Kong("4444m".ToAutoFreeTiles()),
 			0,
 			"comparing identical Kongs",
 		];
-		yield return [
+		yield return
+		[
 			new Chow("123s".ToAutoFreeTiles()),
 			new Chow("1234s".ToAutoFreeTiles()),
 			-1,
 			"comparing shorter to longer of the same type",
 		];
-		yield return [
+		yield return
+		[
 			new Chow("1234s".ToAutoFreeTiles()),
 			new Chow("123s".ToAutoFreeTiles()),
 			1,
 			"comparing longer to shorter of the same type",
 		];
-		yield return [
+		yield return
+		[
 			new Chow("123s".ToAutoFreeTiles()),
 			new Chow("234s".ToAutoFreeTiles()),
 			-1,
 			"comparing earlier to later of the same type",
 		];
-		yield return [
+		yield return
+		[
 			new Chow("234s".ToAutoFreeTiles()),
 			new Chow("123s".ToAutoFreeTiles()),
 			1,
