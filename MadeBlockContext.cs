@@ -80,7 +80,7 @@ public class MadeBlockContext : IComparable<MadeBlockContext>, IEquatable<MadeBl
 			return MadeBlock.CompareTo(that.MadeBlock);
 		}
 
-		var thisTiles = this.RemainingTiles.Order().ToArray();
+		var thisTiles = RemainingTiles.Order().ToArray();
 		var thatTiles = that.RemainingTiles.Order().ToArray();
 		if (thisTiles.Length != thatTiles.Length)
 		{
