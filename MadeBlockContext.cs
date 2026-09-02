@@ -29,6 +29,11 @@ public class MadeBlockContext : IComparable<MadeBlockContext>, IEquatable<MadeBl
 
 	public bool Equals(MadeBlockContext thatContext)
 	{
+		if (thatContext == null)
+		{
+			return false;
+		}
+
 		if (!_madeBlock.Equals(thatContext._madeBlock))
 		{
 			return false;

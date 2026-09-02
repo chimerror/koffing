@@ -65,6 +65,36 @@ public class BlockTests
 		AssertThat(blockA.CompareTo(blockB)).IsEqual(expectedComparisonValue);
 	}
 
+	[TestCase]
+	[DataPoint(nameof(MadeBlockContextEqualsEdgeTestCases))]
+	public static void MadeBlockContextEqualsEdgeCasesAreCorrect(MadeBlockContext contextA, object objectB, string because)
+	{
+		LoggingPrefix = nameof(MadeBlockContextEqualsEdgeCasesAreCorrect);
+
+		PrefixInfo($"Checking that made block context A {contextA} does not equal object B {objectB} because {because}");
+		AssertThat(contextA.Equals(objectB)).IsFalse();
+	}
+
+	[TestCase]
+	[DataPoint(nameof(MadeBlockContextEqualsTestCases))]
+	public static void MadeBlockContextEqualsCasesAreCorrect(
+		MadeBlockContext contextA,
+		MadeBlockContext contextB,
+		bool expectedResult,
+		string because)
+	{
+		LoggingPrefix = nameof(MadeBlockContextEqualsEdgeCasesAreCorrect);
+
+		var outcomeString = expectedResult ? "does equal" : "does NOT equal";
+		PrefixInfo($"Checking that context A {contextA} {outcomeString} context B {contextB} because {because}");
+		AssertThat(contextA.Equals(contextB)).IsEqual(expectedResult);
+		if (contextB != null)
+		{
+			PrefixInfo($"Checking that context B {contextB} {outcomeString} context A {contextA} because {because}");
+			AssertThat(contextB.Equals(contextA)).IsEqual(expectedResult);
+		}
+	}
+
 	private static IEnumerable<object[]> BlockEqualsEdgeTestCases()
 	{
 		yield return [new Chow("123s".ToAutoFreeTiles()), null, "null should not equal"];
@@ -234,6 +264,75 @@ public class BlockTests
 			new Chow("123s".ToAutoFreeTiles()),
 			1,
 			"comparing later to earlier of the same type",
+		];
+	}
+
+	private static IEnumerable<object[]> MadeBlockContextEqualsEdgeTestCases()
+	{
+		yield return
+		[
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			null,
+			"null should not equal",
+		];
+		yield return
+		[
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			"123s",
+			"different types should not equal",
+		];
+	}
+
+	private static IEnumerable<object[]> MadeBlockContextEqualsTestCases()
+	{
+		yield return
+		[
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			null,
+			false,
+			"null never equals",
+		];
+		yield return
+		[
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Pung("111z".ToAutoFreeTiles()), "22s".ToAutoFreeTiles()),
+			false,
+			"of different made block types",
+		];
+		yield return
+		[
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("234s".ToAutoFreeTiles()), "22s".ToAutoFreeTiles()),
+			false,
+			"of different made blocks of the same type",
+		];
+		yield return
+		[
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			true,
+			"of identical contexts",
+		];
+		yield return
+		[
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "456s".ToAutoFreeTiles()),
+			false,
+			"of different remaining tile counts",
+		];
+		yield return
+		[
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "46s".ToAutoFreeTiles()),
+			false,
+			"of different remaining tiles",
+		];
+		yield return
+		[
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "54s".ToAutoFreeTiles()),
+			true,
+			"of identical contexts with different remaining tile orders",
 		];
 	}
 }
