@@ -43,6 +43,86 @@ public class TileTests
 	}
 
 	[TestCase]
+	public static void EqualsIsCorrectPositiveCases()
+	{
+		LoggingPrefix = nameof(EqualsIsCorrectPositiveCases);
+		foreach (var suit in Enum.GetValues<Suit>())
+		{
+			for (var rank = 0; rank <= 9; rank++)
+			{
+				if (!IsValidTile(suit, rank))
+				{
+					continue;
+				}
+
+				var tileA = AutoFree(new Tile(suit, rank));
+				var tileB = AutoFree(new Tile(suit, rank));
+
+				PrefixInfo($"Checking that tile A {tileA} should equal identical tile B {tileB}");
+				AssertThat(tileA.Equals(tileB)).IsTrue();
+				PrefixInfo($"Checking that tile B {tileB} should equal identical tile A {tileB}");
+				AssertThat(tileB.Equals(tileA)).IsTrue();
+
+				tileB.FaceUp = false;
+				PrefixInfo($"Checking that face-up tile A {tileA} should equal identical face-down tile B {tileB}");
+				AssertThat(tileA.Equals(tileB)).IsTrue();
+				PrefixInfo($"Checking that face-down tile B {tileB} should equal identical face-up tile A {tileB}");
+				AssertThat(tileB.Equals(tileA)).IsTrue();
+			}
+		}
+	}
+
+	[TestCase]
+	public static void EqualsIsCorrectNegativeCases()
+	{
+		LoggingPrefix = nameof(EqualsIsCorrectNegativeCases);
+		foreach (var suitA in Enum.GetValues<Suit>())
+		{
+			for (var rankA = 0; rankA <= 9; rankA++)
+			{
+				if (!IsValidTile(suitA, rankA))
+				{
+					continue;
+				}
+
+				var tileA = AutoFree(new Tile(suitA, rankA));
+				foreach (var suitB in Enum.GetValues<Suit>())
+				{
+					if (suitA == suitB || !IsValidTile(suitB, rankA))
+					{
+						continue;
+					}
+
+					var tileB = AutoFree(new Tile(suitB, rankA));
+
+					PrefixInfo($"Checking that tile A {tileA} should NOT equal different-suited same-rank B {tileB}");
+					AssertThat(tileA.Equals(tileB)).IsFalse();
+
+					PrefixInfo($"Checking that tile B {tileB} should NOT equal different-suited same-rank A {tileA}");
+					AssertThat(tileB.Equals(tileA)).IsFalse();
+				}
+
+				for (var rankC = 0; rankC <= 9; rankC++)
+				{
+					if (rankA == rankC ||
+						!IsValidTile(suitA, rankC))
+					{
+						continue;
+					}
+
+					var tileC = AutoFree(new Tile(suitA, rankC));
+
+					PrefixInfo($"Checking that tile A {tileA} should NOT equal different-rank same-suit C {tileC}");
+					AssertThat(tileA.Equals(tileC)).IsFalse();
+
+					PrefixInfo($"Checking that tile C {tileC} should NOT equal different-rank same-suit A {tileA}");
+					AssertThat(tileC.Equals(tileA)).IsFalse();
+				}
+			}
+		}
+	}
+
+	[TestCase]
 	public static void RawEqualsIsCorrectPositiveCases()
 	{
 		LoggingPrefix = nameof(RawEqualsIsCorrectPositiveCases);
@@ -101,7 +181,6 @@ public class TileTests
 					PrefixInfo($"Checking that tile A {tileA} should NOT rawly equal different-suited same-rank B {tileB}");
 					AssertThat(tileA.RawEquals(tileB)).IsFalse();
 
-					// tile B should not rawly equal tile A with a different suit but the same rank
 					PrefixInfo($"Checking that tile B {tileB} should NOT rawly equal different-suited same-rank A {tileA}");
 					AssertThat(tileB.RawEquals(tileA)).IsFalse();
 				}
@@ -125,6 +204,21 @@ public class TileTests
 					AssertThat(tileC.RawEquals(tileA)).IsFalse();
 				}
 			}
+		}
+	}
+
+	[TestCase]
+	[DataPoint(nameof(EqualsNegativeEdgeCases))]
+	public static void EqualsIsCorrectNegativeEdgeCases(Tile tileA, object objectB, string because)
+	{
+		PrefixInfo($"Checking that tile A {tileA} should not equal object B {objectB} when {because}");
+		AssertThat(tileA.Equals(objectB)).IsFalse();
+
+		if (objectB == null)
+		{
+			Tile tileB = null;
+			PrefixInfo($"Checking that tile A {tileA} should not equal null tile B {tileB}");
+			AssertThat(tileA.Equals(tileB)).IsFalse();
 		}
 	}
 
@@ -165,6 +259,13 @@ public class TileTests
 	private static bool IsValidTile(Suit suit, int rank)
 	{
 		return suit != Suit.Zi ? (rank >= 0 && rank <= 9) : (rank >= 1 && rank <= 7);
+	}
+
+
+	private static IEnumerable<object[]> EqualsNegativeEdgeCases()
+	{
+		yield return ["4m".ToAutoFreeTile(), null, "comparing to null"];
+		yield return ["4m".ToAutoFreeTile(), "4m", "comparing to a non-tile type"];
 	}
 
 	private static IEnumerable<object[]> CompareTileTestCases()
