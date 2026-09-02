@@ -137,12 +137,19 @@ public class BlockTests
 	{
 		// Some of these blocks are "wrong" compared to their names, but this is for the sake of testing.
 		yield return [new Chow("123s".ToAutoFreeTiles()), null, 1, "comparing to null block"];
-		yield return 
+		yield return
 		[
 			new Chow("123s".ToAutoFreeTiles()),
 			new Chow("123s".ToAutoFreeTiles()),
 			0,
 			"comparing identical Chows",
+		];
+		yield return
+		[
+			new Chow("123s".ToAutoFreeTiles()),
+			new Chow("312s".ToAutoFreeTiles()),
+			0,
+			"comparing identical Chows with different orders",
 		];
 		yield return
 		[
