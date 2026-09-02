@@ -34,7 +34,7 @@ public class TileTests
 					continue;
 				}
 
-				var tile = AutoFree(new Tile(suit, rank));
+				var tile = new Tile(suit, rank);
 				var expectedRawRank = rank == 0 ? 5 : rank;
 				PrefixInfo($"Checking that raw rank of {rank} {suit} is {expectedRawRank}...");
 				AssertThat(tile.RawRank).IsEqual(expectedRawRank);
@@ -55,8 +55,8 @@ public class TileTests
 					continue;
 				}
 
-				var tileA = AutoFree(new Tile(suit, rank));
-				var tileB = AutoFree(new Tile(suit, rank));
+				var tileA = new Tile(suit, rank);
+				var tileB = new Tile(suit, rank);
 
 				PrefixInfo($"Checking that tile A {tileA} should equal identical tile B {tileB}");
 				AssertThat(tileA.Equals(tileB)).IsTrue();
@@ -85,7 +85,7 @@ public class TileTests
 					continue;
 				}
 
-				var tileA = AutoFree(new Tile(suitA, rankA));
+				var tileA = new Tile(suitA, rankA);
 				foreach (var suitB in Enum.GetValues<Suit>())
 				{
 					if (suitA == suitB || !IsValidTile(suitB, rankA))
@@ -93,7 +93,7 @@ public class TileTests
 						continue;
 					}
 
-					var tileB = AutoFree(new Tile(suitB, rankA));
+					var tileB = new Tile(suitB, rankA);
 
 					PrefixInfo($"Checking that tile A {tileA} should NOT equal different-suited same-rank B {tileB}");
 					AssertThat(tileA.Equals(tileB)).IsFalse();
@@ -110,7 +110,7 @@ public class TileTests
 						continue;
 					}
 
-					var tileC = AutoFree(new Tile(suitA, rankC));
+					var tileC = new Tile(suitA, rankC);
 
 					PrefixInfo($"Checking that tile A {tileA} should NOT equal different-rank same-suit C {tileC}");
 					AssertThat(tileA.Equals(tileC)).IsFalse();
@@ -135,8 +135,8 @@ public class TileTests
 					continue;
 				}
 
-				var tileA = AutoFree(new Tile(suit, rank));
-				var tileB = AutoFree(new Tile(suit, rank));
+				var tileA = new Tile(suit, rank);
+				var tileB = new Tile(suit, rank);
 
 				PrefixInfo($"Checking that tile A {tileA} should rawly equal identical tile B {tileB}");
 				AssertThat(tileA.RawEquals(tileB)).IsTrue();
@@ -151,7 +151,7 @@ public class TileTests
 
 				if (rank == 0)
 				{
-					var tileC = AutoFree(new Tile(suit, 5));
+					var tileC = new Tile(suit, 5);
 					PrefixInfo($"Checking that red five A {tileA} should rawly equal non-red five C {tileC}");
 					AssertThat(tileA.RawEquals(tileC)).IsTrue();
 					PrefixInfo($"Checking that non-red five C {tileC} should rawly equal red five A {tileA}");
@@ -174,7 +174,7 @@ public class TileTests
 					continue;
 				}
 
-				var tileA = AutoFree(new Tile(suitA, rankA));
+				var tileA = new Tile(suitA, rankA);
 				foreach (var suitB in Enum.GetValues<Suit>())
 				{
 					if (suitA == suitB || !IsValidTile(suitB, rankA))
@@ -182,7 +182,7 @@ public class TileTests
 						continue;
 					}
 
-					var tileB = AutoFree(new Tile(suitB, rankA));
+					var tileB = new Tile(suitB, rankA);
 
 					PrefixInfo($"Checking that tile A {tileA} should NOT rawly equal different-suited same-rank B {tileB}");
 					AssertThat(tileA.RawEquals(tileB)).IsFalse();
@@ -201,7 +201,7 @@ public class TileTests
 						continue;
 					}
 
-					var tileC = AutoFree(new Tile(suitA, rankC));
+					var tileC = new Tile(suitA, rankC);
 
 					PrefixInfo($"Checking that tile A {tileA} should NOT rawly equal different-rank same-suit C {tileC}");
 					AssertThat(tileA.RawEquals(tileC)).IsFalse();
@@ -243,7 +243,7 @@ public class TileTests
 	{
 		LoggingPrefix = nameof(ToTilesAndNotationFromTilesAreCorrect);
 
-		var actualToTilesOutput = notation.ToTiles(true).ToList();
+		var actualToTilesOutput = notation.ToTiles().ToList();
 		PrefixInfo($"Checking that calling ToTiles on notation \"{notation}\"  produces correct tiles when {because}");
 		AssertArray(actualToTilesOutput).ContainsExactly(tiles);
 
@@ -270,59 +270,59 @@ public class TileTests
 
 	private static IEnumerable<object[]> EqualsNegativeEdgeCases()
 	{
-		yield return ["4m".ToAutoFreeTile(), null, "comparing to null"];
-		yield return ["4m".ToAutoFreeTile(), "4m", "comparing to a non-tile type"];
+		yield return ["4m".ToTile(), null, "comparing to null"];
+		yield return ["4m".ToTile(), "4m", "comparing to a non-tile type"];
 	}
 
 	private static IEnumerable<object[]> CompareTileTestCases()
 	{
-		yield return [AutoFree(new Tile()), null, 1, "comparing to null tile"];
-		yield return [AutoFree(new Tile(Suit.Man)), AutoFree(new Tile(Suit.Pin)), -1, "comparing man to pin"];
-		yield return [AutoFree(new Tile(Suit.Pin)), AutoFree(new Tile(Suit.Man)), 1, "comparing pin to man"];
-		yield return [AutoFree(new Tile(Suit.Pin)), AutoFree(new Tile(Suit.Sou)), -1, "comparing pin to sou"];
-		yield return [AutoFree(new Tile(Suit.Sou)), AutoFree(new Tile(Suit.Pin)), 1, "comparing sou to pin"];
-		yield return [AutoFree(new Tile(Suit.Sou)), AutoFree(new Tile(Suit.Zi)), -1, "comparing sou to zi"];
-		yield return [AutoFree(new Tile(Suit.Zi)), AutoFree(new Tile(Suit.Sou)), 1, "comparing zi to sou"];
+		yield return [new Tile(), null, 1, "comparing to null tile"];
+		yield return [new Tile(Suit.Man), new Tile(Suit.Pin), -1, "comparing man to pin"];
+		yield return [new Tile(Suit.Pin), new Tile(Suit.Man), 1, "comparing pin to man"];
+		yield return [new Tile(Suit.Pin), new Tile(Suit.Sou), -1, "comparing pin to sou"];
+		yield return [new Tile(Suit.Sou), new Tile(Suit.Pin), 1, "comparing sou to pin"];
+		yield return [new Tile(Suit.Sou), new Tile(Suit.Zi), -1, "comparing sou to zi"];
+		yield return [new Tile(Suit.Zi), new Tile(Suit.Sou), 1, "comparing zi to sou"];
 		yield return [
-			AutoFree(new Tile(Suit.Man, 5)),
-			AutoFree(new Tile(Suit.Man, 5)),
+			new Tile(Suit.Man, 5),
+			new Tile(Suit.Man, 5),
 			0,
 			"comparing identical non-red 5s"];
 		yield return [
-			AutoFree(new Tile(Suit.Man, 0)),
-			AutoFree(new Tile(Suit.Man, 0)),
+			new Tile(Suit.Man, 0),
+			new Tile(Suit.Man, 0),
 			0,
 			"comparing identical red 5s"];
 		yield return [
-			AutoFree(new Tile(Suit.Man, 0)),
-			AutoFree(new Tile(Suit.Man, 5)),
+			new Tile(Suit.Man, 0),
+			new Tile(Suit.Man, 5),
 			1,
 			"comparing red 5 to non-red 5"];
 		yield return [
-			AutoFree(new Tile(Suit.Man, 5)),
-			AutoFree(new Tile(Suit.Man, 0)),
+			new Tile(Suit.Man, 5),
+			new Tile(Suit.Man, 0),
 			-1,
 			"comparing non-red 5 to red 5"];
-		yield return [AutoFree(new Tile(Suit.Man, 0)), AutoFree(new Tile(Suit.Man, 2)), 1, "comparing red 5 to 2"];
-		yield return [AutoFree(new Tile(Suit.Man, 2)), AutoFree(new Tile(Suit.Man, 0)), -1, "comparing 2 to red 5"];
-		yield return [AutoFree(new Tile(Suit.Man, 0)), AutoFree(new Tile(Suit.Man, 7)), -1, "comparing red 5 to 7"];
-		yield return [AutoFree(new Tile(Suit.Man, 7)), AutoFree(new Tile(Suit.Man, 0)), 1, "comparing 7 to red 5"];
-		yield return [AutoFree(new Tile(Suit.Man, 2)), AutoFree(new Tile(Suit.Man, 7)), -1, "comparing 2 to 7"];
-		yield return [AutoFree(new Tile(Suit.Man, 7)), AutoFree(new Tile(Suit.Man, 2)), 1, "comparing 7 to 2"];
+		yield return [new Tile(Suit.Man, 0), new Tile(Suit.Man, 2), 1, "comparing red 5 to 2"];
+		yield return [new Tile(Suit.Man, 2), new Tile(Suit.Man, 0), -1, "comparing 2 to red 5"];
+		yield return [new Tile(Suit.Man, 0), new Tile(Suit.Man, 7), -1, "comparing red 5 to 7"];
+		yield return [new Tile(Suit.Man, 7), new Tile(Suit.Man, 0), 1, "comparing 7 to red 5"];
+		yield return [new Tile(Suit.Man, 2), new Tile(Suit.Man, 7), -1, "comparing 2 to 7"];
+		yield return [new Tile(Suit.Man, 7), new Tile(Suit.Man, 2), 1, "comparing 7 to 2"];
 	}
 
 	private static IEnumerable<object[]> TileNotationTestCases()
 	{
-		yield return ["1p", new List<Tile> { AutoFree(new Tile(Suit.Pin, 1)) }, "provided single number tile"];
-		yield return ["4z", new List<Tile> { AutoFree(new Tile(Suit.Zi, 4)) }, "provided single honor tile"];
+		yield return ["1p", new List<Tile> { new(Suit.Pin, 1) }, "provided single number tile"];
+		yield return ["4z", new List<Tile> { new(Suit.Zi, 4) }, "provided single honor tile"];
 
 		yield return [
 			"123p",
 			new List<Tile>
 			{
-				AutoFree(new Tile(Suit.Pin, 1)),
-				AutoFree(new Tile(Suit.Pin, 2)),
-				AutoFree(new Tile(Suit.Pin, 3)),
+				new(Suit.Pin, 1),
+				new(Suit.Pin, 2),
+				new(Suit.Pin, 3),
 			},
 			"provided multiple tiles in one suit",
 		];
@@ -331,9 +331,9 @@ public class TileTests
 			"729p",
 			new List<Tile>
 			{
-				AutoFree(new Tile(Suit.Pin, 7)),
-				AutoFree(new Tile(Suit.Pin, 2)),
-				AutoFree(new Tile(Suit.Pin, 9))
+				new(Suit.Pin, 7),
+				new(Suit.Pin, 2),
+				new(Suit.Pin, 9)
 			},
 			"keeping order of multiple out-of-order tiles in one suit",
 		];
@@ -342,12 +342,12 @@ public class TileTests
 			"724z729p",
 			new List<Tile>
 			{
-				AutoFree(new Tile(Suit.Zi, 7)),
-				AutoFree(new Tile(Suit.Zi, 2)),
-				AutoFree(new Tile(Suit.Zi, 4)),
-				AutoFree(new Tile(Suit.Pin, 7)),
-				AutoFree(new Tile(Suit.Pin, 2)),
-				AutoFree(new Tile(Suit.Pin, 9)),
+				new(Suit.Zi, 7),
+				new(Suit.Zi, 2),
+				new(Suit.Zi, 4),
+				new(Suit.Pin, 7),
+				new(Suit.Pin, 2),
+				new(Suit.Pin, 9),
 			},
 			"keeping order of multiple out-of-order suits with out-of-order tiles",
 		];
@@ -356,11 +356,11 @@ public class TileTests
 			"123p3z5m",
 			new List<Tile>
 			{
-				AutoFree(new Tile(Suit.Pin, 1)),
-				AutoFree(new Tile(Suit.Pin, 2)),
-				AutoFree(new Tile(Suit.Pin, 3)),
-				AutoFree(new Tile(Suit.Zi, 3)),
-				AutoFree(new Tile(Suit.Man, 5)),
+				new(Suit.Pin, 1),
+				new(Suit.Pin, 2),
+				new(Suit.Pin, 3),
+				new(Suit.Zi, 3),
+				new(Suit.Man, 5),
 			},
 			"provided multiple suits, some with single tiles",
 		];
@@ -369,14 +369,14 @@ public class TileTests
 			"123p333z45m",
 			new List<Tile>
 			{
-				AutoFree(new Tile(Suit.Pin, 1)),
-				AutoFree(new Tile(Suit.Pin, 2)),
-				AutoFree(new Tile(Suit.Pin, 3)),
-				AutoFree(new Tile(Suit.Zi, 3)),
-				AutoFree(new Tile(Suit.Zi, 3)),
-				AutoFree(new Tile(Suit.Zi, 3)),
-				AutoFree(new Tile(Suit.Man, 4)),
-				AutoFree(new Tile(Suit.Man, 5)),
+				new(Suit.Pin, 1),
+				new(Suit.Pin, 2),
+				new(Suit.Pin, 3),
+				new(Suit.Zi, 3),
+				new(Suit.Zi, 3),
+				new(Suit.Zi, 3),
+				new(Suit.Man, 4),
+				new(Suit.Man, 5),
 			},
 			"provided multiple suits, all with multiple tiles",
 		];
@@ -385,10 +385,10 @@ public class TileTests
 			"5055p",
 			new List<Tile>
 			{
-				AutoFree(new Tile(Suit.Pin, 5)),
-				AutoFree(new Tile(Suit.Pin, 0)),
-				AutoFree(new Tile(Suit.Pin, 5)),
-				AutoFree(new Tile(Suit.Pin, 5)),
+				new(Suit.Pin, 5),
+				new(Suit.Pin, 0),
+				new(Suit.Pin, 5),
+				new(Suit.Pin, 5),
 			},
 			"provided kong of 5s (one red 5)",
 		];
@@ -396,42 +396,42 @@ public class TileTests
 
 	private static IEnumerable<object[]> GetTileHashCodeTestCases()
 	{
-		yield return ["0m".ToAutoFreeTile(), 2];
-		yield return ["1m".ToAutoFreeTile(), 4];
-		yield return ["2m".ToAutoFreeTile(), 8];
-		yield return ["3m".ToAutoFreeTile(), 16];
-		yield return ["4m".ToAutoFreeTile(), 32];
-		yield return ["5m".ToAutoFreeTile(), 64];
-		yield return ["6m".ToAutoFreeTile(), 128];
-		yield return ["7m".ToAutoFreeTile(), 256];
-		yield return ["8m".ToAutoFreeTile(), 512];
-		yield return ["9m".ToAutoFreeTile(), 1024];
-		yield return ["0p".ToAutoFreeTile(), 3];
-		yield return ["1p".ToAutoFreeTile(), 9];
-		yield return ["2p".ToAutoFreeTile(), 27];
-		yield return ["3p".ToAutoFreeTile(), 81];
-		yield return ["4p".ToAutoFreeTile(), 243];
-		yield return ["5p".ToAutoFreeTile(), 729];
-		yield return ["6p".ToAutoFreeTile(), 2187];
-		yield return ["7p".ToAutoFreeTile(), 6561];
-		yield return ["8p".ToAutoFreeTile(), 19683];
-		yield return ["9p".ToAutoFreeTile(), 59049];
-		yield return ["0s".ToAutoFreeTile(), 5];
-		yield return ["1s".ToAutoFreeTile(), 25];
-		yield return ["2s".ToAutoFreeTile(), 125];
-		yield return ["3s".ToAutoFreeTile(), 625];
-		yield return ["4s".ToAutoFreeTile(), 3125];
-		yield return ["5s".ToAutoFreeTile(), 15625];
-		yield return ["6s".ToAutoFreeTile(), 78125];
-		yield return ["7s".ToAutoFreeTile(), 390625];
-		yield return ["8s".ToAutoFreeTile(), 1953125];
-		yield return ["9s".ToAutoFreeTile(), 9765625];
-		yield return ["1z".ToAutoFreeTile(), 49];
-		yield return ["2z".ToAutoFreeTile(), 343];
-		yield return ["3z".ToAutoFreeTile(), 2401];
-		yield return ["4z".ToAutoFreeTile(), 16807];
-		yield return ["5z".ToAutoFreeTile(), 117649];
-		yield return ["6z".ToAutoFreeTile(), 823543];
-		yield return ["7z".ToAutoFreeTile(), 5764801];
+		yield return ["0m".ToTile(), 2];
+		yield return ["1m".ToTile(), 4];
+		yield return ["2m".ToTile(), 8];
+		yield return ["3m".ToTile(), 16];
+		yield return ["4m".ToTile(), 32];
+		yield return ["5m".ToTile(), 64];
+		yield return ["6m".ToTile(), 128];
+		yield return ["7m".ToTile(), 256];
+		yield return ["8m".ToTile(), 512];
+		yield return ["9m".ToTile(), 1024];
+		yield return ["0p".ToTile(), 3];
+		yield return ["1p".ToTile(), 9];
+		yield return ["2p".ToTile(), 27];
+		yield return ["3p".ToTile(), 81];
+		yield return ["4p".ToTile(), 243];
+		yield return ["5p".ToTile(), 729];
+		yield return ["6p".ToTile(), 2187];
+		yield return ["7p".ToTile(), 6561];
+		yield return ["8p".ToTile(), 19683];
+		yield return ["9p".ToTile(), 59049];
+		yield return ["0s".ToTile(), 5];
+		yield return ["1s".ToTile(), 25];
+		yield return ["2s".ToTile(), 125];
+		yield return ["3s".ToTile(), 625];
+		yield return ["4s".ToTile(), 3125];
+		yield return ["5s".ToTile(), 15625];
+		yield return ["6s".ToTile(), 78125];
+		yield return ["7s".ToTile(), 390625];
+		yield return ["8s".ToTile(), 1953125];
+		yield return ["9s".ToTile(), 9765625];
+		yield return ["1z".ToTile(), 49];
+		yield return ["2z".ToTile(), 343];
+		yield return ["3z".ToTile(), 2401];
+		yield return ["4z".ToTile(), 16807];
+		yield return ["5z".ToTile(), 117649];
+		yield return ["6z".ToTile(), 823543];
+		yield return ["7z".ToTile(), 5764801];
 	}
 }

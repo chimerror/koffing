@@ -9,12 +9,12 @@ public partial class Wall : Node2D
 	private RandomNumberGenerator _rng = new RandomNumberGenerator();
 	private PlayerCount _playerCount = PlayerCount.Four;
 	private bool _hasRedFives = true;
-	private List<Tile> _tiles = new List<Tile>();
+	private List<TileSprite> _tiles = new List<TileSprite>();
 
 	private bool _listPositions = false;
 
 	[Export]
-	public PackedScene TileScene { get; set; } = ResourceLoader.Load<PackedScene>("res://Tile.tscn");
+	public PackedScene TileScene { get; set; } = ResourceLoader.Load<PackedScene>("res://TileSprite.tscn");
 
 	[Export]
 	public ulong Seed
@@ -94,10 +94,9 @@ public partial class Wall : Node2D
 						adjustedRank = 0;
 					}
 
-					var tile = TileScene.Instantiate<Tile>();
+					var tile = TileScene.Instantiate<TileSprite>();
 					tile.Suit = suit;
 					tile.Rank = adjustedRank;
-					/* tile.FaceUp = false; */
 					_tiles.Add(tile);
 				}
 			}

@@ -30,8 +30,8 @@ public class MeldTests
 	{
 		LoggingPrefix = nameof(KongGetPossibleForTileIsCorrect);
 
-		var tile = tileNotation.ToAutoFreeTile();
-		var otherTiles = otherTilesNotation.ToAutoFreeTiles();
+		var tile = tileNotation.ToTile();
+		var otherTiles = otherTilesNotation.ToTiles();
 		var actualOutput = Kong.GetPossibleForTile(tile, otherTiles).ToList();
 		PrefixInfo($"Checking that Kong.GetPossibleForTile with tile \"{tileNotation}\" and other tiles \"{otherTilesNotation}\" is correct when {because}");
 		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
@@ -47,8 +47,8 @@ public class MeldTests
 	{
 		LoggingPrefix = nameof(PungGetPossibleForTileIsCorrect);
 
-		var tile = tileNotation.ToAutoFreeTile();
-		var otherTiles = otherTilesNotation.ToAutoFreeTiles();
+		var tile = tileNotation.ToTile();
+		var otherTiles = otherTilesNotation.ToTiles();
 		var actualOutput = Pung.GetPossibleForTile(tile, otherTiles).ToList();
 		PrefixInfo($"Checking that Pung.GetPossibleForTile with tile \"{tileNotation}\" and other tiles \"{otherTilesNotation}\" is correct when {because}");
 		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
@@ -64,8 +64,8 @@ public class MeldTests
 	{
 		LoggingPrefix = nameof(ChowGetPossibleForTileIsCorrect);
 
-		var tile = tileNotation.ToAutoFreeTile();
-		var otherTiles = otherTilesNotation.ToAutoFreeTiles();
+		var tile = tileNotation.ToTile();
+		var otherTiles = otherTilesNotation.ToTiles();
 		var actualOutput = Chow.GetPossibleForTile(tile, otherTiles).ToList();
 		PrefixInfo($"Checking that Chow.GetPossibleForTile with tile \"{tileNotation}\" and other tiles \"{otherTilesNotation}\" is correct when {because}");
 		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
@@ -82,7 +82,7 @@ public class MeldTests
 			"777p2s11m66z",
 			new List<MadeBlockContext>()
 			{
-				new(new Kong("7777p".ToAutoFreeTiles()), "2s11m66z".ToAutoFreeTiles()),
+				new(new Kong("7777p".ToTiles()), "2s11m66z".ToTiles()),
 			},
 			"there are enough matching pin tiles",
 		];
@@ -92,7 +92,7 @@ public class MeldTests
 			"067p12344456s11m66z",
 			new List<MadeBlockContext>()
 			{
-				new(new Kong("4444s".ToAutoFreeTiles()), "067p12356s11m66z".ToAutoFreeTiles()),
+				new(new Kong("4444s".ToTiles()), "067p12356s11m66z".ToTiles()),
 			},
 			"there are enough matching sou tiles",
 		];
@@ -102,7 +102,7 @@ public class MeldTests
 			"2p3s111m66z",
 			new List<MadeBlockContext>()
 			{
-				new(new Kong("1111m".ToAutoFreeTiles()), "2p3s66z".ToAutoFreeTiles()),
+				new(new Kong("1111m".ToTiles()), "2p3s66z".ToTiles()),
 			},
 			"there are enough matching man tiles",
 		];
@@ -112,7 +112,7 @@ public class MeldTests
 			"2p3s11m555z",
 			new List<MadeBlockContext>()
 			{
-				new(new Kong("5555z".ToAutoFreeTiles()), "2p3s11m".ToAutoFreeTiles()),
+				new(new Kong("5555z".ToTiles()), "2p3s11m".ToTiles()),
 			},
 			"there are enough matching zi tiles",
 		];
@@ -122,7 +122,7 @@ public class MeldTests
 			"2p3s555m77z",
 			new List<MadeBlockContext>()
 			{
-				new(new Kong("0555m".ToAutoFreeTiles()), "2p3s77z".ToAutoFreeTiles()),
+				new(new Kong("0555m".ToTiles()), "2p3s77z".ToTiles()),
 			},
 			"given red five and there are enough matching tiles",
 		];
@@ -132,7 +132,7 @@ public class MeldTests
 			"2p3s550m77z",
 			new List<MadeBlockContext>()
 			{
-				new(new Kong("0555m".ToAutoFreeTiles()), "2p3s77z".ToAutoFreeTiles()),
+				new(new Kong("0555m".ToTiles()), "2p3s77z".ToTiles()),
 			},
 			"given non-red five and there are enough matching tiles",
 		];
@@ -148,7 +148,7 @@ public class MeldTests
 			"777p3s11m66z",
 			new List<MadeBlockContext>()
 			{
-				new(new Pung("777p".ToAutoFreeTiles()), "7p3s11m66z".ToAutoFreeTiles()),
+				new(new Pung("777p".ToTiles()), "7p3s11m66z".ToTiles()),
 			},
 			"there are more than enough matching pin tiles",
 		];
@@ -158,7 +158,7 @@ public class MeldTests
 			"067p1234456s11m66z",
 			new List<MadeBlockContext>()
 			{
-				new(new Pung("444s".ToAutoFreeTiles()), "067p12356s11m66z".ToAutoFreeTiles()),
+				new(new Pung("444s".ToTiles()), "067p12356s11m66z".ToTiles()),
 			},
 			"there are enough matching sou tiles",
 		];
@@ -168,7 +168,7 @@ public class MeldTests
 			"2p3s11m66z",
 			new List<MadeBlockContext>()
 			{
-				new(new Pung("111m".ToAutoFreeTiles()), "2p3s66z".ToAutoFreeTiles()),
+				new(new Pung("111m".ToTiles()), "2p3s66z".ToTiles()),
 			},
 			"there are enough matching man tiles",
 		];
@@ -178,7 +178,7 @@ public class MeldTests
 			"2p3s11m55z",
 			new List<MadeBlockContext>()
 			{
-				new(new Pung("555z".ToAutoFreeTiles()), "2p3s11m".ToAutoFreeTiles()),
+				new(new Pung("555z".ToTiles()), "2p3s11m".ToTiles()),
 			},
 			"there are enough matching zi tiles",
 		];
@@ -188,7 +188,7 @@ public class MeldTests
 			"2p3s55m77z",
 			new List<MadeBlockContext>()
 			{
-				new(new Pung("055m".ToAutoFreeTiles()), "2p3s77z".ToAutoFreeTiles()),
+				new(new Pung("055m".ToTiles()), "2p3s77z".ToTiles()),
 			},
 			"given red five and there are enough matching tiles",
 		];
@@ -198,8 +198,8 @@ public class MeldTests
 			"067p12344550s11m66z",
 			new List<MadeBlockContext>()
 			{
-				new(new Pung("555s".ToAutoFreeTiles()), "067p12344s11m66z0s".ToAutoFreeTiles()),
-				new(new Pung("550s".ToAutoFreeTiles()), "067p12344s11m66z5s".ToAutoFreeTiles()),
+				new(new Pung("555s".ToTiles()), "067p12344s11m66z0s".ToTiles()),
+				new(new Pung("550s".ToTiles()), "067p12344s11m66z5s".ToTiles()),
 			},
 			"given non-red five and there are more than enough matching tiles with a red five",
 		];
@@ -214,9 +214,9 @@ public class MeldTests
 			"1245m",
 			new List<MadeBlockContext>()
 			{
-				new(new Chow("123m".ToAutoFreeTiles()), "45m".ToAutoFreeTiles()),
-				new(new Chow("234m".ToAutoFreeTiles()), "15m".ToAutoFreeTiles()),
-				new(new Chow("345m".ToAutoFreeTiles()), "12m".ToAutoFreeTiles()),
+				new(new Chow("123m".ToTiles()), "45m".ToTiles()),
+				new(new Chow("234m".ToTiles()), "15m".ToTiles()),
+				new(new Chow("345m".ToTiles()), "12m".ToTiles()),
 			},
 			"there are multiple possible chows with no five tiles",
 		];
@@ -225,8 +225,8 @@ public class MeldTests
 			"34067s",
 			new List<MadeBlockContext>()
 			{
-				new(new Chow("340s".ToAutoFreeTiles()), "467s".ToAutoFreeTiles()),
-				new(new Chow("406s".ToAutoFreeTiles()), "347s".ToAutoFreeTiles()),
+				new(new Chow("340s".ToTiles()), "467s".ToTiles()),
+				new(new Chow("406s".ToTiles()), "347s".ToTiles()),
 			},
 			"multiple chows can be made using a red five from the other tiles",
 		];
@@ -235,9 +235,9 @@ public class MeldTests
 			"34567p",
 			new List<MadeBlockContext>()
 			{
-				new(new Chow("340p".ToAutoFreeTiles()), "567p".ToAutoFreeTiles()),
-				new(new Chow("406p".ToAutoFreeTiles()), "357p".ToAutoFreeTiles()),
-				new(new Chow("067p".ToAutoFreeTiles()), "345p".ToAutoFreeTiles()),
+				new(new Chow("340p".ToTiles()), "567p".ToTiles()),
+				new(new Chow("406p".ToTiles()), "357p".ToTiles()),
+				new(new Chow("067p".ToTiles()), "345p".ToTiles()),
 			},
 			"multiple chows can be made using a chosen red five",
 		];

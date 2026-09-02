@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://b5n0lilife2q"]
 
-[ext_resource type="Script" uid="uid://b20o0kyn616tb" path="res://Scripts/Tiles/Tile.cs" id="1_pg2uw"]
+[ext_resource type="Script" uid="uid://b20o0kyn616tb" path="res://Scripts/Tiles/TileSprite.cs" id="1_pg2uw"]
 [ext_resource type="Texture2D" uid="uid://dngohff32h87v" path="res://Sprites/Tiles/1man.png" id="2_scstk"]
 
-[node name="Tile" type="Sprite2D"]
+[node name="TileSprite" type="Sprite2D" unique_id=1408075660]
 texture = ExtResource("2_scstk")
 script = ExtResource("1_pg2uw")
+Suit = 2
+Rank = 1

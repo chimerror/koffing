@@ -111,8 +111,8 @@ public class BlockTests
 
 	private static IEnumerable<object[]> BlockEqualsEdgeTestCases()
 	{
-		yield return [new Chow("123s".ToAutoFreeTiles()), null, "null should not equal"];
-		yield return [new Chow("123s".ToAutoFreeTiles()), "123s", "different types should not equal"];
+		yield return [new Chow("123s".ToTiles()), null, "null should not equal"];
+		yield return [new Chow("123s".ToTiles()), "123s", "different types should not equal"];
 	}
 
 	private static IEnumerable<object[]> BlockEqualsTestCases()
@@ -124,43 +124,43 @@ public class BlockTests
 
 		yield return
 		[
-			new Pung("444p".ToAutoFreeTiles()),
+			new Pung("444p".ToTiles()),
 			null,
 			false,
 			"null should not equal",
 		];
 		yield return
 		[
-			new Pung("444p".ToAutoFreeTiles()),
-			new Chow("444p".ToAutoFreeTiles()),
+			new Pung("444p".ToTiles()),
+			new Chow("444p".ToTiles()),
 			false,
 			"type should matter",
 		];
 		yield return
 		[
-			new Pung("444z".ToAutoFreeTiles()),
-			new Pung("44z".ToAutoFreeTiles()),
+			new Pung("444z".ToTiles()),
+			new Pung("44z".ToTiles()),
 			false,
 			"tile counts should matter",
 		];
 		yield return
 		[
-			new Chow("456s".ToAutoFreeTiles()),
-			new Chow("456s".ToAutoFreeTiles()),
+			new Chow("456s".ToTiles()),
+			new Chow("456s".ToTiles()),
 			true,
 			"they have the same type and tiles",
 		];
 		yield return
 		[
-			new Chow("456m".ToAutoFreeTiles()),
-			new Chow("546m".ToAutoFreeTiles()),
+			new Chow("456m".ToTiles()),
+			new Chow("546m".ToTiles()),
 			true,
 			"tile order should not matter",
 		];
 		yield return
 		[
-			new Chow("456p".ToAutoFreeTiles()),
-			new Chow("234p".ToAutoFreeTiles()),
+			new Chow("456p".ToTiles()),
+			new Chow("234p".ToTiles()),
 			false,
 			"they are the same type but not the same tiles",
 		];
@@ -170,8 +170,6 @@ public class BlockTests
 	{
 		// No tiles in the blocks because that way the exponent remains 1 and we just get the basis, which is what we
 		// are really testing here.
-		// TODO: We do seem to have 3 orphans from this test, which is odd because we create a List<Tile>, but it never
-		// as anything in it, so I don't know why it gets noticed as a Godot object.
 		yield return [new Chow(), 2];
 		yield return [new Pung(), 3];
 		yield return [new Kong(), 5];
@@ -180,102 +178,102 @@ public class BlockTests
 	private static IEnumerable<object[]> CompareBlocksTestCases()
 	{
 		// Some of these blocks are "wrong" compared to their names, but this is for the sake of testing.
-		yield return [new Chow("123s".ToAutoFreeTiles()), null, 1, "comparing to null block"];
+		yield return [new Chow("123s".ToTiles()), null, 1, "comparing to null block"];
 		yield return
 		[
-			new Chow("123s".ToAutoFreeTiles()),
-			new Chow("123s".ToAutoFreeTiles()),
+			new Chow("123s".ToTiles()),
+			new Chow("123s".ToTiles()),
 			0,
 			"comparing identical Chows",
 		];
 		yield return
 		[
-			new Chow("123s".ToAutoFreeTiles()),
-			new Chow("312s".ToAutoFreeTiles()),
+			new Chow("123s".ToTiles()),
+			new Chow("312s".ToTiles()),
 			0,
 			"comparing identical Chows with different orders",
 		];
 		yield return
 		[
-			new Chow("123s".ToAutoFreeTiles()),
-			new Pung("111z".ToAutoFreeTiles()),
+			new Chow("123s".ToTiles()),
+			new Pung("111z".ToTiles()),
 			-1,
 			"comparing Chow to Pung",
 		];
 		yield return
 		[
-			new Pung("111z".ToAutoFreeTiles()),
-			new Chow("123s".ToAutoFreeTiles()),
+			new Pung("111z".ToTiles()),
+			new Chow("123s".ToTiles()),
 			1,
 			"comparing Pung to Chow",
 		];
 		yield return
 		[
-			new Chow("123s".ToAutoFreeTiles()),
-			new Kong("4444m".ToAutoFreeTiles()),
+			new Chow("123s".ToTiles()),
+			new Kong("4444m".ToTiles()),
 			-1,
 			"comparing Chow to Kong",
 		];
 		yield return
 		[
-			new Kong("4444m".ToAutoFreeTiles()),
-			new Chow("123s".ToAutoFreeTiles()),
+			new Kong("4444m".ToTiles()),
+			new Chow("123s".ToTiles()),
 			1,
 			"comparing Kong to Chow",
 		];
 		yield return
 		[
-			new Pung("111z".ToAutoFreeTiles()),
-			new Pung("111z".ToAutoFreeTiles()),
+			new Pung("111z".ToTiles()),
+			new Pung("111z".ToTiles()),
 			0,
 			"comparing identical Pungs",
 		];
 		yield return
 		[
-			new Pung("111z".ToAutoFreeTiles()),
-			new Kong("4444m".ToAutoFreeTiles()),
+			new Pung("111z".ToTiles()),
+			new Kong("4444m".ToTiles()),
 			-1,
 			"comparing Pung to Kong",
 		];
 		yield return
 		[
-			new Kong("4444m".ToAutoFreeTiles()),
-			new Pung("111z".ToAutoFreeTiles()),
+			new Kong("4444m".ToTiles()),
+			new Pung("111z".ToTiles()),
 			1,
 			"comparing Kong to Pung",
 		];
 		yield return
 		[
-			new Kong("4444m".ToAutoFreeTiles()),
-			new Kong("4444m".ToAutoFreeTiles()),
+			new Kong("4444m".ToTiles()),
+			new Kong("4444m".ToTiles()),
 			0,
 			"comparing identical Kongs",
 		];
 		yield return
 		[
-			new Chow("123s".ToAutoFreeTiles()),
-			new Chow("1234s".ToAutoFreeTiles()),
+			new Chow("123s".ToTiles()),
+			new Chow("1234s".ToTiles()),
 			-1,
 			"comparing shorter to longer of the same type",
 		];
 		yield return
 		[
-			new Chow("1234s".ToAutoFreeTiles()),
-			new Chow("123s".ToAutoFreeTiles()),
+			new Chow("1234s".ToTiles()),
+			new Chow("123s".ToTiles()),
 			1,
 			"comparing longer to shorter of the same type",
 		];
 		yield return
 		[
-			new Chow("123s".ToAutoFreeTiles()),
-			new Chow("234s".ToAutoFreeTiles()),
+			new Chow("123s".ToTiles()),
+			new Chow("234s".ToTiles()),
 			-1,
 			"comparing earlier to later of the same type",
 		];
 		yield return
 		[
-			new Chow("234s".ToAutoFreeTiles()),
-			new Chow("123s".ToAutoFreeTiles()),
+			new Chow("234s".ToTiles()),
+			new Chow("123s".ToTiles()),
 			1,
 			"comparing later to earlier of the same type",
 		];
@@ -285,13 +283,13 @@ public class BlockTests
 	{
 		yield return
 		[
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "45s".ToTiles()),
 			null,
 			"null should not equal",
 		];
 		yield return
 		[
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "45s".ToTiles()),
 			"123s",
 			"different types should not equal",
 		];
@@ -301,50 +299,50 @@ public class BlockTests
 	{
 		yield return
 		[
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "45s".ToTiles()),
 			null,
 			false,
 			"null never equals",
 		];
 		yield return
 		[
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
-			new MadeBlockContext(new Pung("111z".ToAutoFreeTiles()), "22s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "45s".ToTiles()),
+			new MadeBlockContext(new Pung("111z".ToTiles()), "22s".ToTiles()),
 			false,
 			"of different made block types",
 		];
 		yield return
 		[
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
-			new MadeBlockContext(new Chow("234s".ToAutoFreeTiles()), "22s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "45s".ToTiles()),
+			new MadeBlockContext(new Chow("234s".ToTiles()), "22s".ToTiles()),
 			false,
 			"of different made blocks of the same type",
 		];
 		yield return
 		[
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "45s".ToTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "45s".ToTiles()),
 			true,
 			"of identical contexts",
 		];
 		yield return
 		[
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "456s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "45s".ToTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "456s".ToTiles()),
 			false,
 			"of different remaining tile counts",
 		];
 		yield return
 		[
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "46s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "45s".ToTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "46s".ToTiles()),
 			false,
 			"of different remaining tiles",
 		];
 		yield return
 		[
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "54s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "45s".ToTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "54s".ToTiles()),
 			true,
 			"of identical contexts with different remaining tile orders",
 		];
@@ -353,64 +351,64 @@ public class BlockTests
 	{
 		yield return
 		[
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "45s".ToTiles()),
 			null,
 			1,
 			"to null",
 		];
 		yield return
 		[
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "45s".ToTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "45s".ToTiles()),
 			0,
 			"identical contexts",
 		];
 		yield return
 		[
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
-			new MadeBlockContext(new Pung("111z".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "45s".ToTiles()),
+			new MadeBlockContext(new Pung("111z".ToTiles()), "45s".ToTiles()),
 			-1,
 			"contexts with different made block types",
 		];
 		yield return
 		[
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
-			new MadeBlockContext(new Chow("234s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "45s".ToTiles()),
+			new MadeBlockContext(new Chow("234s".ToTiles()), "45s".ToTiles()),
 			-1,
 			"earlier made block to later made block",
 		];
 		yield return
 		[
-			new MadeBlockContext(new Chow("234s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("234s".ToTiles()), "45s".ToTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "45s".ToTiles()),
 			1,
 			"later made block to earlier made block",
 		];
 		yield return
 		[
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "456s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "45s".ToTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "456s".ToTiles()),
 			-1,
 			"shorter remaining tiles to longer remaining tiles",
 		];
 		yield return
 		[
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "456s".ToAutoFreeTiles()),
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "456s".ToTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "45s".ToTiles()),
 			1,
 			"longer remaining tiles to shorter remaining tiles",
 		];
 		yield return
 		[
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "56s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "45s".ToTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "56s".ToTiles()),
 			-1,
 			"earlier remaining tiles to later remainingTiles",
 		];
 		yield return
 		[
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "56s".ToAutoFreeTiles()),
-			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "56s".ToTiles()),
+			new MadeBlockContext(new Chow("123s".ToTiles()), "45s".ToTiles()),
 			1,
 			"later remaining tiles to earlier remainingTiles",
 		];
