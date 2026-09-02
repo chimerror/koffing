@@ -77,7 +77,7 @@ public partial class Tile : Sprite2D, IComparable<Tile>, IEquatable<Tile>
 		}
 
 		// Face-up doesn't count for this equals.
-		return this.Equals(thatTile);
+		return Equals(thatTile);
 	}
 
 	public bool Equals(Tile that)
@@ -116,25 +116,25 @@ public partial class Tile : Sprite2D, IComparable<Tile>, IEquatable<Tile>
 			return 1;
 		}
 
-		if (this.Suit != that.Suit)
+		if (Suit != that.Suit)
 		{
-			return this.Suit.CompareTo(that.Suit);
+			return Suit.CompareTo(that.Suit);
 		}
-		else if (this.Rank == that.Rank)
+		else if (Rank == that.Rank)
 		{
 			return 0;
 		}
-		else if (this.Rank == 0)
+		else if (Rank == 0)
 		{
 			return that.Rank <= 5 ? 1 : -1;
 		}
 		else if (that.Rank == 0)
 		{
-			return this.Rank <= 5 ? -1 : 1;
+			return Rank <= 5 ? -1 : 1;
 		}
 		else
 		{
-			return this.Rank.CompareTo(that.Rank);
+			return Rank.CompareTo(that.Rank);
 		}
 	}
 
