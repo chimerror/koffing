@@ -1,6 +1,8 @@
 using Godot;
 using System;
 
+// TODO: We should separate the logical tile out as a resource, and keep the Godot-specific stuff here, renaming the
+// class `TileSprite` or something like that.
 [Tool]
 public partial class Tile : Sprite2D, IComparable<Tile>, IEquatable<Tile>
 {
