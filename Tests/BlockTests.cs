@@ -95,6 +95,20 @@ public class BlockTests
 		}
 	}
 
+	[TestCase]
+	[DataPoint(nameof(CompareMadeBlockContextsTestCases))]
+	public static void CompareMadeBlockContextsIsCorrect(
+		MadeBlockContext contextA,
+		MadeBlockContext contextB,
+		int expectedComparisonValue,
+		string because)
+	{
+		LoggingPrefix = nameof(CompareMadeBlockContextsIsCorrect);
+
+		PrefixInfo($"Checking that MadeBlockContext.CompareTo is {expectedComparisonValue} when comparing {because}");
+		AssertThat(contextA.CompareTo(contextB)).IsEqual(expectedComparisonValue);
+	}
+
 	private static IEnumerable<object[]> BlockEqualsEdgeTestCases()
 	{
 		yield return [new Chow("123s".ToAutoFreeTiles()), null, "null should not equal"];
@@ -333,6 +347,72 @@ public class BlockTests
 			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "54s".ToAutoFreeTiles()),
 			true,
 			"of identical contexts with different remaining tile orders",
+		];
+	}
+	private static IEnumerable<object[]> CompareMadeBlockContextsTestCases()
+	{
+		yield return
+		[
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			null,
+			1,
+			"to null",
+		];
+		yield return
+		[
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			0,
+			"identical contexts",
+		];
+		yield return
+		[
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Pung("111z".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			-1,
+			"contexts with different made block types",
+		];
+		yield return
+		[
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("234s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			-1,
+			"earlier made block to later made block",
+		];
+		yield return
+		[
+			new MadeBlockContext(new Chow("234s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			1,
+			"later made block to earlier made block",
+		];
+		yield return
+		[
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "456s".ToAutoFreeTiles()),
+			-1,
+			"shorter remaining tiles to longer remaining tiles",
+		];
+		yield return
+		[
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "456s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			1,
+			"longer remaining tiles to shorter remaining tiles",
+		];
+		yield return
+		[
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "56s".ToAutoFreeTiles()),
+			-1,
+			"earlier remaining tiles to later remainingTiles",
+		];
+		yield return
+		[
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "56s".ToAutoFreeTiles()),
+			new MadeBlockContext(new Chow("123s".ToAutoFreeTiles()), "45s".ToAutoFreeTiles()),
+			1,
+			"later remaining tiles to earlier remainingTiles",
 		];
 	}
 }
