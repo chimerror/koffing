@@ -25,7 +25,7 @@ public class BlockTests
 	{
 		LoggingPrefix = nameof(BlockEqualsEdgeCasesAreCorrect);
 
-		PrefixInfo($"Checking that block A {blockA} does not equal object B {objectB} because {because}");
+		PrefixInfo($"Checking that block A \"{blockA}\" does not equal object B \"{objectB}\" because {because}");
 		AssertThat(blockA.Equals(objectB)).IsFalse();
 	}
 
@@ -36,11 +36,11 @@ public class BlockTests
 		LoggingPrefix = nameof(BlockEqualsIsCorrect);
 
 		var outcomeString = expectedResult ? "does equal" : "does NOT equal";
-		PrefixInfo($"Checking that block A {blockA} {outcomeString} block B {blockB} because {because}");
+		PrefixInfo($"Checking that block A \"{blockA}\" {outcomeString} block B \"{blockB}\" because {because}");
 		AssertThat(blockA.Equals(blockB)).IsEqual(expectedResult);
 		if (blockB != null)
 		{
-			PrefixInfo($"Checking that block B {blockB} {outcomeString} block A {blockA} because {because}");
+			PrefixInfo($"Checking that block B \"{blockB}\" {outcomeString} block A \"{blockA}\" because {because}");
 			AssertThat(blockB.Equals(blockA)).IsEqual(expectedResult);
 		}
 	}
@@ -51,7 +51,7 @@ public class BlockTests
 	{
 		LoggingPrefix = nameof(GetBlockHashCodeIsCorrect);
 
-		PrefixInfo($"Checking that block of type {block.GetType()} has hash code {expectedHashCode}");
+		PrefixInfo($"Checking that block of type \"{block.GetType()}\" has hash code {expectedHashCode}");
 		AssertThat(block.GetHashCode()).IsEqual(expectedHashCode);
 	}
 
@@ -71,7 +71,7 @@ public class BlockTests
 	{
 		LoggingPrefix = nameof(MadeBlockContextEqualsEdgeCasesAreCorrect);
 
-		PrefixInfo($"Checking that made block context A {contextA} does not equal object B {objectB} because {because}");
+		PrefixInfo($"Checking that made block context A \"{contextA}\" does not equal object B \"{objectB}\" because {because}");
 		AssertThat(contextA.Equals(objectB)).IsFalse();
 	}
 
@@ -86,11 +86,11 @@ public class BlockTests
 		LoggingPrefix = nameof(MadeBlockContextEqualsEdgeCasesAreCorrect);
 
 		var outcomeString = expectedResult ? "does equal" : "does NOT equal";
-		PrefixInfo($"Checking that context A {contextA} {outcomeString} context B {contextB} because {because}");
+		PrefixInfo($"Checking that context A \"{contextA}\" {outcomeString} context B \"{contextB}\" because {because}");
 		AssertThat(contextA.Equals(contextB)).IsEqual(expectedResult);
 		if (contextB != null)
 		{
-			PrefixInfo($"Checking that context B {contextB} {outcomeString} context A {contextA} because {because}");
+			PrefixInfo($"Checking that context B \"{contextB}\" {outcomeString} context A \"{contextA}\" because {because}");
 			AssertThat(contextB.Equals(contextA)).IsEqual(expectedResult);
 		}
 	}

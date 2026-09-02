@@ -36,7 +36,7 @@ public class TileTests
 
 				var tile = new Tile(suit, rank);
 				var expectedRawRank = rank == 0 ? 5 : rank;
-				PrefixInfo($"Checking that raw rank of {rank} {suit} is {expectedRawRank}...");
+				PrefixInfo($"Checking that raw rank of \"{tile}\" is {expectedRawRank}...");
 				AssertThat(tile.RawRank).IsEqual(expectedRawRank);
 			}
 		}
@@ -58,15 +58,15 @@ public class TileTests
 				var tileA = new Tile(suit, rank);
 				var tileB = new Tile(suit, rank);
 
-				PrefixInfo($"Checking that tile A {tileA} should equal identical tile B {tileB}");
+				PrefixInfo($"Checking that tile A \"{tileA}\" should equal identical tile B \"{tileB}\"");
 				AssertThat(tileA.Equals(tileB)).IsTrue();
-				PrefixInfo($"Checking that tile B {tileB} should equal identical tile A {tileB}");
+				PrefixInfo($"Checking that tile B \"{tileB}\" should equal identical tile A \"{tileB}\"");
 				AssertThat(tileB.Equals(tileA)).IsTrue();
 
 				tileB.FaceUp = false;
-				PrefixInfo($"Checking that face-up tile A {tileA} should equal identical face-down tile B {tileB}");
+				PrefixInfo($"Checking that face-up tile A \"{tileA}\" should equal identical face-down tile B \"{tileB}\"");
 				AssertThat(tileA.Equals(tileB)).IsTrue();
-				PrefixInfo($"Checking that face-down tile B {tileB} should equal identical face-up tile A {tileB}");
+				PrefixInfo($"Checking that face-down tile B \"{tileB}\" should equal identical face-up tile A \"{tileB}\"");
 				AssertThat(tileB.Equals(tileA)).IsTrue();
 			}
 		}
@@ -95,10 +95,10 @@ public class TileTests
 
 					var tileB = new Tile(suitB, rankA);
 
-					PrefixInfo($"Checking that tile A {tileA} should NOT equal different-suited same-rank B {tileB}");
+					PrefixInfo($"Checking that tile A \"{tileA}\" should NOT equal different-suited same-rank B \"{tileB}\"");
 					AssertThat(tileA.Equals(tileB)).IsFalse();
 
-					PrefixInfo($"Checking that tile B {tileB} should NOT equal different-suited same-rank A {tileA}");
+					PrefixInfo($"Checking that tile B \"{tileB}\" should NOT equal different-suited same-rank A \"{tileA}\"");
 					AssertThat(tileB.Equals(tileA)).IsFalse();
 				}
 
@@ -112,10 +112,10 @@ public class TileTests
 
 					var tileC = new Tile(suitA, rankC);
 
-					PrefixInfo($"Checking that tile A {tileA} should NOT equal different-rank same-suit C {tileC}");
+					PrefixInfo($"Checking that tile A \"{tileA}\" should NOT equal different-rank same-suit C \"{tileC}\"");
 					AssertThat(tileA.Equals(tileC)).IsFalse();
 
-					PrefixInfo($"Checking that tile C {tileC} should NOT equal different-rank same-suit A {tileA}");
+					PrefixInfo($"Checking that tile C \"{tileC}\" should NOT equal different-rank same-suit A \"{tileA}\"");
 					AssertThat(tileC.Equals(tileA)).IsFalse();
 				}
 			}
@@ -138,23 +138,23 @@ public class TileTests
 				var tileA = new Tile(suit, rank);
 				var tileB = new Tile(suit, rank);
 
-				PrefixInfo($"Checking that tile A {tileA} should rawly equal identical tile B {tileB}");
+				PrefixInfo($"Checking that tile A \"{tileA}\" should rawly equal identical tile B \"{tileB}\"");
 				AssertThat(tileA.RawEquals(tileB)).IsTrue();
-				PrefixInfo($"Checking that tile B {tileB} should rawly equal identical tile A {tileB}");
+				PrefixInfo($"Checking that tile B \"{tileB}\" should rawly equal identical tile A \"{tileB}\"");
 				AssertThat(tileB.RawEquals(tileA)).IsTrue();
 
 				tileB.FaceUp = false;
-				PrefixInfo($"Checking that face-up tile A {tileA} should rawly equal identical face-down tile B {tileB}");
+				PrefixInfo($"Checking that face-up tile A \"{tileA}\" should rawly equal identical face-down tile B \"{tileB}\"");
 				AssertThat(tileA.RawEquals(tileB)).IsTrue();
-				PrefixInfo($"Checking that face-down tile B {tileB} should rawly equal identical face-up tile A {tileB}");
+				PrefixInfo($"Checking that face-down tile B \"{tileB}\" should rawly equal identical face-up tile A \"{tileB}\"");
 				AssertThat(tileB.RawEquals(tileA)).IsTrue();
 
 				if (rank == 0)
 				{
 					var tileC = new Tile(suit, 5);
-					PrefixInfo($"Checking that red five A {tileA} should rawly equal non-red five C {tileC}");
+					PrefixInfo($"Checking that red five A \"{tileA}\" should rawly equal non-red five C \"{tileC}\"");
 					AssertThat(tileA.RawEquals(tileC)).IsTrue();
-					PrefixInfo($"Checking that non-red five C {tileC} should rawly equal red five A {tileA}");
+					PrefixInfo($"Checking that non-red five C \"{tileC}\" should rawly equal red five A \"{tileA}\"");
 					AssertThat(tileC.RawEquals(tileA)).IsTrue();
 				}
 			}
@@ -184,10 +184,10 @@ public class TileTests
 
 					var tileB = new Tile(suitB, rankA);
 
-					PrefixInfo($"Checking that tile A {tileA} should NOT rawly equal different-suited same-rank B {tileB}");
+					PrefixInfo($"Checking that tile A \"{tileA}\" should NOT rawly equal different-suited same-rank B \"{tileB}\"");
 					AssertThat(tileA.RawEquals(tileB)).IsFalse();
 
-					PrefixInfo($"Checking that tile B {tileB} should NOT rawly equal different-suited same-rank A {tileA}");
+					PrefixInfo($"Checking that tile B \"{tileB}\" should NOT rawly equal different-suited same-rank A \"{tileA}\"");
 					AssertThat(tileB.RawEquals(tileA)).IsFalse();
 				}
 
@@ -203,10 +203,10 @@ public class TileTests
 
 					var tileC = new Tile(suitA, rankC);
 
-					PrefixInfo($"Checking that tile A {tileA} should NOT rawly equal different-rank same-suit C {tileC}");
+					PrefixInfo($"Checking that tile A \"{tileA}\" should NOT rawly equal different-rank same-suit C \"{tileC}\"");
 					AssertThat(tileA.RawEquals(tileC)).IsFalse();
 
-					PrefixInfo($"Checking that tile C {tileC} should NOT rawly equal different-rank same-suit A {tileA}");
+					PrefixInfo($"Checking that tile C \"{tileC}\" should NOT rawly equal different-rank same-suit A \"{tileA}\"");
 					AssertThat(tileC.RawEquals(tileA)).IsFalse();
 				}
 			}
@@ -217,13 +217,13 @@ public class TileTests
 	[DataPoint(nameof(EqualsNegativeEdgeCases))]
 	public static void EqualsIsCorrectNegativeEdgeCases(Tile tileA, object objectB, string because)
 	{
-		PrefixInfo($"Checking that tile A {tileA} should not equal object B {objectB} when {because}");
+		PrefixInfo($"Checking that tile A \"{tileA}\" should not equal object B \"{objectB}\" when {because}");
 		AssertThat(tileA.Equals(objectB)).IsFalse();
 
 		if (objectB == null)
 		{
 			Tile tileB = null;
-			PrefixInfo($"Checking that tile A {tileA} should not equal null tile B {tileB}");
+			PrefixInfo($"Checking that tile A \"{tileA}\" should not equal null tile B \"{tileB}\"");
 			AssertThat(tileA.Equals(tileB)).IsFalse();
 		}
 	}
@@ -258,7 +258,7 @@ public class TileTests
 	{
 		LoggingPrefix = nameof(GetTileHashCodeIsCorrect);
 
-		PrefixInfo($"Checking that GetHashCode for {tile} is {expectedHashCode}");
+		PrefixInfo($"Checking that GetHashCode for \"{tile}\" is {expectedHashCode}");
 		AssertThat(tile.GetHashCode()).IsEqual(expectedHashCode);
 	}
 
