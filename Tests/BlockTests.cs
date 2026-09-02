@@ -53,7 +53,16 @@ public class BlockTests
 
 		PrefixInfo($"Checking that block of type {block.GetType()} has hash code {expectedHashCode}");
 		AssertThat(block.GetHashCode()).IsEqual(expectedHashCode);
+	}
 
+	[TestCase]
+	[DataPoint(nameof(CompareBlocksTestCases))]
+	public static void CompareBlocksIsCorrect(Block blockA, Block blockB, int expectedComparisonValue, string because)
+	{
+		LoggingPrefix = nameof(CompareBlocksIsCorrect);
+
+		PrefixInfo($"Checking that Block.CompareTo is {expectedComparisonValue} when {because}");
+		AssertThat(blockA.CompareTo(blockB)).IsEqual(expectedComparisonValue);
 	}
 
 	private static IEnumerable<object[]> BlockEqualsEdgeTestCases()
@@ -122,5 +131,89 @@ public class BlockTests
 		yield return [new Chow(), 2];
 		yield return [new Pung(), 3];
 		yield return [new Kong(), 5];
+	}
+
+	private static IEnumerable<object[]> CompareBlocksTestCases()
+	{
+		// Some of these blocks are "wrong" compared to their names, but this is for the sake of testing.
+		yield return [new Chow("123s".ToAutoFreeTiles()), null, 1, "comparing to null block"];
+		yield return [
+			new Chow("123s".ToAutoFreeTiles()),
+			new Chow("123s".ToAutoFreeTiles()),
+			0,
+			"comparing identical Chows",
+		];
+		yield return [
+			new Chow("123s".ToAutoFreeTiles()),
+			new Pung("111z".ToAutoFreeTiles()),
+			-1,
+			"comparing Chow to Pung",
+		];
+		yield return [
+			new Pung("111z".ToAutoFreeTiles()),
+			new Chow("123s".ToAutoFreeTiles()),
+			1,
+			"comparing Pung to Chow",
+		];
+		yield return [
+			new Chow("123s".ToAutoFreeTiles()),
+			new Kong("4444m".ToAutoFreeTiles()),
+			-1,
+			"comparing Chow to Kong",
+		];
+		yield return [
+			new Kong("4444m".ToAutoFreeTiles()),
+			new Chow("123s".ToAutoFreeTiles()),
+			1,
+			"comparing Kong to Chow",
+		];
+		yield return [
+			new Pung("111z".ToAutoFreeTiles()),
+			new Pung("111z".ToAutoFreeTiles()),
+			0,
+			"comparing identical Pungs",
+		];
+		yield return [
+			new Pung("111z".ToAutoFreeTiles()),
+			new Kong("4444m".ToAutoFreeTiles()),
+			-1,
+			"comparing Pung to Kong",
+		];
+		yield return [
+			new Kong("4444m".ToAutoFreeTiles()),
+			new Pung("111z".ToAutoFreeTiles()),
+			1,
+			"comparing Kong to Pung",
+		];
+		yield return [
+			new Kong("4444m".ToAutoFreeTiles()),
+			new Kong("4444m".ToAutoFreeTiles()),
+			0,
+			"comparing identical Kongs",
+		];
+		yield return [
+			new Chow("123s".ToAutoFreeTiles()),
+			new Chow("1234s".ToAutoFreeTiles()),
+			-1,
+			"comparing shorter to longer of the same type",
+		];
+		yield return [
+			new Chow("1234s".ToAutoFreeTiles()),
+			new Chow("123s".ToAutoFreeTiles()),
+			1,
+			"comparing longer to shorter of the same type",
+		];
+		yield return [
+			new Chow("123s".ToAutoFreeTiles()),
+			new Chow("234s".ToAutoFreeTiles()),
+			-1,
+			"comparing earlier to later of the same type",
+		];
+		yield return [
+			new Chow("234s".ToAutoFreeTiles()),
+			new Chow("123s".ToAutoFreeTiles()),
+			1,
+			"comparing later to earlier of the same type",
+		];
 	}
 }

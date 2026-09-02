@@ -105,7 +105,6 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 		return this.GetEnumerator();
 	}
 
-	// TODO: Write tests for this
 	public int CompareTo(Block that)
 	{
 		if (that == null)
@@ -113,6 +112,10 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 			return 1;
 		}
 
+		// Because we check type here first, this means that blocks will first be arranged by type and then by their
+		// tiles, unlike we'd probably do in a hand. This is OK for our purposes as an engine, but might be something
+		// to work around when displaying it to the player. But this way we minimize the checking we have to do as
+		// well as avoiding the iterations down below.
 		if (GetType() != that.GetType())
 		{
 			var thisBasis = GetActualHashCodeBasis();
@@ -120,6 +123,9 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 			return thisBasis.CompareTo(thatBasis);
 		}
 
+		// The length check here should never be triggered because blocks of the same type should also have the same
+		// lengths (though nothing enforces that). I guess this is a fine defensive check, and I could also add variant
+		// blocks perhaps in the future that could differ in lengths.
 		var thisTiles = this.Order().ToArray();
 		var thatTiles = that.Order().ToArray();
 		if (thisTiles.Length != thatTiles.Length)
