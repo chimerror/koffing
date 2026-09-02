@@ -143,6 +143,12 @@ public class TileTests
 				PrefixInfo($"Checking that tile B {tileB} should rawly equal identical tile A {tileB}");
 				AssertThat(tileB.RawEquals(tileA)).IsTrue();
 
+				tileB.FaceUp = false;
+				PrefixInfo($"Checking that face-up tile A {tileA} should rawly equal identical face-down tile B {tileB}");
+				AssertThat(tileA.RawEquals(tileB)).IsTrue();
+				PrefixInfo($"Checking that face-down tile B {tileB} should rawly equal identical face-up tile A {tileB}");
+				AssertThat(tileB.RawEquals(tileA)).IsTrue();
+
 				if (rank == 0)
 				{
 					var tileC = AutoFree(new Tile(suit, 5));
