@@ -25,7 +25,7 @@ public class BlockTests
 	{
 		LoggingPrefix = nameof(BlockEqualsEdgeCasesAreCorrect);
 
-		PrefixInfo($"Checking that block A {blockA} does not equal object B {objectB} because");
+		PrefixInfo($"Checking that block A {blockA} does not equal object B {objectB} because {because}");
 		AssertThat(blockA.Equals(objectB)).IsFalse();
 	}
 
