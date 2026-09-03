@@ -19,12 +19,12 @@ public class Chow : Meld, IBlock
 		{
 			firstStartingRank = 1;
 		}
-		else if (tile.RawRank >= 8)
+		else if (tile.RawRank > 8)
 		{
 			firstStartingRank = 7;
 		}
+		var lastStartingRank = tile.RawRank > 7 ? 7 : tile.RawRank;
 
-		var lastStartingRank = firstStartingRank > 5 ? 7 : firstStartingRank + 2;
 		var otherTilesList = otherTiles.ToList();
 		for (var startingRank = firstStartingRank; startingRank <= lastStartingRank; startingRank++)
 		{

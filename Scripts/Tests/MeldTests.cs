@@ -210,6 +210,44 @@ public class MeldTests
 		yield return ["5z", "2p3s11m34z", new List<MadeBlockContext>(), "given an honor tile with sequential neighbors"];
 		yield return ["7p", "46p3s1134z", new List<MadeBlockContext>(), "only one relevant tile is available"];
 		yield return [
+			"1m",
+			"2345m",
+			new List<MadeBlockContext>()
+			{
+				new(new Chow("123m".ToTiles()), "45m".ToTiles()),
+			},
+			"there is a single possible chow on a one",
+		];
+		yield return [
+			"2m",
+			"1345m",
+			new List<MadeBlockContext>()
+			{
+				new(new Chow("123m".ToTiles()), "45m".ToTiles()),
+				new(new Chow("234m".ToTiles()), "15m".ToTiles()),
+			},
+			"there are two possible chows on a two",
+		];
+		yield return [
+			"8s",
+			"5679s",
+			new List<MadeBlockContext>()
+			{
+				new(new Chow("678s".ToTiles()), "59s".ToTiles()),
+				new(new Chow("789s".ToTiles()), "56s".ToTiles()),
+			},
+			"there are two possible chows on a two",
+		];
+		yield return [
+			"9p",
+			"5678p",
+			new List<MadeBlockContext>()
+			{
+				new(new Chow("789p".ToTiles()), "56p".ToTiles()),
+			},
+			"there is a single possible chow on a nine",
+		];
+		yield return [
 			"3m",
 			"1245m",
 			new List<MadeBlockContext>()
@@ -218,7 +256,7 @@ public class MeldTests
 				new(new Chow("234m".ToTiles()), "15m".ToTiles()),
 				new(new Chow("345m".ToTiles()), "12m".ToTiles()),
 			},
-			"there are multiple possible chows with no five tiles",
+			"there are multiple possible chows for a three (and other tiles at least 2 away from a terminal)",
 		];
 		yield return [
 			"4s",
