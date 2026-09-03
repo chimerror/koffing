@@ -6,7 +6,6 @@ using static GdUnit4.Assertions;
 using static TestLoggingHelpers;
 
 [TestSuite]
-[RequireGodotRuntime]
 public class TileTests
 {
 	[Before]

@@ -1,7 +1,6 @@
 using System;
-using Godot;
 
-public partial class Tile : Resource, IComparable<Tile>, IEquatable<Tile>
+public class Tile : IComparable<Tile>, IEquatable<Tile>
 {
 	public Suit Suit = Suit.Man;
 	public int Rank = 1;

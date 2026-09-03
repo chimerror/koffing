@@ -4,16 +4,16 @@ using Godot;
 public partial class TileSprite : Sprite2D
 {
 	[Export]
-	public Tile Tile { get; set; } = new Tile(Suit.Man, 1);
+	public TileResource TileResource { get; set; } = new TileResource();
 
 	[Export]
 	public Suit Suit
 	{
-		get => Tile.Suit;
+		get => TileResource.Suit;
 		set
 		{
-			var needUpdate = value != Tile.Suit;
-			Tile.Suit = value;
+			var needUpdate = value != TileResource.Suit;
+			TileResource.Suit = value;
 			if (needUpdate) {
 				UpdateTileSprite();
 			}
@@ -23,15 +23,15 @@ public partial class TileSprite : Sprite2D
 	[Export(PropertyHint.Range, "0,9,")]
 	public int Rank
 	{
-		get => Tile.Rank;
+		get => TileResource.Rank;
 		set
 		{
-			if (value < 0 || value > 9 || (Tile.Suit == Suit.Zi && (value == 0 || value > 7)))
+			if (value < 0 || value > 9 || (TileResource.Suit == Suit.Zi && (value == 0 || value > 7)))
 			{
-				GD.PrintErr($"Set rank to invalid value {value} for suit {Tile.Suit}!");
+				GD.PrintErr($"Set rank to invalid value {value} for suit {TileResource.Suit}!");
 			}
-			var needUpdate = value != Tile.Rank;
-			Tile.Rank = value;
+			var needUpdate = value != TileResource.Rank;
+			TileResource.Rank = value;
 			if (needUpdate) {
 				UpdateTileSprite();
 			}
@@ -41,11 +41,11 @@ public partial class TileSprite : Sprite2D
 	[Export]
 	public bool FaceUp
 	{
-		get => Tile.FaceUp;
+		get => TileResource.FaceUp;
 		set
 		{
-			var needUpdate = value != Tile.FaceUp;
-			Tile.FaceUp = value;
+			var needUpdate = value != TileResource.FaceUp;
+			TileResource.FaceUp = value;
 			if (needUpdate) {
 				UpdateTileSprite();
 			}
@@ -53,7 +53,7 @@ public partial class TileSprite : Sprite2D
 	}
 	public override string ToString()
 	{
-		return nameof(TileSprite) + ":" + this.Tile.NotationFromTile();
+		return nameof(TileSprite) + ":" + TileResource.Tile.NotationFromTile();
 	}
 
 	private void UpdateTileSprite()
