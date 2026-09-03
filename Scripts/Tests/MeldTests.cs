@@ -37,6 +37,18 @@ public class MeldTests
 	}
 
 	[TestCase]
+	[DataPoint(nameof(KongGetPossibleTestCases))]
+	public static void KongGetPossibleIsCorrect(string tilesNotation, List<MadeBlockContext> expectedOutput, string because)
+	{
+		LoggingPrefix = nameof(KongGetPossibleIsCorrect);
+
+		var tiles = tilesNotation.ToTiles();
+		var actualOutput = Kong.GetPossible(tiles).ToList();
+		PrefixInfo($"Checking that Kong.GetPossible with tiles \"{tilesNotation}\" is correct when {because}");
+		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+	}
+
+	[TestCase]
 	[DataPoint(nameof(PungGetPossibleForTileTestCases))]
 	public static void PungGetPossibleForTileIsCorrect(
 		string tileNotation,
@@ -50,6 +62,18 @@ public class MeldTests
 		var otherTiles = otherTilesNotation.ToTiles();
 		var actualOutput = Pung.GetPossibleForTile(tile, otherTiles).ToList();
 		PrefixInfo($"Checking that Pung.GetPossibleForTile with tile \"{tileNotation}\" and other tiles \"{otherTilesNotation}\" is correct when {because}");
+		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+	}
+
+	[TestCase]
+	[DataPoint(nameof(PungGetPossibleTestCases))]
+	public static void PungGetPossibleIsCorrect(string tilesNotation, List<MadeBlockContext> expectedOutput, string because)
+	{
+		LoggingPrefix = nameof(PungGetPossibleIsCorrect);
+
+		var tiles = tilesNotation.ToTiles();
+		var actualOutput = Pung.GetPossible(tiles).ToList();
+		PrefixInfo($"Checking that Pung.GetPossible with tiles \"{tilesNotation}\" is correct when {because}");
 		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
 	}
 
@@ -149,6 +173,28 @@ public class MeldTests
 		];
 	}
 
+	private static IEnumerable<object[]> KongGetPossibleTestCases()
+	{
+		yield return [
+			"11112223333z",
+			new List<MadeBlockContext>()
+			{
+				new(new Kong("1111z".ToTiles()), "2223333z".ToTiles()),
+				new(new Kong("3333z".ToTiles()), "1111222z".ToTiles()),
+			},
+			"there are multiple kongs in the same suit",
+		];
+		yield return [
+			"1111s222p3333z",
+			new List<MadeBlockContext>()
+			{
+				new(new Kong("1111s".ToTiles()), "222p3333z".ToTiles()),
+				new(new Kong("3333z".ToTiles()), "1111s222p".ToTiles()),
+			},
+			"there are multiple kongs in different suits",
+		];
+	}
+
 	private static IEnumerable<object[]> PungGetPossibleForTileTestCases()
 	{
 		yield return ["5z", "2p3s11m5z", new List<MadeBlockContext>(), "there is only one matching tile"];
@@ -213,6 +259,40 @@ public class MeldTests
 				new(new Pung("550s".ToTiles()), "067p12344s11m66z5s".ToTiles()),
 			},
 			"given non-red five and there are more than enough matching tiles with a red five",
+		];
+	}
+
+	private static IEnumerable<object[]> PungGetPossibleTestCases()
+	{
+		yield return [
+			"111222333z",
+			new List<MadeBlockContext>()
+			{
+				new(new Pung("111z".ToTiles()), "222333z".ToTiles()),
+				new(new Pung("222z".ToTiles()), "111333z".ToTiles()),
+				new(new Pung("333z".ToTiles()), "111222z".ToTiles()),
+			},
+			"there are multiple pungs in the same suit",
+		];
+		yield return [
+			"111s222p333z",
+			new List<MadeBlockContext>()
+			{
+				new(new Pung("111s".ToTiles()), "222p333z".ToTiles()),
+				new(new Pung("222p".ToTiles()), "111s333z".ToTiles()),
+				new(new Pung("333z".ToTiles()), "111s222p".ToTiles()),
+			},
+			"there are multiple pungs in different suits",
+		];
+		yield return [
+			"111s2222p333z",
+			new List<MadeBlockContext>()
+			{
+				new(new Pung("111s".ToTiles()), "2222p333z".ToTiles()),
+				new(new Pung("222p".ToTiles()), "111s2p333z".ToTiles()),
+				new(new Pung("333z".ToTiles()), "111s2222p".ToTiles()),
+			},
+			"there is a kong",
 		];
 	}
 

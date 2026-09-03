@@ -7,6 +7,11 @@ public class Kong : Meld, IBlock
 	{
 	}
 
+	public static new IEnumerable<MadeBlockContext> GetPossible(IEnumerable<Tile> tiles)
+	{
+		return GetPossibleHelper(tiles, typeof(Kong)).Distinct();
+	}
+
 	public static new IEnumerable<MadeBlockContext> GetPossibleForTile(Tile tile, IEnumerable<Tile> otherTiles)
 	{
 		var otherTilesList = otherTiles.ToList();

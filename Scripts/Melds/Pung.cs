@@ -7,6 +7,11 @@ public class Pung : Meld, IBlock
 	{
 	}
 
+	public static new IEnumerable<MadeBlockContext> GetPossible(IEnumerable<Tile> tiles)
+	{
+		return GetPossibleHelper(tiles, typeof(Pung)).Distinct();
+	}
+
 	public static new IEnumerable<MadeBlockContext> GetPossibleForTile(Tile tile, IEnumerable<Tile> otherTiles)
 	{
 		var otherTilesList = otherTiles.ToList();
