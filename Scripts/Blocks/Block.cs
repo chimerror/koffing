@@ -24,6 +24,15 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 		get => _tiles[index];
 	}
 
+	public static IEnumerable<MadeBlockContext> GetPossible(IEnumerable<Tile> tiles)
+	{
+		// This is commented out to force implementation, but child classes should override this method with something
+		// like the below, replacing `typeof(Block)` with `typeof(ChildBlock)`.
+		// return GetPossibleHelper(tiles, typeof(Block)).Distinct();
+
+		throw new NotImplementedException();
+	}
+
 	public static IEnumerable<MadeBlockContext> GetPossibleForTile(Tile tile, IEnumerable<Tile> otherTiles)
 	{
 		// Throwing because we want to force overriding
@@ -34,6 +43,27 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 	{
 		// Throwing because we want to force overriding
 		throw new NotImplementedException();
+	}
+
+	protected static IEnumerable<MadeBlockContext> GetPossibleHelper(IEnumerable<Tile> tiles, Type blockType)
+	{
+		var distinctTiles = tiles.DistinctBy(t => (t.Suit, t.Rank)).ToList();
+		foreach (var tile in distinctTiles)
+		{
+			// TODO: Really don't understand why my ReferenceEquals implementation of this didn't work, but I'm tired
+			// of fussing with it.
+			var otherTiles = tiles.ToList();
+			otherTiles.Remove(tile);
+
+			var getPossibleForTileMethod = blockType.GetMethod(nameof(GetPossibleForTile));
+			var possibleBlocks =
+				((IEnumerable<MadeBlockContext>)getPossibleForTileMethod.Invoke(null, [tile, otherTiles]))
+				.ToList();
+			foreach (var madeBlock in possibleBlocks)
+			{
+				yield return madeBlock;
+			}
+		}
 	}
 
 	public override bool Equals(object that)
