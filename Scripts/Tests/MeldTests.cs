@@ -70,6 +70,18 @@ public class MeldTests
 		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
 	}
 
+	[TestCase]
+	[DataPoint(nameof(ChowGetPossibleTestCases))]
+	public static void ChowGetPossibleIsCorrect(string tilesNotation, List<MadeBlockContext> expectedOutput, string because)
+	{
+		LoggingPrefix = nameof(ChowGetPossibleIsCorrect);
+
+		var tiles = tilesNotation.ToTiles();
+		var actualOutput = Chow.GetPossible(tiles).ToList();
+		PrefixInfo($"Checking that Chow.GetPossible with tiles \"{tilesNotation}\" is correct when {because}");
+		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+	}
+
 	private static IEnumerable<object[]> KongGetPossibleForTileTestCases()
 	{
 		yield return ["5z", "2p3s11m55z", new List<MadeBlockContext>(), "there are only two matching tiles"];
@@ -277,6 +289,70 @@ public class MeldTests
 				new(new Chow("067p".ToTiles()), "345p".ToTiles()),
 			},
 			"multiple chows can be made using a chosen red five",
+		];
+	}
+
+	private static IEnumerable<object[]> ChowGetPossibleTestCases()
+	{
+		yield return [
+			"12345s",
+			new List<MadeBlockContext>()
+			{
+				new(new Chow("123s".ToTiles()), "45s".ToTiles()),
+				new(new Chow("234s".ToTiles()), "15s".ToTiles()),
+				new(new Chow("345s".ToTiles()), "12s".ToTiles()),
+			},
+			"there are five tiles in a row with no red fives",
+		];
+		yield return [
+			"123450s",
+			new List<MadeBlockContext>()
+			{
+				new(new Chow("123s".ToTiles()), "450s".ToTiles()),
+				new(new Chow("234s".ToTiles()), "150s".ToTiles()),
+				new(new Chow("345s".ToTiles()), "120s".ToTiles()),
+				new(new Chow("340s".ToTiles()), "125s".ToTiles()),
+			},
+			"there are five tiles in a row with an extra red five",
+		];
+		yield return [
+			"123567m",
+			new List<MadeBlockContext>()
+			{
+				new(new Chow("123m".ToTiles()), "567m".ToTiles()),
+				new(new Chow("567m".ToTiles()), "123m".ToTiles()),
+			},
+			"there are two disconnected chows",
+		];
+		yield return [
+			"456m456s456p",
+			new List<MadeBlockContext>()
+			{
+				new(new Chow("456m".ToTiles()), "456s456p".ToTiles()),
+				new(new Chow("456s".ToTiles()), "456m456p".ToTiles()),
+				new(new Chow("456p".ToTiles()), "456m456s".ToTiles()),
+			},
+			"there are three chows of the same ranks of different suits",
+		];
+		yield return [
+			"122345s",
+			new List<MadeBlockContext>()
+			{
+				new(new Chow("123s".ToTiles()), "245s".ToTiles()),
+				new(new Chow("234s".ToTiles()), "125s".ToTiles()),
+				new(new Chow("345s".ToTiles()), "122s".ToTiles()),
+			},
+			"there are five tiles in a row with an extra non red-five tile",
+		];
+		yield return [
+			"1122334455m",
+			new List<MadeBlockContext>()
+			{
+				new(new Chow("123m".ToTiles()), "1234455m".ToTiles()),
+				new(new Chow("234m".ToTiles()), "1123455m".ToTiles()),
+				new(new Chow("345m".ToTiles()), "1122345m".ToTiles()),
+			},
+			"there are five ranks of duplicate tiles in a row",
 		];
 	}
 }

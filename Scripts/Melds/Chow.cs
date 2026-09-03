@@ -7,6 +7,11 @@ public class Chow : Meld, IBlock
 	{
 	}
 
+	public static new IEnumerable<MadeBlockContext> GetPossible(IEnumerable<Tile> tiles)
+	{
+		return GetPossibleHelper(tiles, typeof(Chow)).Distinct();
+	}
+
 	public static new IEnumerable<MadeBlockContext> GetPossibleForTile(Tile tile, IEnumerable<Tile> otherTiles)
 	{
 		if (tile.Suit == Suit.Zi)
