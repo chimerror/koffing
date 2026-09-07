@@ -21,6 +21,16 @@ public class TileTests
 	}
 
 	[TestCase]
+	[DataPoint(nameof(IsValidTileTestCases))]
+	public static void IsValidTileIsCorrect(Suit suit, int rank, bool expectedResult)
+	{
+		LoggingPrefix = nameof(IsValidTileIsCorrect);
+		var expectedString = expectedResult ? "is" : "is NOT";
+		PrefixInfo($"Checking that Suit {suit} with rank {rank} {expectedString} a valid tile");
+		AssertThat(Tile.IsValidTile(suit, rank)).IsEqual(expectedResult);
+	}
+
+	[TestCase]
 	public static void RawRanksAreCorrect()
 	{
 		LoggingPrefix = nameof(RawRanksAreCorrect);
@@ -28,7 +38,7 @@ public class TileTests
 		{
 			for (var rank = 0; rank <= 9; rank++)
 			{
-				if (!IsValidTile(suit, rank))
+				if (!Tile.IsValidTile(suit, rank))
 				{
 					continue;
 				}
@@ -49,7 +59,7 @@ public class TileTests
 		{
 			for (var rank = 0; rank <= 9; rank++)
 			{
-				if (!IsValidTile(suit, rank))
+				if (!Tile.IsValidTile(suit, rank))
 				{
 					continue;
 				}
@@ -79,7 +89,7 @@ public class TileTests
 		{
 			for (var rankA = 0; rankA <= 9; rankA++)
 			{
-				if (!IsValidTile(suitA, rankA))
+				if (!Tile.IsValidTile(suitA, rankA))
 				{
 					continue;
 				}
@@ -87,7 +97,7 @@ public class TileTests
 				var tileA = new Tile(suitA, rankA);
 				foreach (var suitB in Enum.GetValues<Suit>())
 				{
-					if (suitA == suitB || !IsValidTile(suitB, rankA))
+					if (suitA == suitB || !Tile.IsValidTile(suitB, rankA))
 					{
 						continue;
 					}
@@ -104,7 +114,7 @@ public class TileTests
 				for (var rankC = 0; rankC <= 9; rankC++)
 				{
 					if (rankA == rankC ||
-						!IsValidTile(suitA, rankC))
+						!Tile.IsValidTile(suitA, rankC))
 					{
 						continue;
 					}
@@ -129,7 +139,7 @@ public class TileTests
 		{
 			for (var rank = 0; rank <= 9; rank++)
 			{
-				if (!IsValidTile(suit, rank))
+				if (!Tile.IsValidTile(suit, rank))
 				{
 					continue;
 				}
@@ -168,7 +178,7 @@ public class TileTests
 		{
 			for (var rankA = 0; rankA <= 9; rankA++)
 			{
-				if (!IsValidTile(suitA, rankA))
+				if (!Tile.IsValidTile(suitA, rankA))
 				{
 					continue;
 				}
@@ -176,7 +186,7 @@ public class TileTests
 				var tileA = new Tile(suitA, rankA);
 				foreach (var suitB in Enum.GetValues<Suit>())
 				{
-					if (suitA == suitB || !IsValidTile(suitB, rankA))
+					if (suitA == suitB || !Tile.IsValidTile(suitB, rankA))
 					{
 						continue;
 					}
@@ -195,7 +205,7 @@ public class TileTests
 					if (rankA == rankC ||
 						(rankA == 5 && rankC == 0) ||
 						(rankA == 0 && rankC == 5)||
-						!IsValidTile(suitA, rankC))
+						!Tile.IsValidTile(suitA, rankC))
 					{
 						continue;
 					}
@@ -216,6 +226,7 @@ public class TileTests
 	[DataPoint(nameof(EqualsNegativeEdgeCases))]
 	public static void EqualsIsCorrectNegativeEdgeCases(Tile tileA, object objectB, string because)
 	{
+		LoggingPrefix = nameof(EqualsNegativeEdgeCases);
 		PrefixInfo($"Checking that tile A \"{tileA}\" should not equal object B \"{objectB}\" when {because}");
 		AssertThat(tileA.Equals(objectB)).IsFalse();
 
@@ -261,11 +272,18 @@ public class TileTests
 		AssertThat(tile.GetHashCode()).IsEqual(expectedHashCode);
 	}
 
-	private static bool IsValidTile(Suit suit, int rank)
+	// TODO: Could make a test that actually goes through all valid tiles, but I think this spot testing is good enough
+	// because I would have to essentially rewrite the function to skip the right tiles.
+	private static IEnumerable<object[]> IsValidTileTestCases()
 	{
-		return suit != Suit.Zi ? (rank >= 0 && rank <= 9) : (rank >= 1 && rank <= 7);
+		yield return [Suit.Man, -1, false];
+		yield return [Suit.Man, 10, false];
+		yield return [Suit.Man, 0, true];
+		yield return [Suit.Man, 5, true];
+		yield return [Suit.Zi, 0, false];
+		yield return [Suit.Zi, 8, false];
+		yield return [Suit.Zi, 5, true];
 	}
-
 
 	private static IEnumerable<object[]> EqualsNegativeEdgeCases()
 	{

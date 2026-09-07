@@ -11,6 +11,11 @@ public class Tile : IComparable<Tile>, IEquatable<Tile>
 		get => Rank == 0 ? 5 : Rank;
 	}
 
+	public static bool IsValidTile(Suit suit, int rank)
+	{
+		return suit != Suit.Zi ? (rank >= 0 && rank <= 9) : (rank >= 1 && rank <= 7);
+	}
+
 	public Tile() : this(Suit.Man, 1)
 	{
 	}
