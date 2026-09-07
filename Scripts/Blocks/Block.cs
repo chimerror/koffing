@@ -24,6 +24,11 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 		get => _tiles[index];
 	}
 
+	public IEnumerable<Tile> Tiles
+	{
+		get => _tiles.AsReadOnly();
+	}
+
 	public static IEnumerable<MadeBlockContext> GetPossible(IEnumerable<Tile> tiles)
 	{
 		// This is commented out to force implementation, but child classes should override this method with something
