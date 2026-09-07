@@ -100,6 +100,35 @@ public class WaitTests
 		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
 	}
 
+	[TestCase]
+	[DataPoint(nameof(PenchanGetPossibleForTileTestCases))]
+	public static void PenchanGetPossibleForTileIsCorrect(
+		string tileNotation,
+		string otherTilesNotation,
+		List<MadeBlockContext> expectedOutput,
+		string because)
+	{
+		LoggingPrefix = nameof(PenchanGetPossibleForTileIsCorrect);
+
+		var tile = tileNotation.ToTile();
+		var otherTiles = otherTilesNotation.ToTiles();
+		var actualOutput = Penchan.GetPossibleForTile(tile, otherTiles).ToList();
+		PrefixInfo($"Checking that Penchan.GetPossibleForTile with tile \"{tileNotation}\" and other tiles \"{otherTilesNotation}\" is correct when {because}");
+		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+	}
+
+	[TestCase]
+	[DataPoint(nameof(PenchanGetPossibleTestCases))]
+	public static void PenchanGetPossibleIsCorrect(string tilesNotation, List<MadeBlockContext> expectedOutput, string because)
+	{
+		LoggingPrefix = nameof(PenchanGetPossibleIsCorrect);
+
+		var tiles = tilesNotation.ToTiles();
+		var actualOutput = Penchan.GetPossible(tiles).ToList();
+		PrefixInfo($"Checking that Penchan.GetPossible with tiles \"{tilesNotation}\" is correct when {because}");
+		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+	}
+
 	private static IEnumerable<object[]> RyanmenGetPossibleForTileTestCases()
 	{
 		yield return ["5z", "46z", new List<MadeBlockContext>(), "passed in zi tiles"];
@@ -382,6 +411,90 @@ public class WaitTests
 				new(new Kanchan("79p".ToTiles()), "123456p3s3m5z".ToTiles()),
 			},
 			"there are multiple kanchan in the same suit",
+		];
+	}
+
+	private static IEnumerable<object[]> PenchanGetPossibleForTileTestCases()
+	{
+		yield return ["2z", "13z", new List<MadeBlockContext>(), "passed in zi tiles"];
+		yield return ["5s", "46s", new List<MadeBlockContext>(), "passed in middle tile"];
+		yield return ["1m", "134506789m", new List<MadeBlockContext>(), "given no valid tiles for a one"];
+		yield return ["2p", "234506789p", new List<MadeBlockContext>(), "given no valid tiles for a two"];
+		yield return ["8m", "123450678m", new List<MadeBlockContext>(), "given no valid tiles for an eight"];
+		yield return ["9s", "123450679s", new List<MadeBlockContext>(), "given no valid tiles for a nine"];
+		yield return
+		[
+			"1m",
+			"12234506789m",
+			new List<MadeBlockContext>()
+			{
+				new(new Penchan("12m".ToTiles()), "1234506789m".ToTiles()),
+			},
+			"given multiple twos for a one",
+		];
+		yield return
+		[
+			"2p",
+			"11234506789p",
+			new List<MadeBlockContext>()
+			{
+				new(new Penchan("12p".ToTiles()), "1234506789p".ToTiles()),
+			},
+			"given multiple ones for a two",
+		];
+		yield return
+		[
+			"8s",
+			"12345067899s",
+			new List<MadeBlockContext>()
+			{
+				new(new Penchan("89s".ToTiles()), "1234506789s".ToTiles()),
+			},
+			"given multiple nines for an eight",
+		];
+		yield return
+		[
+			"9m",
+			"12345067889m",
+			new List<MadeBlockContext>()
+			{
+				new(new Penchan("89m".ToTiles()), "1234506789m".ToTiles()),
+			},
+			"given multiple eights for a nine",
+		];
+	}
+
+	private static IEnumerable<object[]> PenchanGetPossibleTestCases()
+	{
+		yield return ["25p36s47m4z", new List<MadeBlockContext>(), "there are no kanchan"];
+		yield return
+		[
+			"2p3s89m5z",
+			new List<MadeBlockContext>()
+			{
+				new(new Penchan("89m".ToTiles()), "2p3s5z".ToTiles()),
+			},
+			"there is only one penchan",
+		];
+		yield return
+		[
+			"12p3s89m5z",
+			new List<MadeBlockContext>()
+			{
+				new(new Penchan("89m".ToTiles()), "12p3s5z".ToTiles()),
+				new(new Penchan("12p".ToTiles()), "89m3s5z".ToTiles()),
+			},
+			"there are two penchan in different suits",
+		];
+		yield return
+		[
+			"1p3s1289m5z",
+			new List<MadeBlockContext>()
+			{
+				new(new Penchan("89m".ToTiles()), "1p3s12m5z".ToTiles()),
+				new(new Penchan("12m".ToTiles()), "1p89m3s5z".ToTiles()),
+			},
+			"there are two penchan in the same suit",
 		];
 	}
 }
