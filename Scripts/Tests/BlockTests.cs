@@ -190,6 +190,7 @@ public class BlockTests
 		yield return [new Pair(), 7];
 		yield return [new Orphan(), 11];
 		yield return [new PairWait(), 13];
+		yield return [new Ryanmen(), 17];
 	}
 
 	private static IEnumerable<object[]> CompareBlocksTestCases()
