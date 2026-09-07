@@ -32,6 +32,35 @@ public class MeldTests
 	}
 
 	[TestCase]
+	[DataPoint(nameof(PairGetPossibleForTileTestCases))]
+	public static void PairGetPossibleForTileIsCorrect(
+		string tileNotation,
+		string otherTilesNotation,
+		List<MadeBlockContext> expectedOutput,
+		string because)
+	{
+		LoggingPrefix = nameof(PairGetPossibleForTileIsCorrect);
+
+		var tile = tileNotation.ToTile();
+		var otherTiles = otherTilesNotation.ToTiles();
+		var actualOutput = Pair.GetPossibleForTile(tile, otherTiles).ToList();
+		PrefixInfo($"Checking that Pair.GetPossibleForTile with tile \"{tileNotation}\" and other tiles \"{otherTilesNotation}\" is correct when {because}");
+		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+	}
+
+	[TestCase]
+	[DataPoint(nameof(PairGetPossibleTestCases))]
+	public static void PairGetPossibleIsCorrect(string tilesNotation, List<MadeBlockContext> expectedOutput, string because)
+	{
+		LoggingPrefix = nameof(PairGetPossibleIsCorrect);
+
+		var tiles = tilesNotation.ToTiles();
+		var actualOutput = Pair.GetPossible(tiles).ToList();
+		PrefixInfo($"Checking that Pair.GetPossible with tiles \"{tilesNotation}\" is correct when {because}");
+		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+	}
+
+	[TestCase]
 	[DataPoint(nameof(KongGetPossibleForTileTestCases))]
 	public static void KongGetPossibleForTileIsCorrect(
 		string tileNotation,
@@ -164,6 +193,117 @@ public class MeldTests
 				new(new Pung("999m".ToTiles()), "1112345678m".ToTiles()),
 			},
 			"the hand is true nine gates",
+		];
+	}
+
+	private static IEnumerable<object[]> PairGetPossibleForTileTestCases()
+	{
+		yield return ["5z", "2p3s11m", new List<MadeBlockContext>(), "there are no matching tiles"];
+		yield return
+		[
+			"5z",
+			"2p3s11m5z",
+			new List<MadeBlockContext>()
+			{
+				new(new Pair("55z".ToTiles()), "2p3s11m".ToTiles()),
+			},
+			"there is one matching tile"
+		];
+		yield return
+		[
+			"5z",
+			"2p3s11m555z",
+			new List<MadeBlockContext>()
+			{
+				new(new Pair("55z".ToTiles()), "2p3s11m55z".ToTiles()),
+			},
+			"there are redundant matching tiles"
+		];
+		yield return
+		[
+			"5m",
+			"2p3s1155m",
+			new List<MadeBlockContext>()
+			{
+				new(new Pair("55m".ToTiles()), "2p3s115m".ToTiles()),
+			},
+			"there is a redundant non-red five"
+		];
+		yield return
+		[
+			"0m",
+			"2p3s115m",
+			new List<MadeBlockContext>()
+			{
+				new(new Pair("05m".ToTiles()), "2p3s11m".ToTiles()),
+			},
+			"there is a non-red five to pair with a red five"
+		];
+		yield return
+		[
+			"5m",
+			"2p3s110m",
+			new List<MadeBlockContext>()
+			{
+				new(new Pair("50m".ToTiles()), "2p3s11m".ToTiles()),
+			},
+			"there is a matching red five"
+		];
+		yield return
+		[
+			"5m",
+			"2p3s1150m",
+			new List<MadeBlockContext>()
+			{
+				new(new Pair("50m".ToTiles()), "2p3s115m".ToTiles()),
+				new(new Pair("55m".ToTiles()), "2p3s110m".ToTiles()),
+			},
+			"there is a matching red five AND a matching non-red five"
+		];
+	}
+
+	private static IEnumerable<object[]> PairGetPossibleTestCases()
+	{
+		yield return ["2p3s1m4z", new List<MadeBlockContext>(), "there are no matching tiles"];
+		yield return
+		[
+			"2p3s11m5z",
+			new List<MadeBlockContext>()
+			{
+				new(new Pair("11m".ToTiles()), "2p3s5z".ToTiles()),
+			},
+			"there is only one pair",
+		];
+		yield return
+		[
+			"2p3s1177m5z",
+			new List<MadeBlockContext>()
+			{
+				new(new Pair("11m".ToTiles()), "2p3s77m5z".ToTiles()),
+				new(new Pair("77m".ToTiles()), "2p3s11m5z".ToTiles()),
+			},
+			"there are multiple pairs in the same suit",
+		];
+		yield return
+		[
+			"2p3s1177m5z",
+			new List<MadeBlockContext>()
+			{
+				new(new Pair("11m".ToTiles()), "2p3s77m5z".ToTiles()),
+				new(new Pair("77m".ToTiles()), "2p3s11m5z".ToTiles()),
+			},
+			"there are multiple pairs in the same suit",
+		];
+		yield return
+		[
+			"2p3s1177m55z",
+			new List<MadeBlockContext>()
+			{
+				new(new Pair("11m".ToTiles()), "2p3s77m55z".ToTiles()),
+				new(new Pair("77m".ToTiles()), "2p3s11m55z".ToTiles()),
+				new(new Pair("55z".ToTiles()), "2p3s1177m".ToTiles()),
+			},
+			"there are multiple pairs in different suits",
 		];
 	}
 
