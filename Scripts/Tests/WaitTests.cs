@@ -71,6 +71,35 @@ public class WaitTests
 		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
 	}
 
+	[TestCase]
+	[DataPoint(nameof(KanchanGetPossibleForTileTestCases))]
+	public static void KanchanGetPossibleForTileIsCorrect(
+		string tileNotation,
+		string otherTilesNotation,
+		List<MadeBlockContext> expectedOutput,
+		string because)
+	{
+		LoggingPrefix = nameof(KanchanGetPossibleForTileIsCorrect);
+
+		var tile = tileNotation.ToTile();
+		var otherTiles = otherTilesNotation.ToTiles();
+		var actualOutput = Kanchan.GetPossibleForTile(tile, otherTiles).ToList();
+		PrefixInfo($"Checking that Kanchan.GetPossibleForTile with tile \"{tileNotation}\" and other tiles \"{otherTilesNotation}\" is correct when {because}");
+		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+	}
+
+	[TestCase]
+	[DataPoint(nameof(KanchanGetPossibleTestCases))]
+	public static void KanchanGetPossibleIsCorrect(string tilesNotation, List<MadeBlockContext> expectedOutput, string because)
+	{
+		LoggingPrefix = nameof(KanchanGetPossibleIsCorrect);
+
+		var tiles = tilesNotation.ToTiles();
+		var actualOutput = Kanchan.GetPossible(tiles).ToList();
+		PrefixInfo($"Checking that Kanchan.GetPossible with tiles \"{tilesNotation}\" is correct when {because}");
+		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+	}
+
 	private static IEnumerable<object[]> RyanmenGetPossibleForTileTestCases()
 	{
 		yield return ["5z", "46z", new List<MadeBlockContext>(), "passed in zi tiles"];
@@ -215,6 +244,144 @@ public class WaitTests
 				new(new Ryanmen("56m".ToTiles()), "2p334s5z".ToTiles()),
 			},
 			"there are multiple ryanmen in the different suits",
+		];
+	}
+
+	private static IEnumerable<object[]> KanchanGetPossibleForTileTestCases()
+	{
+		yield return ["5z", "37z", new List<MadeBlockContext>(), "passed in zi tiles"];
+		yield return ["5m", "1240689m", new List<MadeBlockContext>(), "given no valid tiles"];
+		yield return
+		[
+			"5m",
+			"12340689m",
+			new List<MadeBlockContext>()
+			{
+				new(new Kanchan("35m".ToTiles()), "1240689m".ToTiles()),
+			},
+			"given only the lower tile",
+		];
+		yield return
+		[
+			"5s",
+			"12407689s",
+			new List<MadeBlockContext>()
+			{
+				new(new Kanchan("57s".ToTiles()), "1240689s".ToTiles()),
+			},
+			"given only the upper tile",
+		];
+		yield return
+		[
+			"5p",
+			"123407689p",
+			new List<MadeBlockContext>()
+			{
+				new(new Kanchan("35p".ToTiles()), "12407689p".ToTiles()),
+				new(new Kanchan("57p".ToTiles()), "12340689p".ToTiles()),
+			},
+			"given both lower and upper tiles",
+		];
+		yield return
+		[
+			"2m",
+			"12345m",
+			new List<MadeBlockContext>()
+			{
+				new(new Kanchan("24m".ToTiles()), "1235m".ToTiles()),
+			},
+			"given a two and the upper tile",
+		];
+		yield return
+		[
+			"8m",
+			"56789m",
+			new List<MadeBlockContext>()
+			{
+				new(new Kanchan("68m".ToTiles()), "5789m".ToTiles()),
+			},
+			"given an eight and the lower tile",
+		];
+		yield return
+		[
+			"3s",
+			"550s",
+			new List<MadeBlockContext>()
+			{
+				new(new Kanchan("35s".ToTiles()), "50s".ToTiles()),
+				new(new Kanchan("30s".ToTiles()), "55s".ToTiles()),
+			},
+			"given a three with both a red five and multiple non-red fives",
+		];
+		yield return
+		[
+			"7s",
+			"550s",
+			new List<MadeBlockContext>()
+			{
+				new(new Kanchan("57s".ToTiles()), "50s".ToTiles()),
+				new(new Kanchan("07s".ToTiles()), "55s".ToTiles()),
+			},
+			"given a seven with both a red five and multiple non-red fives",
+		];
+		yield return
+		[
+			"0m",
+			"37m",
+			new List<MadeBlockContext>()
+			{
+				new(new Kanchan("30m".ToTiles()), "7m".ToTiles()),
+				new(new Kanchan("07m".ToTiles()), "3m".ToTiles()),
+			},
+			"given a red five and both lower and upper tiles",
+		];
+	}
+
+	private static IEnumerable<object[]> KanchanGetPossibleTestCases()
+	{
+		yield return ["25p36s47m4z", new List<MadeBlockContext>(), "there are no kanchan"];
+		yield return
+		[
+			"2p3s35m5z",
+			new List<MadeBlockContext>()
+			{
+				new(new Kanchan("35m".ToTiles()), "2p3s5z".ToTiles()),
+			},
+			"there is only one kanchan",
+		];
+		yield return
+		[
+			"24p35s3m5z",
+			new List<MadeBlockContext>()
+			{
+				new(new Kanchan("35s".ToTiles()), "24p3m5z".ToTiles()),
+				new(new Kanchan("24p".ToTiles()), "35s3m5z".ToTiles()),
+			},
+			"there are two kanchan in different suits",
+		];
+		yield return
+		[
+			"2p3s2345m5z",
+			new List<MadeBlockContext>()
+			{
+				new(new Kanchan("35m".ToTiles()), "2p3s24m5z".ToTiles()),
+				new(new Kanchan("24m".ToTiles()), "2p3s35m5z".ToTiles()),
+			},
+			"there are two disjoint kanchan in the same suit",
+		];
+		yield return
+		[
+			"12345679p3s3m5z",
+			new List<MadeBlockContext>()
+			{
+				new(new Kanchan("13p".ToTiles()), "245679p3s3m5z".ToTiles()),
+				new(new Kanchan("24p".ToTiles()), "135679p3s3m5z".ToTiles()),
+				new(new Kanchan("35p".ToTiles()), "124679p3s3m5z".ToTiles()),
+				new(new Kanchan("46p".ToTiles()), "123579p3s3m5z".ToTiles()),
+				new(new Kanchan("57p".ToTiles()), "123469p3s3m5z".ToTiles()),
+				new(new Kanchan("79p".ToTiles()), "123456p3s3m5z".ToTiles()),
+			},
+			"there are multiple kanchan in the same suit",
 		];
 	}
 }
