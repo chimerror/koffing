@@ -25,6 +25,6 @@ public class PairWait : Wait, IBlock
 	public static new int GetHashCodeBasis()
 	{
 		// TODO: Should we put this in an enum so we can make sure numbers are unique?
-		return 9;
+		return 13;
 	}
 }

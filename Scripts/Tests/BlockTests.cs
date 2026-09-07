@@ -188,7 +188,8 @@ public class BlockTests
 		yield return [new Pung(), 3];
 		yield return [new Kong(), 5];
 		yield return [new Pair(), 7];
-		yield return [new PairWait(), 9];
+		yield return [new Orphan(), 11];
+		yield return [new PairWait(), 13];
 	}
 
 	private static IEnumerable<object[]> CompareBlocksTestCases()
