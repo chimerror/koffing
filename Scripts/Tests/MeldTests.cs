@@ -20,6 +20,18 @@ public class MeldTests
 	}
 
 	[TestCase]
+	[DataPoint(nameof(GetFirstLevelMeldsTestCases))]
+	public static void GetFirstLevelMeldsIsCorrect(string tilesNotation, List<MadeBlockContext> expectedOutput, string because)
+	{
+		LoggingPrefix = nameof(GetFirstLevelMeldsIsCorrect);
+
+		var tiles = tilesNotation.ToTiles();
+		var actualOutput = Meld.GetFirstLevelMelds(tiles);
+		PrefixInfo($"Checking that Meld.GetFirstLevelMelds with tiles \"{tilesNotation}\" is correct when {because}");
+		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+	}
+
+	[TestCase]
 	[DataPoint(nameof(KongGetPossibleForTileTestCases))]
 	public static void KongGetPossibleForTileIsCorrect(
 		string tileNotation,
@@ -104,6 +116,55 @@ public class MeldTests
 		var actualOutput = Chow.GetPossible(tiles).ToList();
 		PrefixInfo($"Checking that Chow.GetPossible with tiles \"{tilesNotation}\" is correct when {because}");
 		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+	}
+
+	private static IEnumerable<object[]> GetFirstLevelMeldsTestCases()
+	{
+		yield return
+		[
+			"1111234s",
+			new List<MadeBlockContext>()
+			{
+				new(new Chow("123s".ToTiles()), "1114s".ToTiles()),
+				new(new Chow("234s".ToTiles()), "1111s".ToTiles()),
+				new(new Pung("111s".ToTiles()), "1234s".ToTiles()),
+				new(new Kong("1111s".ToTiles()), "234s".ToTiles()),
+			},
+			"there are melds of each type in one suit",
+		];
+		yield return
+		[
+			"1111234s1111234p",
+			new List<MadeBlockContext>()
+			{
+				new(new Chow("123s".ToTiles()), "1114s1111234p".ToTiles()),
+				new(new Chow("123p".ToTiles()), "1114p1111234s".ToTiles()),
+				new(new Chow("234s".ToTiles()), "1111s1111234p".ToTiles()),
+				new(new Chow("234p".ToTiles()), "1111p1111234s".ToTiles()),
+				new(new Pung("111s".ToTiles()), "1234s1111234p".ToTiles()),
+				new(new Pung("111p".ToTiles()), "1234p1111234s".ToTiles()),
+				new(new Kong("1111s".ToTiles()), "234s1111234p".ToTiles()),
+				new(new Kong("1111p".ToTiles()), "234p1111234s".ToTiles()),
+			},
+			"there are melds of each type in two suits",
+		];
+		yield return
+		[
+			"1112345678999m",
+			new List<MadeBlockContext>()
+			{
+				new(new Pung("111m".ToTiles()), "2345678999m".ToTiles()),
+				new(new Chow("123m".ToTiles()), "1145678999m".ToTiles()),
+				new(new Chow("234m".ToTiles()), "1115678999m".ToTiles()),
+				new(new Chow("345m".ToTiles()), "1112678999m".ToTiles()),
+				new(new Chow("456m".ToTiles()), "1112378999m".ToTiles()),
+				new(new Chow("567m".ToTiles()), "1112348999m".ToTiles()),
+				new(new Chow("678m".ToTiles()), "1112345999m".ToTiles()),
+				new(new Chow("789m".ToTiles()), "1112345699m".ToTiles()),
+				new(new Pung("999m".ToTiles()), "1112345678m".ToTiles()),
+			},
+			"the hand is true nine gates",
+		];
 	}
 
 	private static IEnumerable<object[]> KongGetPossibleForTileTestCases()
