@@ -60,6 +60,46 @@ public class MeldTests
 		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
 	}
 
+	// These PairWait tests might should be in WaitTests, but since they are going to just use the Pair test cases, it's
+	// easier to put them here.
+	[TestCase]
+	[DataPoint(nameof(PairGetPossibleForTileTestCases))]
+	public static void PairWaitGetPossibleForTileIsCorrect(
+		string tileNotation,
+		string otherTilesNotation,
+		List<MadeBlockContext> expectedOutput,
+		string because)
+	{
+		LoggingPrefix = nameof(PairWaitGetPossibleForTileIsCorrect);
+
+		var tile = tileNotation.ToTile();
+		var otherTiles = otherTilesNotation.ToTiles();
+		var actualOutput = PairWait.GetPossibleForTile(tile, otherTiles).ToList();
+		var convertedExpected = expectedOutput
+			.Select(c => new MadeBlockContext(new PairWait(c.MadeBlock.Tiles), c.RemainingTiles))
+			.ToList();
+
+		PrefixInfo($"Checking that PairWait.GetPossibleForTile with tile \"{tileNotation}\" and other tiles \"{otherTilesNotation}\" is correct when {because}");
+		AssertArray(actualOutput).ContainsExactlyInAnyOrder(convertedExpected);
+	}
+
+	[TestCase]
+	[DataPoint(nameof(PairGetPossibleTestCases))]
+	public static void PairWaitGetPossibleIsCorrect(string tilesNotation, List<MadeBlockContext> expectedOutput, string because)
+	{
+		LoggingPrefix = nameof(PairGetPossibleIsCorrect);
+
+		var tiles = tilesNotation.ToTiles();
+		var actualOutput = PairWait.GetPossible(tiles).ToList();
+		var convertedExpected = expectedOutput
+			.Select(c => new MadeBlockContext(new PairWait(c.MadeBlock.Tiles), c.RemainingTiles))
+			.ToList();
+
+		PrefixInfo($"Checking that PairWait.GetPossible with tiles \"{tilesNotation}\" is correct when {because}");
+		AssertArray(actualOutput).ContainsExactlyInAnyOrder(convertedExpected);
+	}
+
+
 	[TestCase]
 	[DataPoint(nameof(KongGetPossibleForTileTestCases))]
 	public static void KongGetPossibleForTileIsCorrect(

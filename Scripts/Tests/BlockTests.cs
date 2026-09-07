@@ -108,6 +108,21 @@ public class BlockTests
 		AssertThat(contextA.CompareTo(contextB)).IsEqual(expectedComparisonValue);
 	}
 
+	[TestCase]
+	public static void PairsAndPairWaitsCastingIsCorrect()
+	{
+		LoggingPrefix = nameof(PairsAndPairWaitsCastingIsCorrect);
+
+		var pair = new Pair("55p".ToTiles());
+		var pairWait = new PairWait("55p".ToTiles());
+
+		PrefixInfo($"Checking that pair wait can be cast to pair");
+		AssertThat((Pair)pairWait).IsEqual(pair);
+
+		PrefixInfo($"Checking that pair can be cast to pair wait");
+		AssertThat((PairWait)pair).IsEqual(pairWait);
+	}
+
 	private static IEnumerable<object[]> BlockEqualsEdgeTestCases()
 	{
 		yield return [new Chow("123s".ToTiles()), null, "null should not equal"];
@@ -173,6 +188,7 @@ public class BlockTests
 		yield return [new Pung(), 3];
 		yield return [new Kong(), 5];
 		yield return [new Pair(), 7];
+		yield return [new PairWait(), 9];
 	}
 
 	private static IEnumerable<object[]> CompareBlocksTestCases()
