@@ -29,29 +29,25 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 		get => _tiles.AsReadOnly();
 	}
 
-	public static IEnumerable<IEnumerable<Block>> GetPossibleBlockSets(IEnumerable<Tile> tiles)
+	public static IEnumerable<BlockSet> GetPossibleBlockSets(IEnumerable<Tile> tiles)
 	{
-		// TODO: Really worried about the constant iteration here, but a HashSet didn't work. We'd probably have to
-		// introduce a BlockSet class that overrides all the necessary methods.
-		var madeBlockSets = new List<List<Block>>();
+		var madeBlockSets = new HashSet<BlockSet>();
 		foreach (var possibleBlockSet in GetPossibleBlockSetsHelper(tiles))
 		{
-			var sortedSet = possibleBlockSet.Order().ToList();
-			if (!madeBlockSets.Any(s => s.SequenceEqual(sortedSet)))
+			if (!madeBlockSets.Add(possibleBlockSet))
 			{
-				madeBlockSets.Add(sortedSet);
+				continue;
 			}
 		}
 
-		var comparer = new BlockSetComparer();
-		var sortedMadeBlockSets = madeBlockSets.Order(comparer);
+		var sortedMadeBlockSets = madeBlockSets.Order();
 		foreach (var madeBlockSet in sortedMadeBlockSets)
 		{
 			yield return madeBlockSet;
 		}
 	}
 
-	private static IEnumerable<IEnumerable<Block>> GetPossibleBlockSetsHelper(IEnumerable<Tile> tiles)
+	private static IEnumerable<BlockSet> GetPossibleBlockSetsHelper(IEnumerable<Tile> tiles)
 	{
 		var tilesList = tiles.ToList();
 		if (tilesList.Count == 0)
@@ -60,7 +56,7 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 		}
 		else if (tilesList.Count == 1)
 		{
-			yield return [new Orphan(tiles.Single())];
+			yield return new BlockSet([new Orphan(tiles.Single())]);
 		}
 
 		bool meldMade = false;
@@ -72,7 +68,7 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 			var nextLevelBlockSets = GetPossibleBlockSetsHelper(firstLevelMeld.RemainingTiles);
 			foreach (var blockSet in nextLevelBlockSets)
 			{
-				yield return blockSet.Append(madeBlock);
+				yield return new BlockSet(blockSet.Blocks.Append(madeBlock));
 			}
 		}
 
@@ -89,13 +85,13 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 				var nextLevelBlockSets = GetPossibleBlockSetsHelper(firstLevelWait.RemainingTiles);
 				foreach (var blockSet in nextLevelBlockSets)
 				{
-					yield return blockSet.Append(madeWait);
+					yield return new BlockSet(blockSet.Blocks.Append(madeWait));
 				}
 			}
 
 			if (!waitMade)
 			{
-				yield return tiles.Select(t => new Orphan(t));
+				yield return new BlockSet(tiles.Select(t => new Orphan(t)));
 			}
 		}
 	}

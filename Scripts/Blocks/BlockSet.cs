@@ -24,7 +24,7 @@ public class BlockSet : IEnumerable<Block>, IComparable<BlockSet>, IEquatable<Bl
 		get => _blocks[index];
 	}
 
-	public IEnumerable<Block> Tiles
+	public IEnumerable<Block> Blocks
 	{
 		get => _blocks.AsReadOnly();
 	}
@@ -78,7 +78,16 @@ public class BlockSet : IEnumerable<Block>, IComparable<BlockSet>, IEquatable<Bl
 
 	public override int GetHashCode()
 	{
-		// TODO: Implement
-		throw new NotImplementedException();
+		unchecked
+		{
+			// Should be pretty unique because each block should be its basis to a power, so should get a big string
+			// of the bases to exponents multiplied together.
+			var hashCode = 1;
+			foreach (var block in _blocks)
+			{
+				hashCode *= block.GetHashCode();
+			}
+			return hashCode;
+		}
 	}
 }
