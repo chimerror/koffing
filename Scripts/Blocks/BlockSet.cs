@@ -56,10 +56,9 @@ public class BlockSet : IEnumerable<Block>, IComparable<BlockSet>, IEquatable<Bl
 		return 0;
 	}
 
-	public bool Equals(BlockSet other)
+	public bool Equals(BlockSet that)
 	{
-		// TODO: Implement
-		throw new NotImplementedException();
+		return CompareTo(that) == 0;
 	}
 
 	public IEnumerator<Block> GetEnumerator()
