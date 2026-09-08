@@ -125,6 +125,20 @@ public class BlockTests
 	}
 
 	[TestCase]
+	[DataPoint(nameof(CompareBlockSetsTestCases))]
+	public static void CompareBlockSetsIsCorrect(
+		BlockSet blockSetA,
+		BlockSet blockSetB,
+		int expectedComparisonValue,
+		string because)
+	{
+		LoggingPrefix = nameof(CompareBlockSetsIsCorrect);
+
+		PrefixInfo($"Checking that BlockSet.CompareTo is {expectedComparisonValue} when comparing {because}");
+		AssertThat(blockSetA.CompareTo(blockSetB)).IsEqual(expectedComparisonValue);
+	}
+
+	[TestCase]
 	[DataPoint(nameof(GetPossibleBlockSetsTestCases))]
 	public static void GetPossibleBlockSetsIsCorrect(string tilesString, List<List<Block>> expectedOutput, string because)
 	{
@@ -461,6 +475,104 @@ public class BlockTests
 			new MadeBlockContext(new Chow("123s".ToTiles()), "45s".ToTiles()),
 			1,
 			"later remaining tiles to earlier remainingTiles",
+		];
+	}
+
+	private static IEnumerable<object[]> CompareBlockSetsTestCases()
+	{
+		yield return
+		[
+			new BlockSet(
+			[
+				new Pung("333p".ToTiles()),
+				new Orphan("2z".ToTile())
+			]),
+			null,
+			1,
+			"to null"
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new Pung("333p".ToTiles()),
+				new PairWait("05s".ToTiles()),
+				new Orphan("2z".ToTile())
+			]),
+			new BlockSet(
+			[
+				new Pung("333p".ToTiles()),
+				new PairWait("05s".ToTiles()),
+			]),
+			1,
+			"a longer set to a shorter set"
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new Pung("333p".ToTiles()),
+				new PairWait("05s".ToTiles()),
+			]),
+			new BlockSet(
+			[
+				new Pung("333p".ToTiles()),
+				new PairWait("05s".ToTiles()),
+				new Orphan("2z".ToTile())
+			]),
+			-1,
+			"a shorter set to a longer set"
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new Pung("222p".ToTiles()),
+				new PairWait("05s".ToTiles()),
+				new Orphan("2z".ToTile())
+			]),
+			new BlockSet(
+			[
+				new Pung("333p".ToTiles()),
+				new PairWait("05s".ToTiles()),
+				new Orphan("2z".ToTile())
+			]),
+			-1,
+			"an earlier set to a later set"
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new Pung("333p".ToTiles()),
+				new PairWait("05s".ToTiles()),
+				new Orphan("2z".ToTile())
+			]),
+			new BlockSet(
+			[
+				new Pung("222p".ToTiles()),
+				new PairWait("05s".ToTiles()),
+				new Orphan("2z".ToTile())
+			]),
+			1,
+			"a later set to an earlier set"
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new Pung("333p".ToTiles()),
+				new PairWait("05s".ToTiles()),
+				new Orphan("2z".ToTile())
+			]),
+			new BlockSet(
+			[
+				new Pung("333p".ToTiles()),
+				new PairWait("05s".ToTiles()),
+				new Orphan("2z".ToTile())
+			]),
+			0,
+			"equal sets"
 		];
 	}
 

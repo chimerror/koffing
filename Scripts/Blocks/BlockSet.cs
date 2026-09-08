@@ -1,0 +1,85 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+
+public class BlockSet : IEnumerable<Block>, IComparable<BlockSet>, IEquatable<BlockSet>
+{
+	private readonly List<Block> _blocks;
+
+	public BlockSet(IEnumerable<Block> blocks = null)
+	{
+		if (blocks != null)
+		{
+			_blocks = [.. blocks];
+		}
+		else
+		{
+			_blocks = [];
+		}
+	}
+
+	public Block this[int index]
+	{
+		get => _blocks[index];
+	}
+
+	public IEnumerable<Block> Tiles
+	{
+		get => _blocks.AsReadOnly();
+	}
+
+	public int CompareTo(BlockSet that)
+	{
+		if (that == null)
+		{
+			return 1;
+		}
+
+		var thisBlocks = _blocks.Order().ToList();
+		var thatBlocks = that.Order().ToList();
+		if (thisBlocks.Count != thatBlocks.Count)
+		{
+			return thisBlocks.Count.CompareTo(thatBlocks.Count);
+		}
+
+		for (var i = 0; i < thisBlocks.Count; i++)
+		{
+			var blockA = thisBlocks[i];
+			var blockB = thatBlocks[i];
+			if (!blockA.Equals(blockB))
+			{
+				return blockA.CompareTo(blockB);
+			}
+		}
+
+		return 0;
+	}
+
+	public bool Equals(BlockSet other)
+	{
+		// TODO: Implement
+		throw new NotImplementedException();
+	}
+
+	public IEnumerator<Block> GetEnumerator()
+	{
+		return _blocks.GetEnumerator();
+	}
+
+	IEnumerator IEnumerable.GetEnumerator()
+	{
+		return GetEnumerator();
+	}
+
+	public override bool Equals(object obj)
+	{
+		return Equals(obj as BlockSet);
+	}
+
+	public override int GetHashCode()
+	{
+		// TODO: Implement
+		throw new NotImplementedException();
+	}
+}
