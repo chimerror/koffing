@@ -29,6 +29,77 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 		get => _tiles.AsReadOnly();
 	}
 
+	public static IEnumerable<IEnumerable<Block>> GetPossibleBlockSets(IEnumerable<Tile> tiles)
+	{
+		// TODO: Really worried about the constant iteration here, but a HashSet didn't work. We'd probably have to
+		// introduce a BlockSet class that overrides all the necessary methods.
+		var madeBlockSets = new List<List<Block>>();
+		foreach (var possibleBlockSet in GetPossibleBlockSetsHelper(tiles))
+		{
+			var sortedSet = possibleBlockSet.Order().ToList();
+			if (!madeBlockSets.Any(s => s.SequenceEqual(sortedSet)))
+			{
+				madeBlockSets.Add(sortedSet);
+			}
+		}
+
+		var comparer = new BlockSetComparer();
+		var sortedMadeBlockSets = madeBlockSets.Order(comparer);
+		foreach (var madeBlockSet in sortedMadeBlockSets)
+		{
+			yield return madeBlockSet;
+		}
+	}
+
+	private static IEnumerable<IEnumerable<Block>> GetPossibleBlockSetsHelper(IEnumerable<Tile> tiles)
+	{
+		var tilesList = tiles.ToList();
+		if (tilesList.Count == 0)
+		{
+			yield return [];
+		}
+		else if (tilesList.Count == 1)
+		{
+			yield return [new Orphan(tiles.Single())];
+		}
+
+		bool meldMade = false;
+		var firstLevelMelds = Meld.GetFirstLevelMelds(tiles);
+		foreach (var firstLevelMeld in firstLevelMelds)
+		{
+			meldMade = true;
+			var madeBlock = firstLevelMeld.MadeBlock;
+			var nextLevelBlockSets = GetPossibleBlockSetsHelper(firstLevelMeld.RemainingTiles);
+			foreach (var blockSet in nextLevelBlockSets)
+			{
+				yield return blockSet.Append(madeBlock);
+			}
+		}
+
+		// TODO: Right now we are only considering melds, but I'm wondering what happens when a hand is
+		// fully in thirteen orphans or seven pairs.
+		if (!meldMade)
+		{
+			bool waitMade = false;
+			var firstLevelWaits = Wait.GetFirstLevelWaits(tiles);
+			foreach (var firstLevelWait in firstLevelWaits)
+			{
+				waitMade = true;
+				var madeWait = firstLevelWait.MadeBlock;
+				var nextLevelBlockSets = GetPossibleBlockSetsHelper(firstLevelWait.RemainingTiles);
+				foreach (var blockSet in nextLevelBlockSets)
+				{
+					yield return blockSet.Append(madeWait);
+				}
+			}
+
+			if (!waitMade)
+			{
+				yield return tiles.Select(t => new Orphan(t));
+			}
+		}
+	}
+
 	public static IEnumerable<MadeBlockContext> GetPossible(IEnumerable<Tile> tiles)
 	{
 		// This is commented out to force implementation, but child classes should override this method with something

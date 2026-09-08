@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using GdUnit4;
 using static GdUnit4.Assertions;
 using static TestLoggingHelpers;
@@ -121,6 +122,35 @@ public class BlockTests
 
 		PrefixInfo($"Checking that pair can be cast to pair wait");
 		AssertThat((PairWait)pair).IsEqual(pairWait);
+	}
+
+	[TestCase]
+	[DataPoint(nameof(GetPossibleBlockSetsTestCases))]
+	public static void GetPossibleBlockSetsIsCorrect(string tilesString, List<List<Block>> expectedOutput, string because)
+	{
+		LoggingPrefix = nameof(GetPossibleBlockSetsIsCorrect);
+
+		var tiles = tilesString.ToTiles();
+		var actualOutput = Block.GetPossibleBlockSets(tiles).Distinct().ToList();
+		var comparer = new BlockSetComparer();
+		var sortedExpected = expectedOutput
+			.Select(bs => bs.Order())
+			.Order(comparer)
+			.ToList();
+
+		PrefixInfo($"Checking that all block sets are returned from a hand with {because}");
+		if (actualOutput.Count != sortedExpected.Count)
+		{
+			// This is guaranteed to fail, but this way we get nicer formatting for debugging.
+			AssertArray(actualOutput).ContainsExactly(sortedExpected);
+			return;
+		}
+		for (int i = 0; i < sortedExpected.Count; i++)
+		{
+			var actualBlockSet = actualOutput[i];
+			var expectedBlockSet = sortedExpected[i];
+			AssertArray(actualBlockSet).ContainsExactly(expectedBlockSet);
+		}
 	}
 
 	private static IEnumerable<object[]> BlockEqualsEdgeTestCases()
@@ -432,5 +462,51 @@ public class BlockTests
 			1,
 			"later remaining tiles to earlier remainingTiles",
 		];
+	}
+
+	private static IEnumerable<object[]> GetPossibleBlockSetsTestCases()
+	{
+		yield return
+		[
+			"111m666z",
+			new List<List<Block>>()
+			{
+				new()
+				{
+					new Pung("111m".ToTiles()),
+					new Pung("666z".ToTiles()),
+				}
+			},
+			"all pung melds",
+		];
+		yield return
+		[
+			"111m66z",
+			new List<List<Block>>()
+			{
+				new()
+				{
+					new Pung("111m".ToTiles()),
+					new PairWait("66z".ToTiles()),
+				}
+			},
+			"a pung meld and a pair wait",
+		];
+		yield return
+		[
+			"111m0s66z",
+			new List<List<Block>>()
+			{
+				new()
+				{
+					new Pung("111m".ToTiles()),
+					new PairWait("66z".ToTiles()),
+					new Orphan("0s".ToTile()),
+				}
+			},
+			"a pung meld, a pair wait, and an orphan",
+		];
+		// TODO: definitely need to test what happens with chiis. On that note, perhaps a good test would be to make
+		// each of these a complex wait and to make sure the returned BlockSets cover all the possible weights.
 	}
 }
