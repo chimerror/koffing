@@ -189,6 +189,7 @@ public class MeldTests
 
 	private static IEnumerable<object[]> GetFirstLevelMeldsTestCases()
 	{
+		yield return ["19m19s19p1234567z", new List<MadeBlockContext>(), "there are no melds"];
 		yield return
 		[
 			"1111234s",
@@ -233,6 +234,17 @@ public class MeldTests
 				new(new Pung("999m".ToTiles()), "1112345678m".ToTiles()),
 			},
 			"the hand is true nine gates",
+		];
+		yield return
+		[
+			"1117777z",
+			new List<MadeBlockContext>()
+			{
+				new(new Pung("111z".ToTiles()), "7777z".ToTiles()),
+				new(new Pung("777z".ToTiles()), "1117z".ToTiles()),
+				new(new Kong("7777z".ToTiles()), "111z".ToTiles()),
+			},
+			"there are zi melds",
 		];
 	}
 
