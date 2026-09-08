@@ -21,6 +21,18 @@ public class WaitTests
 	}
 
 	[TestCase]
+	[DataPoint(nameof(GetFirstLevelWaitsTestCases))]
+	public static void GetFirstLevelWaitsIsCorrect(string tilesNotation, List<MadeBlockContext> expectedOutput, string because)
+	{
+		LoggingPrefix = nameof(GetFirstLevelWaitsIsCorrect);
+
+		var tiles = tilesNotation.ToTiles();
+		var actualOutput = Wait.GetFirstLevelWaits(tiles);
+		PrefixInfo($"Checking that Wait.GetFirstLevelWaits with tiles \"{tilesNotation}\" is correct when {because}");
+		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+	}
+
+	[TestCase]
 	public static void CanCreateOrphan()
 	{
 		LoggingPrefix = nameof(CanCreateOrphan);
@@ -127,6 +139,60 @@ public class WaitTests
 		var actualOutput = Penchan.GetPossible(tiles).ToList();
 		PrefixInfo($"Checking that Penchan.GetPossible with tiles \"{tilesNotation}\" is correct when {because}");
 		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+	}
+
+	private static IEnumerable<object[]> GetFirstLevelWaitsTestCases()
+	{
+		// TODO: This is a thirteen orphans wait, we may have to change this test a bit when we add that type of wait.
+		yield return ["19m19s19p1234567z", new List<MadeBlockContext>(), "there are no waits"];
+		yield return
+		[
+			"11234467899s",
+			new List<MadeBlockContext>()
+			{
+				new(new PairWait("11s".ToTiles()), "234467899s".ToTiles()),
+				new(new PairWait("44s".ToTiles()), "112367899s".ToTiles()),
+				new(new PairWait("99s".ToTiles()), "112344678s".ToTiles()),
+				new(new Ryanmen("23s".ToTiles()), "114467899s".ToTiles()),
+				new(new Ryanmen("34s".ToTiles()), "112467899s".ToTiles()),
+				new(new Ryanmen("67s".ToTiles()), "112344899s".ToTiles()),
+				new(new Ryanmen("78s".ToTiles()), "112344699s".ToTiles()),
+				new(new Kanchan("13s".ToTiles()), "124467899s".ToTiles()),
+				new(new Kanchan("24s".ToTiles()), "113467899s".ToTiles()),
+				new(new Kanchan("46s".ToTiles()), "112347899s".ToTiles()),
+				new(new Kanchan("68s".ToTiles()), "112344799s".ToTiles()),
+				new(new Kanchan("79s".ToTiles()), "112344689s".ToTiles()),
+				new(new Penchan("12s".ToTiles()), "134467899s".ToTiles()),
+				new(new Penchan("89s".ToTiles()), "112344679s".ToTiles()),
+			},
+			"there are multiple waits of each type in one suit",
+		];
+		yield return
+		[
+			"1123m7899p",
+			new List<MadeBlockContext>()
+			{
+				new(new PairWait("11m".ToTiles()), "23m7899p".ToTiles()),
+				new(new PairWait("99p".ToTiles()), "1123m78p".ToTiles()),
+				new(new Ryanmen("23m".ToTiles()), "11m7899p".ToTiles()),
+				new(new Ryanmen("78p".ToTiles()), "1123m99p".ToTiles()),
+				new(new Kanchan("13m".ToTiles()), "12m7899p".ToTiles()),
+				new(new Kanchan("79p".ToTiles()), "1123m89p".ToTiles()),
+				new(new Penchan("12m".ToTiles()), "13m7899p".ToTiles()),
+				new(new Penchan("89p".ToTiles()), "1123m79p".ToTiles()),
+			},
+			"there are waits of each type in two suits",
+		];
+		yield return
+		[
+			"1177z",
+			new List<MadeBlockContext>()
+			{
+				new(new PairWait("11z".ToTiles()), "77z".ToTiles()),
+				new(new PairWait("77z".ToTiles()), "11z".ToTiles()),
+			},
+			"there are zi waits",
+		];
 	}
 
 	private static IEnumerable<object[]> RyanmenGetPossibleForTileTestCases()
