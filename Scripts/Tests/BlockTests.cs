@@ -602,7 +602,460 @@ public class BlockTests
 			},
 			"a pung meld, a pair wait, and an orphan",
 		];
-		// TODO: definitely need to test what happens with chiis. On that note, perhaps a good test would be to make
-		// each of these a complex wait and to make sure the returned BlockSets cover all the possible weights.
+		yield return
+		[
+			"3445s",
+			new List<BlockSet>()
+			{
+				new(
+				[
+					new Chow("345s".ToTiles()),
+					new Orphan("4s".ToTile()),
+				]),
+			},
+			"a nakabukure wait",
+		];
+		yield return
+		[
+			"2345p",
+			new List<BlockSet>()
+			{
+				new(
+				[
+					new Chow("234p".ToTiles()),
+					new Orphan("5p".ToTile()),
+				]),
+				new(
+				[
+					new Chow("345p".ToTiles()),
+					new Orphan("2p".ToTile()),
+				]),
+			},
+			"a nobetan wait",
+		];
+		yield return
+		[
+			"23456m",
+			new List<BlockSet>()
+			{
+				new(
+				[
+					new Chow("234m".ToTiles()),
+					new Ryanmen("56m".ToTiles()),
+				]),
+				new(
+				[
+					new Chow("345m".ToTiles()),
+					new Orphan("2m".ToTile()),
+					new Orphan("6m".ToTile()),
+				]),
+				new(
+				[
+					new Chow("456m".ToTiles()),
+					new Ryanmen("23m".ToTiles()),
+				]),
+			},
+			"a standard sanmenchan wait",
+		];
+		yield return
+		[
+			"2345678s",
+			new List<BlockSet>()
+			{
+				new(
+				[
+					new Chow("234s".ToTiles()),
+					new Chow("567s".ToTiles()),
+					new Orphan("8s".ToTile()),
+				]),
+				new(
+				[
+					new Chow("234s".ToTiles()),
+					new Chow("678s".ToTiles()),
+					new Orphan("5s".ToTile()),
+				]),
+				new(
+				[
+					new Chow("345s".ToTiles()),
+					new Chow("678s".ToTiles()),
+					new Orphan("2s".ToTile()),
+				]),
+				new(
+				[
+					new Chow("456s".ToTiles()),
+					new Ryanmen("23s".ToTiles()),
+					new Ryanmen("78s".ToTiles()),
+				]),
+			},
+			"a sanmentan wait",
+		];
+		yield return
+		[
+			"44556677p11z",
+			new List<BlockSet>()
+			{
+				new(
+				[
+					new Chow("456p".ToTiles()),
+					new Chow("456p".ToTiles()),
+					new PairWait("77p".ToTiles()),
+					new PairWait("11z".ToTiles()),
+				]),
+				new(
+				[
+					new Chow("456p".ToTiles()),
+					new Chow("567p".ToTiles()),
+					new Orphan("4p".ToTile()),
+					new Orphan("7p".ToTile()),
+					new PairWait("11z".ToTiles()),
+				]),
+				new(
+				[
+					new Chow("567p".ToTiles()),
+					new Chow("568p".ToTiles()),
+					new PairWait("44p".ToTiles()),
+					new PairWait("11z".ToTiles()),
+				]),
+			},
+			"a sanmen shanpon wait",
+		];
+		yield return
+		[
+			"45666s44z",
+			new List<BlockSet>()
+			{
+				new(
+				[
+					new Chow("456s".ToTiles()),
+					new PairWait("66s".ToTiles()),
+					new PairWait("44z".ToTiles()),
+				]),
+				new(
+				[
+					new Pung("666s".ToTiles()),
+					new Ryanmen("45s".ToTiles()),
+					new PairWait("44z".ToTiles()),
+				]),
+			},
+			"an entotsu wait",
+		];
+		yield return
+		[
+			"6788m",
+			new List<BlockSet>()
+			{
+				new(
+				[
+					new Chow("678m".ToTiles()),
+					new Orphan("8m".ToTile()),
+				]),
+			},
+			"an aryanmen wait",
+		];
+		// TODO: When you bring ryantan over to tenpai waits, also bring its cousins pentan and kantan. The difference
+		// is just wait you would end up with if this was the tenpai wait: ryanmen, penchan, or kanchan.
+		// TODO: Also look at kantankan, which is similar, but doesn't show its beauty with the meld-hungry algorithm
+		// I'm currently using.
+		yield return
+		[
+			"4555p",
+			new List<BlockSet>()
+			{
+				new(
+				[
+					new Pung("555p".ToTiles()),
+					new Orphan("4p".ToTile()),
+				]),
+			},
+			"a ryantan wait",
+		];
+		yield return
+		[
+			"5566778899m",
+			new List<BlockSet>()
+			{
+				new(
+				[
+					new Chow("567m".ToTiles()),
+					new Chow("567m".ToTiles()),
+					new PairWait("88m".ToTiles()),
+					new PairWait("99m".ToTiles()),
+				]),
+				new(
+				[
+					new Chow("567m".ToTiles()),
+					new Chow("567m".ToTiles()),
+					new Penchan("89m".ToTiles()),
+					new Penchan("89m".ToTiles()),
+				]),
+				new(
+				[
+					new Chow("567m".ToTiles()),
+					new Chow("678m".ToTiles()),
+					new Penchan("89m".ToTiles()),
+					new Orphan("5m".ToTile()),
+					new Orphan("9m".ToTile()),
+				]),
+				new(
+				[
+					new Chow("567m".ToTiles()),
+					new Chow("678m".ToTiles()),
+					new PairWait("99m".ToTiles()),
+					new Orphan("5m".ToTile()),
+					new Orphan("8m".ToTile()),
+				]),
+				new(
+				[
+					new Chow("567m".ToTiles()),
+					new Chow("678m".ToTiles()),
+					new PairWait("99m".ToTiles()),
+					new Orphan("5m".ToTile()),
+					new Orphan("8m".ToTile()),
+				]),
+				new(
+				[
+					new Chow("567m".ToTiles()),
+					new Chow("789m".ToTiles()),
+					new Penchan("89m".ToTiles()),
+					new Ryanmen("56m".ToTiles()),
+				]),
+				new(
+				[
+					new Chow("567m".ToTiles()),
+					new Chow("789m".ToTiles()),
+					new Kanchan("68m".ToTiles()),
+					new Orphan("5m".ToTile()),
+					new Orphan("9m".ToTile()),
+				]),
+				new(
+				[
+					new Chow("678m".ToTiles()),
+					new Chow("678m".ToTiles()),
+					new PairWait("99m".ToTiles()),
+					new PairWait("55m".ToTiles()),
+				]),
+				new(
+				[
+					new Chow("678m".ToTiles()),
+					new Chow("789m".ToTiles()),
+					new Ryanmen("56m".ToTiles()),
+					new Orphan("5m".ToTile()),
+					new Orphan("9m".ToTile()),
+				]),
+				new(
+				[
+					new Chow("678m".ToTiles()),
+					new Chow("789m".ToTiles()),
+					new PairWait("55m".ToTiles()),
+					new Orphan("6m".ToTile()),
+					new Orphan("9m".ToTile()),
+				]),
+				new(
+				[
+					new Chow("789m".ToTiles()),
+					new Chow("789m".ToTiles()),
+					new PairWait("55m".ToTiles()),
+					new PairWait("66m".ToTiles()),
+				]),
+				new(
+				[
+					new Chow("789m".ToTiles()),
+					new Chow("789m".ToTiles()),
+					new Ryanmen("56m".ToTiles()),
+					new Ryanmen("56m".ToTiles()),
+				]),
+			},
+			"a goren toitsu wait",
+		];
+		yield return
+		[
+			"6667888p",
+			new List<BlockSet>()
+			{
+				new(
+				[
+					new Pung("666p".ToTiles()),
+					new Pung("888p".ToTiles()),
+					new Orphan("7p".ToTile()),
+				]),
+				new(
+				[
+					new Chow("678p".ToTiles()),
+					new PairWait("66p".ToTiles()),
+					new PairWait("88p".ToTiles()),
+				]),
+				new(
+				[
+					new Chow("678p".ToTiles()),
+					new Kanchan("68p".ToTiles()),
+					new Kanchan("68p".ToTiles()),
+				]),
+			},
+			"a tatsumaki wait",
+		];
+		// TODO: This hand kind of reveals the limits of the meld-hungry algorithm, because one of the tenpai waits
+		// would downgrade a pung of 2s down to a pair wait of 2s and a ryanmen of 23s (for example). This is probably
+		// not the first case, but it's one where I think it might be a bit more important to find those block sets
+		// earlier rather than later. My guess is that we'll have to extend the GetPossibleBlockSets function to take
+		// in a flags enum that determines what it will search for. Alternatively, I could go with the upgrade and
+		// and downgrade idea, which I kind of like as it adds to the regular language feel I'm getting here.
+		yield return
+		[
+			"2223456777s",
+			new List<BlockSet>()
+			{
+				new(
+				[
+					new Pung("222s".ToTiles()),
+					new Chow("345s".ToTiles()),
+					new Pung("777s".ToTiles()),
+					new Orphan("6s".ToTile()),
+				]),
+				new(
+				[
+					new Pung("222s".ToTiles()),
+					new Chow("456s".ToTiles()),
+					new Pung("777s".ToTiles()),
+					new Orphan("3s".ToTile()),
+				]),
+				new(
+				[
+					new Chow("234s".ToTiles()),
+					new Chow("567s".ToTiles()),
+					new PairWait("22s".ToTiles()),
+					new PairWait("77s".ToTiles()),
+				]),
+				new(
+				[
+					new Chow("234s".ToTiles()),
+					new Pung("777s".ToTiles()),
+					new Ryanmen("56s".ToTiles()),
+					new PairWait("22s".ToTiles()),
+				]),
+				new(
+				[
+					new Pung("222s".ToTiles()),
+					new Chow("567s".ToTiles()),
+					new Ryanmen("34s".ToTiles()),
+					new PairWait("77s".ToTiles()),
+				]),
+			},
+			"a happoubijin wait",
+		];
+		yield return
+		[
+			"2223456677778m",
+			new List<BlockSet>()
+			{
+				new(
+				[
+					new Pung("222m".ToTiles()),
+					new Chow("345m".ToTiles()),
+					new Chow("678m".ToTiles()),
+					new Pung("777m".ToTiles()),
+					new Orphan("6m".ToTile()),
+				]),
+				new(
+				[
+					new Chow("234m".ToTiles()),
+					new Chow("567m".ToTiles()),
+					new Chow("678m".ToTiles()),
+					new PairWait("22m".ToTiles()),
+					new PairWait("77m".ToTiles()),
+				]),
+				new(
+				[
+					new Pung("222m".ToTiles()),
+					new Chow("456m".ToTiles()),
+					new Chow("678m".ToTiles()),
+					new Pung("777m".ToTiles()),
+					new Orphan("3m".ToTile()),
+				]),
+				new(
+				[
+					new Pung("222m".ToTiles()),
+					new Pung("777m".ToTiles()),
+					new Chow("567m".ToTiles()),
+					new Kanchan("68m".ToTiles()),
+					new Ryanmen("34m".ToTiles()),
+				]),
+				new(
+				[
+					new Pung("222m".ToTiles()),
+					new Pung("777m".ToTiles()),
+					new Chow("567m".ToTiles()),
+					new Kanchan("46m".ToTiles()),
+					new Orphan("3m".ToTile()),
+					new Orphan("8m".ToTile()),
+				]),
+				// These are the ones I missed :(
+				new(
+				[
+					new Chow("234m".ToTiles()),
+					new Chow("567m".ToTiles()),
+					new Pung("777m".ToTiles()),
+					new Kanchan("68m".ToTiles()),
+					new PairWait("22m".ToTiles()),
+				]),
+				new(
+				[
+					new Chow("234m".ToTiles()),
+					new Chow("678m".ToTiles()),
+					new Pung("777m".ToTiles()),
+					new Ryanmen("56m".ToTiles()),
+					new PairWait("22m".ToTiles()),
+				]),
+				new(
+				[
+					new Chow("234m".ToTiles()),
+					new Kong("7777m".ToTiles()),
+					new Ryanmen("56m".ToTiles()),
+					new Kanchan("68m".ToTiles()),
+					new PairWait("22m".ToTiles()),
+				]),
+				new(
+				[
+					new Chow("345m".ToTiles()),
+					new Pung("222m".ToTiles()),
+					new Kong("7777m".ToTiles()),
+					new Kanchan("68m".ToTiles()),
+					new Orphan("6m".ToTile()),
+				]),
+				new(
+				[
+					new Chow("345m".ToTiles()),
+					new Pung("222m".ToTiles()),
+					new Kong("7777m".ToTiles()),
+					new PairWait("66m".ToTiles()),
+					new Orphan("8m".ToTile()),
+				]),
+				new(
+				[
+					new Chow("456m".ToTiles()),
+					new Pung("222m".ToTiles()),
+					new Kong("7777m".ToTiles()),
+					new Kanchan("68m".ToTiles()),
+					new Orphan("3m".ToTile()),
+				]),
+				new(
+				[
+					new Chow("567m".ToTiles()),
+					new Chow("678m".ToTiles()),
+					new Pung("222m".ToTiles()),
+					new Ryanmen("34m".ToTiles()),
+					new PairWait("77m".ToTiles()),
+				]),
+				new(
+				[
+					new Chow("234m".ToTiles()),
+					new Kong("7777m".ToTiles()),
+					new PairWait("22m".ToTiles()),
+					new PairWait("66m".ToTiles()),
+					new Orphan("5m".ToTile()),
+					new Orphan("8m".ToTile()),
+				]),
+			},
+			"a paaren poutou wait",
+		];
 	}
 }
