@@ -141,6 +141,51 @@ public class WaitTests
 		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
 	}
 
+	[TestCase]
+	[DataPoint(nameof(SevenPairsWaitEqualsTestCases))]
+	public static void SevenPairsWaitEqualsIsCorrect(SevenPairsWait blockA, SevenPairsWait blockB, bool expectedResult, string because)
+	{
+		LoggingPrefix = nameof(SevenPairsWaitEqualsIsCorrect);
+
+		var outcomeString = expectedResult ? "does equal" : "does NOT equal";
+		PrefixInfo($"Checking that seven pairs wait A \"{blockA}\" {outcomeString} seven pairs wait B \"{blockB}\" because {because}");
+		AssertThat(blockA.Equals(blockB)).IsEqual(expectedResult);
+		if (blockB != null)
+		{
+			PrefixInfo($"Checking that seven pairs wait B \"{blockB}\" {outcomeString} seven pairs wait A \"{blockA}\" because {because}");
+			AssertThat(blockB.Equals(blockA)).IsEqual(expectedResult);
+		}
+	}
+
+	[TestCase]
+	[DataPoint(nameof(SevenPairsWaitGetPossibleForTileTestCases))]
+	public static void SevenPairsWaitGetPossibleForTileIsCorrect(
+		string tileNotation,
+		string otherTilesNotation,
+		List<MadeBlockContext> expectedOutput,
+		string because)
+	{
+		LoggingPrefix = nameof(SevenPairsWaitGetPossibleForTileIsCorrect);
+
+		var tile = tileNotation.ToTile();
+		var otherTiles = otherTilesNotation.ToTiles();
+		var actualOutput = SevenPairsWait.GetPossibleForTile(tile, otherTiles).ToList();
+		PrefixInfo($"Checking that SevenPairsWait.GetPossibleForTile with tile \"{tileNotation}\" and other tiles \"{otherTilesNotation}\" is correct when {because}");
+		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+	}
+
+	[TestCase]
+	[DataPoint(nameof(SevenPairsWaitGetPossibleTestCases))]
+	public static void SevenPairsWaitGetPossibleIsCorrect(string tilesNotation, List<MadeBlockContext> expectedOutput, string because)
+	{
+		LoggingPrefix = nameof(SevenPairsWaitGetPossibleIsCorrect);
+
+		var tiles = tilesNotation.ToTiles();
+		var actualOutput = SevenPairsWait.GetPossible(tiles).ToList();
+		PrefixInfo($"Checking that SevenPairsWait.GetPossible with tiles \"{tilesNotation}\" is correct when {because}");
+		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+	}
+
 	private static IEnumerable<object[]> GetFirstLevelWaitsTestCases()
 	{
 		// TODO: This is a thirteen orphans wait, we may have to change this test a bit when we add that type of wait.
@@ -561,6 +606,524 @@ public class WaitTests
 				new(new Penchan("12m".ToTiles()), "1p89m3s5z".ToTiles()),
 			},
 			"there are two penchan in the same suit",
+		];
+	}
+
+	private static IEnumerable<object[]> SevenPairsWaitEqualsTestCases()
+	{
+		yield return
+		[
+			new SevenPairsWait(
+				"2244p".ToTiles(),
+				[
+					new Pair("22p".ToTiles()),
+					new Pair("44p".ToTiles()),
+				]
+			),
+			null,
+			false,
+			"null should not equal",
+		];
+		yield return
+		[
+			new SevenPairsWait(
+				"2244p".ToTiles(),
+				[
+					new Pair("22p".ToTiles()),
+					new Pair("44p".ToTiles()),
+				]
+			),
+			new SevenPairsWait(
+				"2244p".ToTiles(),
+				[
+					new Pair("22p".ToTiles()),
+					new Pair("44p".ToTiles()),
+				]
+			),
+			true,
+			"they have the same tiles and pairs",
+		];
+		yield return
+		[
+			new SevenPairsWait(
+				"2244p".ToTiles(),
+				[
+					new Pair("22p".ToTiles()),
+					new Pair("44p".ToTiles()),
+				]
+			),
+			new SevenPairsWait(
+				"2244p".ToTiles(),
+				[
+					new Pair("24p".ToTiles()),
+					new Pair("24p".ToTiles()),
+				]
+			),
+			false,
+			"pairs created should matter",
+		];
+		yield return
+		[
+			new SevenPairsWait(
+				"2244p".ToTiles(),
+				[
+					new Pair("22p".ToTiles()),
+					new Pair("44p".ToTiles()),
+				]
+			),
+			new SevenPairsWait(
+				"2244p".ToTiles(),
+				[
+					new Pair("22p".ToTiles()),
+					new Pair("44p".ToTiles()),
+					new Pair("66p".ToTiles()),
+				]
+			),
+			false,
+			"count of pairs should matter",
+		];
+	}
+
+	private static IEnumerable<object[]> SevenPairsWaitGetPossibleTestCases()
+	{
+		yield return ["25p36s47m4z", new List<MadeBlockContext>(), "there are no pairs"];
+		yield return
+		[
+			"25p3647m44z",
+			new List<MadeBlockContext>()
+			{
+				new(new SevenPairsWait("44z".ToTiles(), [new Pair("44z".ToTiles())]), "25p3647m".ToTiles()),
+			},
+			"there is a single pair",
+		];
+		yield return
+		[
+			"11223344z",
+			new List<MadeBlockContext>()
+			{
+				new(new SevenPairsWait(
+					"11223344z".ToTiles(),
+					[
+						new Pair("11z".ToTiles()),
+						new Pair("22z".ToTiles()),
+						new Pair("33z".ToTiles()),
+						new Pair("44z".ToTiles()),
+					]),
+					[]),
+			},
+			"there are only pairs in a single suit",
+		];
+		yield return
+		[
+			"119m228s337p447z",
+			new List<MadeBlockContext>()
+			{
+				new(new SevenPairsWait(
+					"11m22s33p44z".ToTiles(),
+					[
+						new Pair("11m".ToTiles()),
+						new Pair("22s".ToTiles()),
+						new Pair("33p".ToTiles()),
+						new Pair("44z".ToTiles()),
+					]),
+					"9m8s7p7z".ToTiles()),
+			},
+			"there are multiple pairs across all suits",
+		];
+		yield return
+		[
+			"5550m67z",
+			new List<MadeBlockContext>()
+			{
+				new(new SevenPairsWait(
+					"5550m".ToTiles(),
+					[
+						new Pair("55m".ToTiles()),
+						new Pair("50m".ToTiles()),
+					]),
+					"67z".ToTiles()),
+			},
+			"there are four number suit fives",
+		];
+		yield return
+		[
+			"555s67z",
+			new List<MadeBlockContext>()
+			{
+				new(new SevenPairsWait(
+					"55s".ToTiles(),
+					[
+						new Pair("55s".ToTiles()),
+					]),
+					"5s67z".ToTiles()),
+			},
+			"there are three number suit fives, but no red fives",
+		];
+		yield return
+		[
+			"550p67z",
+			new List<MadeBlockContext>()
+			{
+				new(new SevenPairsWait(
+					"55p".ToTiles(),
+					[
+						new Pair("55p".ToTiles()),
+					]),
+					"0p67z".ToTiles()),
+				new(new SevenPairsWait(
+					"50p".ToTiles(),
+					[
+						new Pair("50p".ToTiles()),
+					]),
+					"5p67z".ToTiles()),
+			},
+			"there are three number suit fives with one red five",
+		];
+		yield return
+		[
+			"50m67z",
+			new List<MadeBlockContext>()
+			{
+				new(new SevenPairsWait(
+					"50m".ToTiles(),
+					[
+						new Pair("50m".ToTiles()),
+					]),
+					"67z".ToTiles()),
+			},
+			"there are two number suit fives with one red five",
+		];
+		yield return
+		[
+			"55m67z",
+			new List<MadeBlockContext>()
+			{
+				new(new SevenPairsWait(
+					"55m".ToTiles(),
+					[
+						new Pair("55m".ToTiles()),
+					]),
+					"67z".ToTiles()),
+			},
+			"there are two number suit fives with no red fives",
+		];
+		yield return
+		[
+			"5m1677z",
+			new List<MadeBlockContext>()
+			{
+				new(new SevenPairsWait(
+					"77z".ToTiles(),
+					[
+						new Pair("77z".ToTiles()),
+					]),
+					"5m16z".ToTiles()),
+			},
+			"there is one number suit non-red five with some other pair",
+		];
+		yield return
+		[
+			"0m1677z",
+			new List<MadeBlockContext>()
+			{
+				new(new SevenPairsWait(
+					"77z".ToTiles(),
+					[
+						new Pair("77z".ToTiles()),
+					]),
+					"0m16z".ToTiles()),
+			},
+			"there is one number suit red five with some other pair",
+		];
+		yield return
+		[
+			"1550m1555s155z",
+			new List<MadeBlockContext>()
+			{
+				new(new SevenPairsWait(
+					"55m55s55z".ToTiles(),
+					[
+						new Pair("55m".ToTiles()),
+						new Pair("55s".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"10m15s1z".ToTiles()),
+				new(new SevenPairsWait(
+					"50m55s55z".ToTiles(),
+					[
+						new Pair("50m".ToTiles()),
+						new Pair("55s".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"15m15s1z".ToTiles()),
+			},
+			"there are pairs of fives in two number suits, with a red five in one suit",
+		];
+		yield return
+		[
+			"1550s1550p155z",
+			new List<MadeBlockContext>()
+			{
+				new(new SevenPairsWait(
+					"55s55p55z".ToTiles(),
+					[
+						new Pair("55s".ToTiles()),
+						new Pair("55p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"10s10p1z".ToTiles()),
+				new(new SevenPairsWait(
+					"50s55p55z".ToTiles(),
+					[
+						new Pair("50s".ToTiles()),
+						new Pair("55p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"15s10p1z".ToTiles()),
+				new(new SevenPairsWait(
+					"55s50p55z".ToTiles(),
+					[
+						new Pair("55s".ToTiles()),
+						new Pair("50p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"10s15p1z".ToTiles()),
+				new(new SevenPairsWait(
+					"50s50p55z".ToTiles(),
+					[
+						new Pair("50s".ToTiles()),
+						new Pair("50p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"15s15p1z".ToTiles()),
+			},
+			"there are pairs of fives in two number suits (sou-pin), with a red five in both suits",
+		];
+		yield return
+		[
+			"1550m1550p155z",
+			new List<MadeBlockContext>()
+			{
+				new(new SevenPairsWait(
+					"55m55p55z".ToTiles(),
+					[
+						new Pair("55m".ToTiles()),
+						new Pair("55p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"10m10p1z".ToTiles()),
+				new(new SevenPairsWait(
+					"50m55p55z".ToTiles(),
+					[
+						new Pair("50m".ToTiles()),
+						new Pair("55p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"15m10p1z".ToTiles()),
+				new(new SevenPairsWait(
+					"55m50p55z".ToTiles(),
+					[
+						new Pair("55m".ToTiles()),
+						new Pair("50p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"10m15p1z".ToTiles()),
+				new(new SevenPairsWait(
+					"50m50p55z".ToTiles(),
+					[
+						new Pair("50m".ToTiles()),
+						new Pair("50p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"15m15p1z".ToTiles()),
+			},
+			"there are pairs of fives in two number suits (man-pin), with a red five in both suits",
+		];
+		yield return
+		[
+			"1550m1550s1550p55z",
+			new List<MadeBlockContext>()
+			{
+				new(new SevenPairsWait(
+					"55m55s55p55z".ToTiles(),
+					[
+						new Pair("55m".ToTiles()),
+						new Pair("55s".ToTiles()),
+						new Pair("55p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"10m10s10p".ToTiles()),
+				new(new SevenPairsWait(
+					"50m55s55p55z".ToTiles(),
+					[
+						new Pair("50m".ToTiles()),
+						new Pair("55s".ToTiles()),
+						new Pair("55p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"15m10s10p".ToTiles()),
+				new(new SevenPairsWait(
+					"55m50s55p55z".ToTiles(),
+					[
+						new Pair("55m".ToTiles()),
+						new Pair("50s".ToTiles()),
+						new Pair("55p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"10m15s10p".ToTiles()),
+				new(new SevenPairsWait(
+					"50m50s55p55z".ToTiles(),
+					[
+						new Pair("50m".ToTiles()),
+						new Pair("50s".ToTiles()),
+						new Pair("55p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"15m15s10p".ToTiles()),
+				new(new SevenPairsWait(
+					"55m55s50p55z".ToTiles(),
+					[
+						new Pair("55m".ToTiles()),
+						new Pair("55s".ToTiles()),
+						new Pair("50p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"10m10s15p".ToTiles()),
+				new(new SevenPairsWait(
+					"50m55s50p55z".ToTiles(),
+					[
+						new Pair("50m".ToTiles()),
+						new Pair("55s".ToTiles()),
+						new Pair("50p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"15m10s15p".ToTiles()),
+				new(new SevenPairsWait(
+					"55m50s50p55z".ToTiles(),
+					[
+						new Pair("55m".ToTiles()),
+						new Pair("50s".ToTiles()),
+						new Pair("50p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"10m15s15p".ToTiles()),
+				new(new SevenPairsWait(
+					"50m50s50p55z".ToTiles(),
+					[
+						new Pair("50m".ToTiles()),
+						new Pair("50s".ToTiles()),
+						new Pair("50p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"15m15s15p".ToTiles()),
+			},
+			"there are pairs of fives in all number suits, all with red fives",
+		];
+	}
+
+	private static IEnumerable<object[]> SevenPairsWaitGetPossibleForTileTestCases()
+	{
+		yield return
+		[
+			"0p",
+			"55p67z",
+			new List<MadeBlockContext>()
+			{
+				new(new SevenPairsWait(
+					"50p".ToTiles(),
+					[
+						new Pair("50p".ToTiles()),
+					]),
+					"5p67z".ToTiles()),
+			},
+			"there are three number suit fives with one red five (as desired tile)",
+		];
+		yield return
+		[
+			"0m",
+			"155m1555s155z",
+			new List<MadeBlockContext>()
+			{
+				new(new SevenPairsWait(
+					"50m55s55z".ToTiles(),
+					[
+						new Pair("50m".ToTiles()),
+						new Pair("55s".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"15m15s1z".ToTiles()),
+			},
+			"there are pairs of fives in two number suits, with a red five in one suit (as desired tile)",
+		];
+		yield return
+		[
+			"0p",
+			"1550s155p155z",
+			new List<MadeBlockContext>()
+			{
+				new(new SevenPairsWait(
+					"55s50p55z".ToTiles(),
+					[
+						new Pair("55s".ToTiles()),
+						new Pair("50p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"10s15p1z".ToTiles()),
+				new(new SevenPairsWait(
+					"50s50p55z".ToTiles(),
+					[
+						new Pair("50s".ToTiles()),
+						new Pair("50p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"15s15p1z".ToTiles()),
+			},
+			"there are pairs of fives in two number suits (sou-pin), with a red five in both suits, and the red pin desired",
+		];
+		yield return
+		[
+			"0s",
+			"1550m155s1550p55z",
+			new List<MadeBlockContext>()
+			{
+				new(new SevenPairsWait(
+					"55m50s55p55z".ToTiles(),
+					[
+						new Pair("55m".ToTiles()),
+						new Pair("50s".ToTiles()),
+						new Pair("55p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"10m15s10p".ToTiles()),
+				new(new SevenPairsWait(
+					"50m50s55p55z".ToTiles(),
+					[
+						new Pair("50m".ToTiles()),
+						new Pair("50s".ToTiles()),
+						new Pair("55p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"15m15s10p".ToTiles()),
+				new(new SevenPairsWait(
+					"55m50s50p55z".ToTiles(),
+					[
+						new Pair("55m".ToTiles()),
+						new Pair("50s".ToTiles()),
+						new Pair("50p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"10m15s15p".ToTiles()),
+				new(new SevenPairsWait(
+					"50m50s50p55z".ToTiles(),
+					[
+						new Pair("50m".ToTiles()),
+						new Pair("50s".ToTiles()),
+						new Pair("50p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]),
+					"15m15s15p".ToTiles()),
+			},
+			"there are pairs of fives in all number suits, all with red fives, and the red sou desired",
 		];
 	}
 }

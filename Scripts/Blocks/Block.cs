@@ -150,7 +150,7 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 		return Equals(thatBlock);
 	}
 
-	public bool Equals(Block thatBlock)
+	public virtual bool Equals(Block thatBlock)
 	{
 		if (thatBlock == null)
 		{
