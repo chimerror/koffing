@@ -12,6 +12,8 @@ public class Pung : Meld, IBlock
 		return GetPossibleHelper(tiles, typeof(Pung)).Distinct();
 	}
 
+	// TODO: Right now we assume only one red 5, which may not be true in the future. This code will have to be
+	// updated if that changes.
 	public static new IEnumerable<MadeBlockContext> GetPossibleForTile(Tile tile, IEnumerable<Tile> otherTiles)
 	{
 		var otherTilesList = otherTiles.ToList();
