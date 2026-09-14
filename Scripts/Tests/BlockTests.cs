@@ -222,6 +222,7 @@ public class BlockTests
 		yield return [new Kanchan(), 19];
 		yield return [new Penchan(), 23];
 		yield return [new SevenPairsWait(), 29];
+		yield return [new ThirteenOrphansWait(), 31];
 	}
 
 	private static IEnumerable<object[]> CompareBlocksTestCases()

@@ -186,6 +186,34 @@ public class WaitTests
 		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
 	}
 
+	[TestCase]
+	[DataPoint(nameof(ThirteenOrphansWaitEqualsTestCases))]
+	public static void ThirteenOrphansWaitEqualsIsCorrect(ThirteenOrphansWait blockA, ThirteenOrphansWait blockB, bool expectedResult, string because)
+	{
+		LoggingPrefix = nameof(ThirteenOrphansWaitEqualsIsCorrect);
+
+		var outcomeString = expectedResult ? "does equal" : "does NOT equal";
+		PrefixInfo($"Checking that thirteen orphans wait A \"{blockA}\" {outcomeString} thirteen orphans wait B \"{blockB}\" because {because}");
+		AssertThat(blockA.Equals(blockB)).IsEqual(expectedResult);
+		if (blockB != null)
+		{
+			PrefixInfo($"Checking that thirteen orphans wait B \"{blockB}\" {outcomeString} thirteen orphans wait A \"{blockA}\" because {because}");
+			AssertThat(blockB.Equals(blockA)).IsEqual(expectedResult);
+		}
+	}
+
+	[TestCase]
+	[DataPoint(nameof(ThirteenOrphansWaitGetPossibleTestCases))]
+	public static void ThirteenOrphansWaitGetPossibleIsCorrect(string tilesNotation, List<MadeBlockContext> expectedOutput, string because)
+	{
+		LoggingPrefix = nameof(ThirteenOrphansWaitGetPossibleIsCorrect);
+
+		var tiles = tilesNotation.ToTiles();
+		var actualOutput = ThirteenOrphansWait.GetPossible(tiles).ToList();
+		PrefixInfo($"Checking that ThirteenOrphansWait.GetPossible with tiles \"{tilesNotation}\" is correct when {because}");
+		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+	}
+
 	private static IEnumerable<object[]> GetFirstLevelWaitsTestCases()
 	{
 		// TODO: This is a thirteen orphans wait, we may have to change this test a bit when we add that type of wait.
@@ -1124,6 +1152,188 @@ public class WaitTests
 					"15m15s15p".ToTiles()),
 			},
 			"there are pairs of fives in all number suits, all with red fives, and the red sou desired",
+		];
+	}
+
+	private static IEnumerable<object[]> ThirteenOrphansWaitEqualsTestCases()
+	{
+		yield return
+		[
+			new ThirteenOrphansWait(
+				"19m19s1199p123457".ToTiles(),
+				[
+					new Pair("11p".ToTiles()),
+					new Pair("99p".ToTiles()),
+				]
+			),
+			null,
+			false,
+			"null should not equal",
+		];
+		yield return
+		[
+			new ThirteenOrphansWait(
+				"19m19s1199p123457".ToTiles(),
+				[
+					new Pair("11p".ToTiles()),
+					new Pair("99p".ToTiles()),
+				]
+			),
+			new ThirteenOrphansWait(
+				"19m19s1199p123457".ToTiles(),
+				[
+					new Pair("11p".ToTiles()),
+					new Pair("99p".ToTiles()),
+				]
+			),
+			true,
+			"they have the same tiles and pairs",
+		];
+		yield return
+		[
+			new ThirteenOrphansWait(
+				"19m19s1199p123457".ToTiles(),
+				[
+					new Pair("11p".ToTiles()),
+					new Pair("99p".ToTiles()),
+				]
+			),
+			new ThirteenOrphansWait(
+				"19m19s1199p123457".ToTiles(),
+				[
+					new Pair("19p".ToTiles()),
+					new Pair("19p".ToTiles()),
+				]
+			),
+			false,
+			"pairs created should matter",
+		];
+		yield return
+		[
+			new ThirteenOrphansWait(
+				"19m19s1199p123457".ToTiles(),
+				[
+					new Pair("11p".ToTiles()),
+					new Pair("99p".ToTiles()),
+				]
+			),
+			new ThirteenOrphansWait(
+				"19m19s1199p123457".ToTiles(),
+				[
+					new Pair("11p".ToTiles()),
+					new Pair("99p".ToTiles()),
+					new Pair("55z".ToTiles()),
+				]
+			),
+			false,
+			"count of pairs should matter",
+		];
+	}
+
+	private static IEnumerable<object[]> ThirteenOrphansWaitGetPossibleTestCases()
+	{
+		yield return ["25p36s47m", new List<MadeBlockContext>(), "there are no terminals or honors"];
+		yield return
+		[
+			"25p16s47m",
+			new List<MadeBlockContext>()
+			{
+				new(new ThirteenOrphansWait("1s".ToTiles(), []), "25p6s47m".ToTiles()),
+			},
+			"there is a single one terminal",
+		];
+		yield return
+		[
+			"259p36s47m",
+			new List<MadeBlockContext>()
+			{
+				new(new ThirteenOrphansWait("9p".ToTiles(), []), "25p36s47m".ToTiles()),
+			},
+			"there is a single nine terminal",
+		];
+		yield return
+		[
+			"25p36s47m3z",
+			new List<MadeBlockContext>()
+			{
+				new(new ThirteenOrphansWait("3z".ToTiles(), []), "25p36s47m".ToTiles()),
+			},
+			"there is a single honor",
+		];
+		yield return
+		[
+			"1259p36s479m",
+			new List<MadeBlockContext>()
+			{
+				new(new ThirteenOrphansWait("19p9m".ToTiles(), []), "25p36s47m".ToTiles()),
+			},
+			"there are multiple terminals across multiple suits, but no pairs",
+		];
+		yield return
+		[
+			"25p36s47m2367z",
+			new List<MadeBlockContext>()
+			{
+				new(new ThirteenOrphansWait("2367z".ToTiles(), []), "25p36s47m".ToTiles()),
+			},
+			"there are multiple honors, but no pairs",
+		];
+		yield return
+		[
+			"25p136s1479m2367z",
+			new List<MadeBlockContext>()
+			{
+				new(new ThirteenOrphansWait("1s19m2367z".ToTiles(), []), "25p36s47m".ToTiles()),
+			},
+			"there are both terminals and honors, but no pairs",
+		];
+		yield return
+		[
+			"25p1136s1479m2367z",
+			new List<MadeBlockContext>()
+			{
+				new(new ThirteenOrphansWait(
+					"11s19m2367z".ToTiles(),
+					[
+						new Pair("11s".ToTiles()),
+					]),
+					"25p36s47m".ToTiles()),
+			},
+			"there are both terminals and honors, with a single pair",
+		];
+		yield return
+		[
+			"11p11s199m223667z",
+			new List<MadeBlockContext>()
+			{
+				new(new ThirteenOrphansWait(
+					"11p11s199m223667z".ToTiles(),
+					[
+						new Pair("11p".ToTiles()),
+						new Pair("11s".ToTiles()),
+						new Pair("99m".ToTiles()),
+						new Pair("22z".ToTiles()),
+						new Pair("66z".ToTiles()),
+					]),
+					[]),
+			},
+			"there are both terminals and honors, with multiple pairs",
+		];
+		yield return
+		[
+			"1111p11s19m23667z",
+			new List<MadeBlockContext>()
+			{
+				new(new ThirteenOrphansWait(
+					"11p11s19m23667z".ToTiles(),
+					[
+						new Pair("11p".ToTiles()),
+						new Pair("11s".ToTiles()),
+						new Pair("66z".ToTiles()),
+					]),
+					"11p".ToTiles()),
+			},
+			"there are both terminals and honors, with multiple pairs, one of which has redundant extras",
 		];
 	}
 }
