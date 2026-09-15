@@ -37,11 +37,11 @@ public class BlockTests
 
 		var outcomeString = expectedResult ? "does equal" : "does NOT equal";
 		PrefixInfo($"Checking that block A \"{blockA}\" {outcomeString} block B \"{blockB}\" because {because}");
-		AssertThat(blockA.Equals(blockB)).IsEqual(expectedResult);
+		AssertThat(expectedResult).IsEqual(blockA.Equals(blockB));
 		if (blockB != null)
 		{
 			PrefixInfo($"Checking that block B \"{blockB}\" {outcomeString} block A \"{blockA}\" because {because}");
-			AssertThat(blockB.Equals(blockA)).IsEqual(expectedResult);
+			AssertThat(expectedResult).IsEqual(blockB.Equals(blockA));
 		}
 	}
 
@@ -52,7 +52,7 @@ public class BlockTests
 		LoggingPrefix = nameof(GetBlockHashCodeIsCorrect);
 
 		PrefixInfo($"Checking that block of type \"{block.GetType()}\" has hash code {expectedHashCode}");
-		AssertThat(block.GetHashCode()).IsEqual(expectedHashCode);
+		AssertThat(expectedHashCode).IsEqual(block.GetHashCode());
 	}
 
 	[TestCase]
@@ -62,7 +62,7 @@ public class BlockTests
 		LoggingPrefix = nameof(CompareBlocksIsCorrect);
 
 		PrefixInfo($"Checking that Block.CompareTo is {expectedComparisonValue} when {because}");
-		AssertThat(blockA.CompareTo(blockB)).IsEqual(expectedComparisonValue);
+		AssertThat(expectedComparisonValue).IsEqual(blockA.CompareTo(blockB));
 	}
 
 	[TestCase]
@@ -87,11 +87,11 @@ public class BlockTests
 
 		var outcomeString = expectedResult ? "does equal" : "does NOT equal";
 		PrefixInfo($"Checking that context A \"{contextA}\" {outcomeString} context B \"{contextB}\" because {because}");
-		AssertThat(contextA.Equals(contextB)).IsEqual(expectedResult);
+		AssertThat(expectedResult).IsEqual(contextA.Equals(contextB));
 		if (contextB != null)
 		{
 			PrefixInfo($"Checking that context B \"{contextB}\" {outcomeString} context A \"{contextA}\" because {because}");
-			AssertThat(contextB.Equals(contextA)).IsEqual(expectedResult);
+			AssertThat(expectedResult).IsEqual(contextB.Equals(contextA));
 		}
 	}
 
@@ -106,7 +106,7 @@ public class BlockTests
 		LoggingPrefix = nameof(CompareMadeBlockContextsIsCorrect);
 
 		PrefixInfo($"Checking that MadeBlockContext.CompareTo is {expectedComparisonValue} when comparing {because}");
-		AssertThat(contextA.CompareTo(contextB)).IsEqual(expectedComparisonValue);
+		AssertThat(expectedComparisonValue).IsEqual(contextA.CompareTo(contextB));
 	}
 
 	[TestCase]
@@ -135,7 +135,7 @@ public class BlockTests
 		LoggingPrefix = nameof(CompareBlockSetsIsCorrect);
 
 		PrefixInfo($"Checking that BlockSet.CompareTo is {expectedComparisonValue} when comparing {because}");
-		AssertThat(blockSetA.CompareTo(blockSetB)).IsEqual(expectedComparisonValue);
+		AssertThat(expectedComparisonValue).IsEqual(blockSetA.CompareTo(blockSetB));
 	}
 
 	[TestCase]
@@ -148,7 +148,7 @@ public class BlockTests
 		var actualOutput = Block.GetPossibleBlockSets(tiles).Order().ToList();
 
 		PrefixInfo($"Checking that all block sets are returned from a hand with {because}");
-		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
 	private static IEnumerable<object[]> BlockEqualsEdgeTestCases()

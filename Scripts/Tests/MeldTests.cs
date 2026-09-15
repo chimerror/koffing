@@ -28,7 +28,7 @@ public class MeldTests
 		var tiles = tilesNotation.ToTiles();
 		var actualOutput = Meld.GetFirstLevelMelds(tiles);
 		PrefixInfo($"Checking that Meld.GetFirstLevelMelds with tiles \"{tilesNotation}\" is correct when {because}");
-		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
 	[TestCase]
@@ -45,7 +45,7 @@ public class MeldTests
 		var otherTiles = otherTilesNotation.ToTiles();
 		var actualOutput = Pair.GetPossibleForTile(tile, otherTiles).ToList();
 		PrefixInfo($"Checking that Pair.GetPossibleForTile with tile \"{tileNotation}\" and other tiles \"{otherTilesNotation}\" is correct when {because}");
-		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
 	[TestCase]
@@ -57,7 +57,7 @@ public class MeldTests
 		var tiles = tilesNotation.ToTiles();
 		var actualOutput = Pair.GetPossible(tiles).ToList();
 		PrefixInfo($"Checking that Pair.GetPossible with tiles \"{tilesNotation}\" is correct when {because}");
-		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
 	// These PairWait tests might should be in WaitTests, but since they are going to just use the Pair test cases, it's
@@ -80,7 +80,7 @@ public class MeldTests
 			.ToList();
 
 		PrefixInfo($"Checking that PairWait.GetPossibleForTile with tile \"{tileNotation}\" and other tiles \"{otherTilesNotation}\" is correct when {because}");
-		AssertArray(actualOutput).ContainsExactlyInAnyOrder(convertedExpected);
+		AssertArray(convertedExpected).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
 	[TestCase]
@@ -96,7 +96,7 @@ public class MeldTests
 			.ToList();
 
 		PrefixInfo($"Checking that PairWait.GetPossible with tiles \"{tilesNotation}\" is correct when {because}");
-		AssertArray(actualOutput).ContainsExactlyInAnyOrder(convertedExpected);
+		AssertArray(convertedExpected).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
 
@@ -114,7 +114,7 @@ public class MeldTests
 		var otherTiles = otherTilesNotation.ToTiles();
 		var actualOutput = Kong.GetPossibleForTile(tile, otherTiles).ToList();
 		PrefixInfo($"Checking that Kong.GetPossibleForTile with tile \"{tileNotation}\" and other tiles \"{otherTilesNotation}\" is correct when {because}");
-		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
 	[TestCase]
@@ -126,7 +126,7 @@ public class MeldTests
 		var tiles = tilesNotation.ToTiles();
 		var actualOutput = Kong.GetPossible(tiles).ToList();
 		PrefixInfo($"Checking that Kong.GetPossible with tiles \"{tilesNotation}\" is correct when {because}");
-		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
 	[TestCase]
@@ -143,7 +143,7 @@ public class MeldTests
 		var otherTiles = otherTilesNotation.ToTiles();
 		var actualOutput = Pung.GetPossibleForTile(tile, otherTiles).ToList();
 		PrefixInfo($"Checking that Pung.GetPossibleForTile with tile \"{tileNotation}\" and other tiles \"{otherTilesNotation}\" is correct when {because}");
-		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
 	[TestCase]
@@ -155,7 +155,7 @@ public class MeldTests
 		var tiles = tilesNotation.ToTiles();
 		var actualOutput = Pung.GetPossible(tiles).ToList();
 		PrefixInfo($"Checking that Pung.GetPossible with tiles \"{tilesNotation}\" is correct when {because}");
-		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
 	[TestCase]
@@ -172,7 +172,7 @@ public class MeldTests
 		var otherTiles = otherTilesNotation.ToTiles();
 		var actualOutput = Chow.GetPossibleForTile(tile, otherTiles).ToList();
 		PrefixInfo($"Checking that Chow.GetPossibleForTile with tile \"{tileNotation}\" and other tiles \"{otherTilesNotation}\" is correct when {because}");
-		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
 	[TestCase]
@@ -184,7 +184,7 @@ public class MeldTests
 		var tiles = tilesNotation.ToTiles();
 		var actualOutput = Chow.GetPossible(tiles).ToList();
 		PrefixInfo($"Checking that Chow.GetPossible with tiles \"{tilesNotation}\" is correct when {because}");
-		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
 	private static IEnumerable<object[]> GetFirstLevelMeldsTestCases()

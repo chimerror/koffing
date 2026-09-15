@@ -29,7 +29,7 @@ public class WaitTests
 		var tiles = tilesNotation.ToTiles();
 		var actualOutput = Wait.GetFirstLevelWaits(tiles);
 		PrefixInfo($"Checking that Wait.GetFirstLevelWaits with tiles \"{tilesNotation}\" is correct when {because}");
-		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
 	[TestCase]
@@ -49,7 +49,7 @@ public class WaitTests
 				var tile = new Tile(suit, rank);
 				PrefixInfo($"Checking that we can create an orphan from tile \"{tile}\"...");
 				var orphan = new Orphan(tile);
-				AssertThat(orphan.Tiles.Single()).IsEqual(tile);
+				AssertThat(tile).IsEqual(orphan.Tiles.Single());
 			}
 		}
 	}
@@ -68,7 +68,7 @@ public class WaitTests
 		var otherTiles = otherTilesNotation.ToTiles();
 		var actualOutput = Ryanmen.GetPossibleForTile(tile, otherTiles).ToList();
 		PrefixInfo($"Checking that Ryanmen.GetPossibleForTile with tile \"{tileNotation}\" and other tiles \"{otherTilesNotation}\" is correct when {because}");
-		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
 	[TestCase]
@@ -80,7 +80,7 @@ public class WaitTests
 		var tiles = tilesNotation.ToTiles();
 		var actualOutput = Ryanmen.GetPossible(tiles).ToList();
 		PrefixInfo($"Checking that Ryanmen.GetPossible with tiles \"{tilesNotation}\" is correct when {because}");
-		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
 	[TestCase]
@@ -97,7 +97,7 @@ public class WaitTests
 		var otherTiles = otherTilesNotation.ToTiles();
 		var actualOutput = Kanchan.GetPossibleForTile(tile, otherTiles).ToList();
 		PrefixInfo($"Checking that Kanchan.GetPossibleForTile with tile \"{tileNotation}\" and other tiles \"{otherTilesNotation}\" is correct when {because}");
-		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
 	[TestCase]
@@ -109,7 +109,7 @@ public class WaitTests
 		var tiles = tilesNotation.ToTiles();
 		var actualOutput = Kanchan.GetPossible(tiles).ToList();
 		PrefixInfo($"Checking that Kanchan.GetPossible with tiles \"{tilesNotation}\" is correct when {because}");
-		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
 	[TestCase]
@@ -126,7 +126,7 @@ public class WaitTests
 		var otherTiles = otherTilesNotation.ToTiles();
 		var actualOutput = Penchan.GetPossibleForTile(tile, otherTiles).ToList();
 		PrefixInfo($"Checking that Penchan.GetPossibleForTile with tile \"{tileNotation}\" and other tiles \"{otherTilesNotation}\" is correct when {because}");
-		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
 	[TestCase]
@@ -138,7 +138,7 @@ public class WaitTests
 		var tiles = tilesNotation.ToTiles();
 		var actualOutput = Penchan.GetPossible(tiles).ToList();
 		PrefixInfo($"Checking that Penchan.GetPossible with tiles \"{tilesNotation}\" is correct when {because}");
-		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
 	[TestCase]
@@ -149,11 +149,11 @@ public class WaitTests
 
 		var outcomeString = expectedResult ? "does equal" : "does NOT equal";
 		PrefixInfo($"Checking that seven pairs wait A \"{blockA}\" {outcomeString} seven pairs wait B \"{blockB}\" because {because}");
-		AssertThat(blockA.Equals(blockB)).IsEqual(expectedResult);
+		AssertThat(expectedResult).IsEqual(blockA.Equals(blockB));
 		if (blockB != null)
 		{
 			PrefixInfo($"Checking that seven pairs wait B \"{blockB}\" {outcomeString} seven pairs wait A \"{blockA}\" because {because}");
-			AssertThat(blockB.Equals(blockA)).IsEqual(expectedResult);
+			AssertThat(expectedResult).IsEqual(blockB.Equals(blockA));
 		}
 	}
 
@@ -171,7 +171,7 @@ public class WaitTests
 		var otherTiles = otherTilesNotation.ToTiles();
 		var actualOutput = SevenPairsWait.GetPossibleForTile(tile, otherTiles).ToList();
 		PrefixInfo($"Checking that SevenPairsWait.GetPossibleForTile with tile \"{tileNotation}\" and other tiles \"{otherTilesNotation}\" is correct when {because}");
-		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
 	[TestCase]
@@ -183,7 +183,7 @@ public class WaitTests
 		var tiles = tilesNotation.ToTiles();
 		var actualOutput = SevenPairsWait.GetPossible(tiles).ToList();
 		PrefixInfo($"Checking that SevenPairsWait.GetPossible with tiles \"{tilesNotation}\" is correct when {because}");
-		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
 	[TestCase]
@@ -194,11 +194,11 @@ public class WaitTests
 
 		var outcomeString = expectedResult ? "does equal" : "does NOT equal";
 		PrefixInfo($"Checking that thirteen orphans wait A \"{blockA}\" {outcomeString} thirteen orphans wait B \"{blockB}\" because {because}");
-		AssertThat(blockA.Equals(blockB)).IsEqual(expectedResult);
+		AssertThat(expectedResult).IsEqual(blockA.Equals(blockB));
 		if (blockB != null)
 		{
 			PrefixInfo($"Checking that thirteen orphans wait B \"{blockB}\" {outcomeString} thirteen orphans wait A \"{blockA}\" because {because}");
-			AssertThat(blockB.Equals(blockA)).IsEqual(expectedResult);
+			AssertThat(expectedResult).IsEqual(blockB.Equals(blockA));
 		}
 	}
 
@@ -211,7 +211,7 @@ public class WaitTests
 		var tiles = tilesNotation.ToTiles();
 		var actualOutput = ThirteenOrphansWait.GetPossible(tiles).ToList();
 		PrefixInfo($"Checking that ThirteenOrphansWait.GetPossible with tiles \"{tilesNotation}\" is correct when {because}");
-		AssertArray(actualOutput).ContainsExactlyInAnyOrder(expectedOutput);
+		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
 	private static IEnumerable<object[]> GetFirstLevelWaitsTestCases()

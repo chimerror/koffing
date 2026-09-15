@@ -23,6 +23,11 @@ public class ThirteenOrphansWait : Wait, IBlock
 		var terminalsAndHonors = tiles.Where(t => t.Suit == Suit.Zi || t.Rank == 1 || t.Rank == 9).ToList();
 		var simples = tiles.Where(t => t.Suit != Suit.Zi && t.Rank != 1 && t.Rank != 9).ToList();
 
+		if (terminalsAndHonors.Count == 0)
+		{
+			yield break;
+		}
+
 		List<Tile> selectedTiles = [];
 		List<Block> pairs = [];
 		var groupedTerminalsAndHonors = terminalsAndHonors.GroupBy(t => (t.Suit, t.Rank)).ToList();

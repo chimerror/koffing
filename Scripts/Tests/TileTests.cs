@@ -27,7 +27,7 @@ public class TileTests
 		LoggingPrefix = nameof(IsValidTileIsCorrect);
 		var expectedString = expectedResult ? "is" : "is NOT";
 		PrefixInfo($"Checking that Suit {suit} with rank {rank} {expectedString} a valid tile");
-		AssertThat(Tile.IsValidTile(suit, rank)).IsEqual(expectedResult);
+		AssertThat(expectedResult).IsEqual(Tile.IsValidTile(suit, rank));
 	}
 
 	[TestCase]
@@ -46,7 +46,7 @@ public class TileTests
 				var tile = new Tile(suit, rank);
 				var expectedRawRank = rank == 0 ? 5 : rank;
 				PrefixInfo($"Checking that raw rank of \"{tile}\" is {expectedRawRank}...");
-				AssertThat(tile.RawRank).IsEqual(expectedRawRank);
+				AssertThat(expectedRawRank).IsEqual(tile.RawRank);
 			}
 		}
 	}
@@ -244,7 +244,7 @@ public class TileTests
 	{
 		LoggingPrefix = nameof(CompareTilesIsCorrect);
 		PrefixInfo($"Checking that Tile.CompareTo is {expectedComparisonValue} when {because}");
-		AssertThat(tileA.CompareTo(tileB)).IsEqual(expectedComparisonValue);
+		AssertThat(expectedComparisonValue).IsEqual(tileA.CompareTo(tileB));
 	}
 
 	[TestCase]
@@ -259,7 +259,7 @@ public class TileTests
 
 		var actualNotationFromTilesOutput = tiles.NotationFromTiles();
 		PrefixInfo($"Checking that NotationFromTiles produces matching notation \"{notation}\" when {because}");
-		AssertThat(actualNotationFromTilesOutput).IsEqual(notation);
+		AssertThat(notation).IsEqual(actualNotationFromTilesOutput);
 	}
 
 	[TestCase]
@@ -269,7 +269,7 @@ public class TileTests
 		LoggingPrefix = nameof(GetTileHashCodeIsCorrect);
 
 		PrefixInfo($"Checking that GetHashCode for \"{tile}\" is {expectedHashCode}");
-		AssertThat(tile.GetHashCode()).IsEqual(expectedHashCode);
+		AssertThat(expectedHashCode).IsEqual(tile.GetHashCode());
 	}
 
 	// TODO: Could make a test that actually goes through all valid tiles, but I think this spot testing is good enough

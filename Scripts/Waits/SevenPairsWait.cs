@@ -89,7 +89,11 @@ public class SevenPairsWait : Wait, IBlock
 			fivePairsToAdd.Add(pinFivePairs);
 		}
 
-		if (fivePairsToAdd.Count == 0)
+		if (nonFivePairs.Count == 0 && fivePairsToAdd.Count == 0)
+		{
+			yield break;
+		}
+		else if (fivePairsToAdd.Count == 0)
 		{
 			var pairedTiles = nonFivePairs.SelectMany(p => p);
 			yield return new MadeBlockContext(new SevenPairsWait(pairedTiles, nonFivePairs), remainingNonFives);
