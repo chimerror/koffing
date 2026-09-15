@@ -574,6 +574,30 @@ public class BlockTests
 					new Pung("111m".ToTiles()),
 					new Pung("666z".ToTiles()),
 				]),
+				new(
+				[
+					new SevenPairsWait(
+						"11m66z".ToTiles(),
+						[
+							new Pair("11m".ToTiles()),
+							new Pair("66z".ToTiles()),
+						]
+					),
+					new Orphan("1m".ToTile()),
+					new Orphan("6z".ToTile()),
+				]),
+				new(
+				[
+					new ThirteenOrphansWait(
+						"11m66z".ToTiles(),
+						[
+							new Pair("11m".ToTiles()),
+							new Pair("66z".ToTiles()),
+						]
+					),
+					new Orphan("1m".ToTile()),
+					new Orphan("6z".ToTile()),
+				]),
 			},
 			"all pung melds",
 		];
@@ -586,6 +610,28 @@ public class BlockTests
 				[
 					new Pung("111m".ToTiles()),
 					new PairWait("66z".ToTiles()),
+				]),
+				new(
+				[
+					new SevenPairsWait(
+						"11m66z".ToTiles(),
+						[
+							new Pair("11m".ToTiles()),
+							new Pair("66z".ToTiles()),
+						]
+					),
+					new Orphan("1m".ToTile()),
+				]),
+				new(
+				[
+					new ThirteenOrphansWait(
+						"11m66z".ToTiles(),
+						[
+							new Pair("11m".ToTiles()),
+							new Pair("66z".ToTiles()),
+						]
+					),
+					new Orphan("1m".ToTile()),
 				]),
 			},
 			"a pung meld and a pair wait",
@@ -600,7 +646,31 @@ public class BlockTests
 					new Pung("111m".ToTiles()),
 					new PairWait("66z".ToTiles()),
 					new Orphan("0s".ToTile()),
-				])
+				]),
+				new(
+				[
+					new SevenPairsWait(
+						"11m66z".ToTiles(),
+						[
+							new Pair("11m".ToTiles()),
+							new Pair("66z".ToTiles()),
+						]
+					),
+					new Orphan("1m".ToTile()),
+					new Orphan("0s".ToTile()),
+				]),
+				new(
+				[
+					new ThirteenOrphansWait(
+						"11m66z".ToTiles(),
+						[
+							new Pair("11m".ToTiles()),
+							new Pair("66z".ToTiles()),
+						]
+					),
+					new Orphan("1m".ToTile()),
+					new Orphan("0s".ToTile()),
+				]),
 			},
 			"a pung meld, a pair wait, and an orphan",
 		];
@@ -613,6 +683,17 @@ public class BlockTests
 				[
 					new Chow("345s".ToTiles()),
 					new Orphan("4s".ToTile()),
+				]),
+				new(
+				[
+					new SevenPairsWait(
+						"44s".ToTiles(),
+						[
+							new Pair("44s".ToTiles()),
+						]
+					),
+					new Orphan("3s".ToTile()),
+					new Orphan("5s".ToTile()),
 				]),
 			},
 			"a nakabukure wait",
@@ -718,6 +799,36 @@ public class BlockTests
 					new PairWait("44p".ToTiles()),
 					new PairWait("11z".ToTiles()),
 				]),
+				new(
+				[
+					new SevenPairsWait(
+						"44556677p11z".ToTiles(),
+						[
+							new Pair("44p".ToTiles()),
+							new Pair("55p".ToTiles()),
+							new Pair("66p".ToTiles()),
+							new Pair("77p".ToTiles()),
+							new Pair("11z".ToTiles()),
+						]
+					),
+				]),
+				new(
+				[
+					new ThirteenOrphansWait(
+						"11z".ToTiles(),
+						[
+							new Pair("11z".ToTiles()),
+						]
+					),
+					new Orphan("4p".ToTile()),
+					new Orphan("4p".ToTile()),
+					new Orphan("5p".ToTile()),
+					new Orphan("5p".ToTile()),
+					new Orphan("6p".ToTile()),
+					new Orphan("6p".ToTile()),
+					new Orphan("7p".ToTile()),
+					new Orphan("7p".ToTile()),
+				]),
 			},
 			"a sanmen shanpon wait",
 		];
@@ -738,6 +849,33 @@ public class BlockTests
 					new Ryanmen("45s".ToTiles()),
 					new PairWait("44z".ToTiles()),
 				]),
+				new(
+				[
+					new SevenPairsWait(
+						"66s44z".ToTiles(),
+						[
+							new Pair("66s".ToTiles()),
+							new Pair("44z".ToTiles()),
+						]
+					),
+					new Orphan("4s".ToTile()),
+					new Orphan("5s".ToTile()),
+					new Orphan("6s".ToTile()),
+				]),
+				new(
+				[
+					new ThirteenOrphansWait(
+						"44z".ToTiles(),
+						[
+							new Pair("44z".ToTiles()),
+						]
+					),
+					new Orphan("4s".ToTile()),
+					new Orphan("5s".ToTile()),
+					new Orphan("6s".ToTile()),
+					new Orphan("6s".ToTile()),
+					new Orphan("6s".ToTile()),
+				]),
 			},
 			"an entotsu wait",
 		];
@@ -750,6 +888,17 @@ public class BlockTests
 				[
 					new Chow("678m".ToTiles()),
 					new Orphan("8m".ToTile()),
+				]),
+				new(
+				[
+					new SevenPairsWait(
+						"88m".ToTiles(),
+						[
+							new Pair("88m".ToTiles()),
+						]
+					),
+					new Orphan("6m".ToTile()),
+					new Orphan("7m".ToTile()),
 				]),
 			},
 			"an aryanmen wait",
@@ -767,6 +916,17 @@ public class BlockTests
 				[
 					new Pung("555p".ToTiles()),
 					new Orphan("4p".ToTile()),
+				]),
+				new(
+				[
+					new SevenPairsWait(
+						"55p".ToTiles(),
+						[
+							new Pair("55p".ToTiles()),
+						]
+					),
+					new Orphan("4p".ToTile()),
+					new Orphan("5p".ToTile()),
 				]),
 			},
 			"a ryantan wait",
@@ -866,6 +1026,36 @@ public class BlockTests
 					new Ryanmen("56m".ToTiles()),
 					new Ryanmen("56m".ToTiles()),
 				]),
+				new(
+				[
+					new SevenPairsWait(
+						"5566778899m".ToTiles(),
+						[
+							new Pair("55m".ToTiles()),
+							new Pair("66m".ToTiles()),
+							new Pair("77m".ToTiles()),
+							new Pair("88m".ToTiles()),
+							new Pair("99m".ToTiles()),
+						]
+					),
+				]),
+				new(
+				[
+					new ThirteenOrphansWait(
+						"99m".ToTiles(),
+						[
+							new Pair("99m".ToTiles()),
+						]
+					),
+					new Orphan("5m".ToTile()),
+					new Orphan("5m".ToTile()),
+					new Orphan("6m".ToTile()),
+					new Orphan("6m".ToTile()),
+					new Orphan("7m".ToTile()),
+					new Orphan("7m".ToTile()),
+					new Orphan("8m".ToTile()),
+					new Orphan("8m".ToTile()),
+				]),
 			},
 			"a goren toitsu wait",
 		];
@@ -891,6 +1081,19 @@ public class BlockTests
 					new Chow("678p".ToTiles()),
 					new Kanchan("68p".ToTiles()),
 					new Kanchan("68p".ToTiles()),
+				]),
+				new(
+				[
+					new SevenPairsWait(
+						"6688p".ToTiles(),
+						[
+							new Pair("66p".ToTiles()),
+							new Pair("88p".ToTiles()),
+						]
+					),
+					new Orphan("6p".ToTile()),
+					new Orphan("7p".ToTile()),
+					new Orphan("8p".ToTile()),
 				]),
 			},
 			"a tatsumaki wait",
@@ -940,6 +1143,22 @@ public class BlockTests
 					new Chow("567s".ToTiles()),
 					new Ryanmen("34s".ToTiles()),
 					new PairWait("77s".ToTiles()),
+				]),
+				new(
+				[
+					new SevenPairsWait(
+						"2277s".ToTiles(),
+						[
+							new Pair("22s".ToTiles()),
+							new Pair("77s".ToTiles()),
+						]
+					),
+					new Orphan("2s".ToTile()),
+					new Orphan("3s".ToTile()),
+					new Orphan("4s".ToTile()),
+					new Orphan("5s".ToTile()),
+					new Orphan("6s".ToTile()),
+					new Orphan("7s".ToTile()),
 				]),
 			},
 			"a happoubijin wait",
@@ -1053,6 +1272,23 @@ public class BlockTests
 					new Kong("7777m".ToTiles()),
 					new PairWait("22m".ToTiles()),
 					new PairWait("66m".ToTiles()),
+					new Orphan("5m".ToTile()),
+					new Orphan("8m".ToTile()),
+				]),
+				new(
+				[
+					new SevenPairsWait(
+						"22667777m".ToTiles(),
+						[
+							new Pair("22m".ToTiles()),
+							new Pair("66m".ToTiles()),
+							new Pair("77m".ToTiles()),
+							new Pair("77m".ToTiles()),
+						]
+					),
+					new Orphan("2m".ToTile()),
+					new Orphan("3m".ToTile()),
+					new Orphan("4m".ToTile()),
 					new Orphan("5m".ToTile()),
 					new Orphan("8m".ToTile()),
 				]),

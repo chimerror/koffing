@@ -40,6 +40,15 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 			}
 		}
 
+		var specialHandsBlocks = SevenPairsWait.GetPossible(tiles)
+			.Concat(ThirteenOrphansWait.GetPossible(tiles));
+		foreach (var madeBlockContext in specialHandsBlocks)
+		{
+			List<Block> specialHandBlockList = [madeBlockContext.MadeBlock];
+			specialHandBlockList.AddRange(madeBlockContext.RemainingTiles.Select(t => new Orphan(t)));
+			madeBlockSets.Add(new BlockSet(specialHandBlockList));
+		}
+
 		var sortedMadeBlockSets = madeBlockSets.Order();
 		foreach (var madeBlockSet in sortedMadeBlockSets)
 		{

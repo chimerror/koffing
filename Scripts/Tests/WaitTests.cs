@@ -216,7 +216,6 @@ public class WaitTests
 
 	private static IEnumerable<object[]> GetFirstLevelWaitsTestCases()
 	{
-		// TODO: This is a thirteen orphans wait, we may have to change this test a bit when we add that type of wait.
 		yield return ["19m19s19p1234567z", new List<MadeBlockContext>(), "there are no waits"];
 		yield return
 		[
