@@ -1295,5 +1295,43 @@ public class BlockTests
 			},
 			"a paaren poutou wait",
 		];
+		// TODO: When I first added this test and it failed, it seemed to cause failures in other tests, which is odd
+		// and undesirable.
+		yield return
+		[
+			"147m258s369p1234z",
+			new List<BlockSet>()
+			{
+				new([
+					new Orphan("1m".ToTile()),
+					new Orphan("4m".ToTile()),
+					new Orphan("7m".ToTile()),
+					new Orphan("2s".ToTile()),
+					new Orphan("5s".ToTile()),
+					new Orphan("8s".ToTile()),
+					new Orphan("3p".ToTile()),
+					new Orphan("6p".ToTile()),
+					new Orphan("9p".ToTile()),
+					new Orphan("1z".ToTile()),
+					new Orphan("2z".ToTile()),
+					new Orphan("3z".ToTile()),
+					new Orphan("4z".ToTile()),
+				]),
+				new(
+				[
+					new ThirteenOrphansWait(
+						"1m9p1234z".ToTiles()
+					),
+					new Orphan("4m".ToTile()),
+					new Orphan("7m".ToTile()),
+					new Orphan("2s".ToTile()),
+					new Orphan("5s".ToTile()),
+					new Orphan("8s".ToTile()),
+					new Orphan("3p".ToTile()),
+					new Orphan("6p".ToTile()),
+				]),
+			},
+			"a fully disconnected hand",
+		];
 	}
 }
