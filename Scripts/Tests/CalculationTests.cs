@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using GdUnit4;
@@ -30,6 +31,50 @@ public class CalculationTests
 
 		PrefixInfo($"Checking that hand \"{handTiles.NotationFromTiles()}\" has standard readiness calculated as {expectedResult} given that it's {because}");
 		AssertThat(StandardTilesToReady(hand)).IsEqual(expectedResult);
+	}
+
+	[TestCase]
+	[ThrowsException(typeof(InvalidOperationException))]
+	[DataPoint(nameof(StandardTilesToReadyEdgeTestCases))]
+	public static void StandardTilesToReadyEdgeCasesAreCorrect(BlockSet hand, string because)
+	{
+		LoggingPrefix = nameof(StandardTilesToReadyEdgeCasesAreCorrect);
+
+		PrefixInfo($"Checking that StandardTilesToReady throws an InvalidOperationException when given {because}");
+		StandardTilesToReady(hand); // Will throw
+	}
+
+	private static IEnumerable<object[]>StandardTilesToReadyEdgeTestCases()
+	{
+		yield return
+		[
+			new BlockSet(
+			[
+				new SevenPairsWait(
+					"55m50s55p55z".ToTiles(),
+					[
+						new Pair("55m".ToTiles()),
+						new Pair("50s".ToTiles()),
+						new Pair("55p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]
+				),
+			]),
+			"a hand with a seven pairs wait",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new ThirteenOrphansWait(
+					"11s19m2367z".ToTiles(),
+					[
+						new Pair("11s".ToTiles()),
+					]
+				),
+			]),
+			"a hand with a thirteen orphans wait",
+		];
 	}
 
 	private static IEnumerable<object[]> StandardTilesToReadyTestCases()
