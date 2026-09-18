@@ -10,6 +10,18 @@ public static class Readiness
 		ThirteenOrphans,
 	}
 
+	public static bool IsReady(this BlockSet hand, out Type chosenReadinessType)
+	{
+		return TilesToReady(hand, out chosenReadinessType) == 0;
+	}
+
+	// Note that this is not _complete_ because we're not checking if there are any waits or orphans, nor if it has more
+	// tiles than possible.
+	public static bool IsPastReady(this BlockSet hand, out Type chosenReadinessType)
+	{
+		return TilesToReady(hand, out chosenReadinessType) < 0;
+	}
+
 	public static int TilesToReady(BlockSet hand, out Type chosenReadinessType)
 	{
 		// UNTESTED: Looking around I did not notice any mocking libraries that both supported static methods and

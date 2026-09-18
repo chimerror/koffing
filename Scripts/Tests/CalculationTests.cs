@@ -22,6 +22,36 @@ public class CalculationTests
 	}
 
 	[TestCase]
+	[DataPoint(nameof(IsReadyTestCases))]
+	public static void IsReadyIsCorrect(BlockSet hand, bool expectedResult, Readiness.Type expectedReadinessType, string because)
+	{
+		LoggingPrefix = nameof(IsReadyIsCorrect);
+
+		var handTiles = hand.Blocks.SelectMany(b => b.Tiles).ToList();
+
+		var outcomeString = expectedResult ? "is ready" : "is NOT ready";
+		PrefixInfo($"Checking that hand \"{handTiles.NotationFromTiles()}\" {outcomeString} given {because}");
+		AssertThat(hand.IsReady(out var actualReadinessType)).IsEqual(expectedResult);
+		PrefixInfo($"Checking that readiness type {expectedReadinessType} was used to determine readiness.");
+		AssertThat(actualReadinessType).IsEqual(expectedReadinessType);
+	}
+
+	[TestCase]
+	[DataPoint(nameof(IsPastReadyTestCases))]
+	public static void IsPastReadyIsCorrect(BlockSet hand, bool expectedResult, Readiness.Type expectedReadinessType, string because)
+	{
+		LoggingPrefix = nameof(IsReadyIsCorrect);
+
+		var handTiles = hand.Blocks.SelectMany(b => b.Tiles).ToList();
+
+		var outcomeString = expectedResult ? "is past-ready" : "is NOT past-ready";
+		PrefixInfo($"Checking that hand \"{handTiles.NotationFromTiles()}\" {outcomeString} given {because}");
+		AssertThat(hand.IsPastReady(out var actualReadinessType)).IsEqual(expectedResult);
+		PrefixInfo($"Checking that readiness type {expectedReadinessType} was used to determine readiness.");
+		AssertThat(actualReadinessType).IsEqual(expectedReadinessType);
+	}
+
+	[TestCase]
 	[DataPoint(nameof(StandardTilesToReadyTestCases))]
 	public static void StandardTilesToReadyIsCorrect(BlockSet hand, int expectedResult, string because)
 	{
@@ -88,6 +118,364 @@ public class CalculationTests
 
 		PrefixInfo($"Checking that ThirteenOrphansTilesToReady throws an InvalidOperationException when given {because}");
 		ThirteenOrphansTilesToReady(hand); // Will throw
+	}
+
+	private static IEnumerable<object[]> IsReadyTestCases()
+	{
+		yield return
+		[
+			new BlockSet(
+			[
+				new Orphan("1m".ToTile()),
+				new Orphan("4m".ToTile()),
+				new Orphan("7m".ToTile()),
+				new Orphan("2s".ToTile()),
+				new Orphan("5s".ToTile()),
+				new Orphan("8s".ToTile()),
+				new Orphan("3p".ToTile()),
+				new Orphan("6p".ToTile()),
+				new Orphan("9p".ToTile()),
+				new Orphan("1z".ToTile()),
+				new Orphan("2z".ToTile()),
+				new Orphan("3z".ToTile()),
+				new Orphan("4z".ToTile()),
+			]),
+			false,
+			Readiness.Type.Standard,
+			"a non-ready fully disconnected standard hand",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new Pung("111m".ToTiles()),
+				new Chow("234s".ToTiles()),
+				new Orphan("3p".ToTile()),
+				new Orphan("6p".ToTile()),
+				new Orphan("9p".ToTile()),
+				new PairWait("11z".ToTiles()),
+				new PairWait("22z".ToTiles()),
+			]),
+			false,
+			Readiness.Type.Standard,
+			"a partially ready (and thus, non-ready) standard hand",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new Pung("111m".ToTiles()),
+				new Chow("234s".ToTiles()),
+				new Ryanmen("34p".ToTiles()),
+				new Pung("111z".ToTiles()),
+				new PairWait("22z".ToTiles()),
+			]),
+			true,
+			Readiness.Type.Standard,
+			"a ready standard hand",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new Pung("111m".ToTiles()),
+				new Chow("234s".ToTiles()),
+				new Chow("345p".ToTiles()),
+				new Pung("111z".ToTiles()),
+				new PairWait("22z".ToTiles()),
+			]),
+			false,
+			Readiness.Type.Standard,
+			"a completed (and thus, past-ready) standard hand",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new SevenPairsWait(
+					"11223344z".ToTiles(),
+					[
+						new Pair("11z".ToTiles()),
+						new Pair("22z".ToTiles()),
+						new Pair("33z".ToTiles()),
+						new Pair("44z".ToTiles()),
+					]
+				),
+				new Orphan("4m".ToTile()),
+				new Orphan("7m".ToTile()),
+				new Orphan("2s".ToTile()),
+				new Orphan("5s".ToTile()),
+				new Orphan("8s".ToTile()),
+			]),
+			false,
+			Readiness.Type.SevenPairs,
+			"a non-ready seven pairs hand",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new SevenPairsWait(
+					"1122334455667z".ToTiles(),
+					[
+						new Pair("11z".ToTiles()),
+						new Pair("22z".ToTiles()),
+						new Pair("33z".ToTiles()),
+						new Pair("44z".ToTiles()),
+						new Pair("55z".ToTiles()),
+						new Pair("66z".ToTiles()),
+					]
+				),
+				new Orphan("7z".ToTile()),
+			]),
+			true,
+			Readiness.Type.SevenPairs,
+			"a ready seven pairs hand",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new SevenPairsWait(
+					"11223344556677z".ToTiles(),
+					[
+						new Pair("11z".ToTiles()),
+						new Pair("22z".ToTiles()),
+						new Pair("33z".ToTiles()),
+						new Pair("44z".ToTiles()),
+						new Pair("55z".ToTiles()),
+						new Pair("66z".ToTiles()),
+						new Pair("77z".ToTiles()),
+					]
+				),
+			]),
+			false,
+			Readiness.Type.SevenPairs,
+			"a completed (and thus, past-ready) seven pairs hand",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new ThirteenOrphansWait(
+					"11p11s19m23667z".ToTiles(),
+					[
+						new Pair("11p".ToTiles()),
+						new Pair("11s".ToTiles()),
+						new Pair("66z".ToTiles()),
+					]),
+			]),
+			false,
+			Readiness.Type.ThirteenOrphans,
+			"a non-ready thirteen orphans hand",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new ThirteenOrphansWait(
+					"1p119s19m1234567z".ToTiles(),
+					[
+						new Pair("11s".ToTiles()),
+					]),
+			]),
+			true,
+			Readiness.Type.ThirteenOrphans,
+			"a ready thirteen orphans hand",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new ThirteenOrphansWait(
+					"19p119s19m1234567z".ToTiles(),
+					[
+						new Pair("11s".ToTiles()),
+					]),
+			]),
+			false,
+			Readiness.Type.ThirteenOrphans,
+			"a complete (and thus past-ready) thirteen orphans hand",
+		];
+	}
+
+	private static IEnumerable<object[]> IsPastReadyTestCases()
+	{
+		yield return
+		[
+			new BlockSet(
+			[
+				new Orphan("1m".ToTile()),
+				new Orphan("4m".ToTile()),
+				new Orphan("7m".ToTile()),
+				new Orphan("2s".ToTile()),
+				new Orphan("5s".ToTile()),
+				new Orphan("8s".ToTile()),
+				new Orphan("3p".ToTile()),
+				new Orphan("6p".ToTile()),
+				new Orphan("9p".ToTile()),
+				new Orphan("1z".ToTile()),
+				new Orphan("2z".ToTile()),
+				new Orphan("3z".ToTile()),
+				new Orphan("4z".ToTile()),
+			]),
+			false,
+			Readiness.Type.Standard,
+			"a non-ready fully disconnected standard hand",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new Pung("111m".ToTiles()),
+				new Chow("234s".ToTiles()),
+				new Orphan("3p".ToTile()),
+				new Orphan("6p".ToTile()),
+				new Orphan("9p".ToTile()),
+				new PairWait("11z".ToTiles()),
+				new PairWait("22z".ToTiles()),
+			]),
+			false,
+			Readiness.Type.Standard,
+			"a partially ready (and thus, non-ready) standard hand",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new Pung("111m".ToTiles()),
+				new Chow("234s".ToTiles()),
+				new Ryanmen("34p".ToTiles()),
+				new Pung("111z".ToTiles()),
+				new PairWait("22z".ToTiles()),
+			]),
+			false,
+			Readiness.Type.Standard,
+			"a ready standard hand",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new Pung("111m".ToTiles()),
+				new Chow("234s".ToTiles()),
+				new Chow("345p".ToTiles()),
+				new Pung("111z".ToTiles()),
+				new PairWait("22z".ToTiles()),
+			]),
+			true,
+			Readiness.Type.Standard,
+			"a completed (and thus, past-ready) standard hand",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new SevenPairsWait(
+					"11223344z".ToTiles(),
+					[
+						new Pair("11z".ToTiles()),
+						new Pair("22z".ToTiles()),
+						new Pair("33z".ToTiles()),
+						new Pair("44z".ToTiles()),
+					]
+				),
+				new Orphan("4m".ToTile()),
+				new Orphan("7m".ToTile()),
+				new Orphan("2s".ToTile()),
+				new Orphan("5s".ToTile()),
+				new Orphan("8s".ToTile()),
+			]),
+			false,
+			Readiness.Type.SevenPairs,
+			"a non-ready seven pairs hand",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new SevenPairsWait(
+					"1122334455667z".ToTiles(),
+					[
+						new Pair("11z".ToTiles()),
+						new Pair("22z".ToTiles()),
+						new Pair("33z".ToTiles()),
+						new Pair("44z".ToTiles()),
+						new Pair("55z".ToTiles()),
+						new Pair("66z".ToTiles()),
+					]
+				),
+				new Orphan("7z".ToTile()),
+			]),
+			false,
+			Readiness.Type.SevenPairs,
+			"a ready seven pairs hand",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new SevenPairsWait(
+					"11223344556677z".ToTiles(),
+					[
+						new Pair("11z".ToTiles()),
+						new Pair("22z".ToTiles()),
+						new Pair("33z".ToTiles()),
+						new Pair("44z".ToTiles()),
+						new Pair("55z".ToTiles()),
+						new Pair("66z".ToTiles()),
+						new Pair("77z".ToTiles()),
+					]
+				),
+			]),
+			true,
+			Readiness.Type.SevenPairs,
+			"a completed (and thus, past-ready) seven pairs hand",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new ThirteenOrphansWait(
+					"11p11s19m23667z".ToTiles(),
+					[
+						new Pair("11p".ToTiles()),
+						new Pair("11s".ToTiles()),
+						new Pair("66z".ToTiles()),
+					]),
+			]),
+			false,
+			Readiness.Type.ThirteenOrphans,
+			"a non-ready thirteen orphans hand",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new ThirteenOrphansWait(
+					"1p119s19m1234567z".ToTiles(),
+					[
+						new Pair("11s".ToTiles()),
+					]),
+			]),
+			false,
+			Readiness.Type.ThirteenOrphans,
+			"a ready thirteen orphans hand",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new ThirteenOrphansWait(
+					"19p119s19m1234567z".ToTiles(),
+					[
+						new Pair("11s".ToTiles()),
+					]),
+			]),
+			true,
+			Readiness.Type.ThirteenOrphans,
+			"a complete (and thus past-ready) thirteen orphans hand",
+		];
 	}
 
 	private static IEnumerable<object[]> StandardTilesToReadyTestCases()
