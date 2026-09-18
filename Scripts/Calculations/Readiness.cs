@@ -90,15 +90,21 @@ public static class Readiness
 
 	public static int SevenPairsTilesToReady(BlockSet hand)
 	{
-		// TODOTODO: Test
-		var sevenPairsWait = hand.OfType<SevenPairsWait>().Single();
+		var sevenPairsWait = hand.OfType<SevenPairsWait>().SingleOrDefault();
+		if (sevenPairsWait == default)
+		{
+			throw new InvalidOperationException($"Passed in hand without a seven pairs wait when calculating SevenPairsTilesToReady: {hand}");
+		}
 		return 6 - sevenPairsWait.Pairs.Count();
 	}
 
 	public static int ThirteenOrphansTilesToReady(BlockSet hand)
 	{
-		// TODOTODO: Test
-		var thirteenOrphansWait = hand.OfType<ThirteenOrphansWait>().Single();
+		var thirteenOrphansWait = hand.OfType<ThirteenOrphansWait>().SingleOrDefault();
+		if (thirteenOrphansWait == default)
+		{
+			throw new InvalidOperationException($"Passed in hand without a thirteen orphans wait when calculating ThirteenOrphansTilesToReady: {hand}");
+		}
 		var distinctTileCount = thirteenOrphansWait.Distinct().Count();
 		var pairsCount = Math.Min(thirteenOrphansWait.Pairs.Count(), 1);
 		return 13 - distinctTileCount - pairsCount;

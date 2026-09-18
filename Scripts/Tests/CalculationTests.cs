@@ -44,37 +44,50 @@ public class CalculationTests
 		StandardTilesToReady(hand); // Will throw
 	}
 
-	private static IEnumerable<object[]>StandardTilesToReadyEdgeTestCases()
+	[TestCase]
+	[DataPoint(nameof(SevenPairsTilesToReadyTestCases))]
+	public static void SevenPairsTilesToReadyIsCorrect(BlockSet hand, int expectedResult, string because)
 	{
-		yield return
-		[
-			new BlockSet(
-			[
-				new SevenPairsWait(
-					"55m50s55p55z".ToTiles(),
-					[
-						new Pair("55m".ToTiles()),
-						new Pair("50s".ToTiles()),
-						new Pair("55p".ToTiles()),
-						new Pair("55z".ToTiles()),
-					]
-				),
-			]),
-			"a hand with a seven pairs wait",
-		];
-		yield return
-		[
-			new BlockSet(
-			[
-				new ThirteenOrphansWait(
-					"11s19m2367z".ToTiles(),
-					[
-						new Pair("11s".ToTiles()),
-					]
-				),
-			]),
-			"a hand with a thirteen orphans wait",
-		];
+		LoggingPrefix = nameof(SevenPairsTilesToReadyIsCorrect);
+
+		var handTiles = hand.Blocks.SelectMany(b => b.Tiles).ToList();
+
+		PrefixInfo($"Checking that hand \"{handTiles.NotationFromTiles()}\" has seven pairs readiness calculated as {expectedResult} given that it's {because}");
+		AssertThat(SevenPairsTilesToReady(hand)).IsEqual(expectedResult);
+	}
+
+	[TestCase]
+	[ThrowsException(typeof(InvalidOperationException))]
+	[DataPoint(nameof(SevenPairsTilesToReadyEdgeTestCases))]
+	public static void SevenPairsTilesToReadyEdgeCasesAreCorrect(BlockSet hand, string because)
+	{
+		LoggingPrefix = nameof(SevenPairsTilesToReadyEdgeCasesAreCorrect);
+
+		PrefixInfo($"Checking that SevenPairsTilesToReady throws an InvalidOperationException when given {because}");
+		SevenPairsTilesToReady(hand); // Will throw
+	}
+
+	[TestCase]
+	[DataPoint(nameof(ThirteenOrphansTilesToReadyTestCases))]
+	public static void ThirteenOrphansTilesToReadyIsCorrect(BlockSet hand, int expectedResult, string because)
+	{
+		LoggingPrefix = nameof(ThirteenOrphansTilesToReadyIsCorrect);
+
+		var handTiles = hand.Blocks.SelectMany(b => b.Tiles).ToList();
+
+		PrefixInfo($"Checking that hand \"{handTiles.NotationFromTiles()}\" has thirteen orphans readiness calculated as {expectedResult} given that it's {because}");
+		AssertThat(ThirteenOrphansTilesToReady(hand)).IsEqual(expectedResult);
+	}
+
+	[TestCase]
+	[ThrowsException(typeof(InvalidOperationException))]
+	[DataPoint(nameof(ThirteenOrphansTilesToReadyEdgeTestCases))]
+	public static void ThirteenOrphansTilesToReadyEdgeCasesAreCorrect(BlockSet hand, string because)
+	{
+		LoggingPrefix = nameof(ThirteenOrphansTilesToReadyEdgeCasesAreCorrect);
+
+		PrefixInfo($"Checking that ThirteenOrphansTilesToReady throws an InvalidOperationException when given {because}");
+		ThirteenOrphansTilesToReady(hand); // Will throw
 	}
 
 	private static IEnumerable<object[]> StandardTilesToReadyTestCases()
@@ -344,6 +357,264 @@ public class CalculationTests
 			]),
 			3,
 			"a hand where the pair is the fourth block"
+		];
+	}
+
+	private static IEnumerable<object[]>StandardTilesToReadyEdgeTestCases()
+	{
+		yield return
+		[
+			new BlockSet(
+			[
+				new SevenPairsWait(
+					"55m50s55p55z".ToTiles(),
+					[
+						new Pair("55m".ToTiles()),
+						new Pair("50s".ToTiles()),
+						new Pair("55p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]
+				),
+			]),
+			"a hand with a seven pairs wait",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new ThirteenOrphansWait(
+					"11s19m2367z".ToTiles(),
+					[
+						new Pair("11s".ToTiles()),
+					]
+				),
+			]),
+			"a hand with a thirteen orphans wait",
+		];
+	}
+
+	private static IEnumerable<object[]> SevenPairsTilesToReadyTestCases()
+	{
+		yield return
+		[
+			new BlockSet(
+			[
+				new SevenPairsWait("44z".ToTiles(), [new Pair("44z".ToTiles())]),
+				new Orphan("4m".ToTile()),
+				new Orphan("7m".ToTile()),
+				new Orphan("2s".ToTile()),
+				new Orphan("5s".ToTile()),
+				new Orphan("8s".ToTile()),
+				new Orphan("3p".ToTile()),
+				new Orphan("6p".ToTile()),
+				new Orphan("9p".ToTile()),
+				new Orphan("1z".ToTile()),
+				new Orphan("2z".ToTile()),
+				new Orphan("3z".ToTile()),
+			]),
+			5,
+			"a hand with only one pair"
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new SevenPairsWait(
+					"11223344z".ToTiles(),
+					[
+						new Pair("11z".ToTiles()),
+						new Pair("22z".ToTiles()),
+						new Pair("33z".ToTiles()),
+						new Pair("44z".ToTiles()),
+					]
+				),
+				new Orphan("4m".ToTile()),
+				new Orphan("7m".ToTile()),
+				new Orphan("2s".ToTile()),
+				new Orphan("5s".ToTile()),
+				new Orphan("8s".ToTile()),
+			]),
+			2,
+			"a hand with multiple pairs"
+		];
+	}
+
+	private static IEnumerable<object[]>SevenPairsTilesToReadyEdgeTestCases()
+	{
+		yield return
+		[
+			new BlockSet(
+			[
+				new Orphan("1m".ToTile()),
+				new Orphan("4m".ToTile()),
+				new Orphan("7m".ToTile()),
+				new Orphan("2s".ToTile()),
+				new Orphan("5s".ToTile()),
+				new Orphan("8s".ToTile()),
+				new Orphan("3p".ToTile()),
+				new Orphan("6p".ToTile()),
+				new Orphan("9p".ToTile()),
+				new Orphan("1z".ToTile()),
+				new Orphan("2z".ToTile()),
+				new Orphan("3z".ToTile()),
+				new Orphan("4z".ToTile()),
+			]),
+			"a fully disconnected hand",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new ThirteenOrphansWait(
+					"11s19m2367z".ToTiles(),
+					[
+						new Pair("11s".ToTiles()),
+					]
+				),
+			]),
+			"a hand with a thirteen orphans wait",
+		];
+	}
+
+	private static IEnumerable<object[]> ThirteenOrphansTilesToReadyTestCases()
+	{
+		yield return
+		[
+			new BlockSet(
+			[
+				new ThirteenOrphansWait("1p".ToTiles(), []),
+				new Orphan("4m".ToTile()),
+				new Orphan("4m".ToTile()),
+				new Orphan("7m".ToTile()),
+				new Orphan("7m".ToTile()),
+				new Orphan("2s".ToTile()),
+				new Orphan("2s".ToTile()),
+				new Orphan("5s".ToTile()),
+				new Orphan("5s".ToTile()),
+				new Orphan("8s".ToTile()),
+				new Orphan("8s".ToTile()),
+				new Orphan("3p".ToTile()),
+				new Orphan("6p".ToTile()),
+			]),
+			12,
+			"a hand with a single honor/terminal tile",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new ThirteenOrphansWait("1p1s19m2367z".ToTiles(), []),
+				new Orphan("4m".ToTile()),
+				new Orphan("7m".ToTile()),
+				new Orphan("2s".ToTile()),
+				new Orphan("5s".ToTile()),
+				new Orphan("8s".ToTile()),
+			]),
+			5,
+			"a hand with no pairs but multiple honor/terminal tiles",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new ThirteenOrphansWait("44z".ToTiles(), [new Pair("44z".ToTiles())]),
+				new Orphan("4m".ToTile()),
+				new Orphan("7m".ToTile()),
+				new Orphan("2s".ToTile()),
+				new Orphan("5s".ToTile()),
+				new Orphan("8s".ToTile()),
+				new Orphan("3p".ToTile()),
+				new Orphan("6p".ToTile()),
+				new Orphan("9p".ToTile()),
+				new Orphan("1z".ToTile()),
+				new Orphan("2z".ToTile()),
+				new Orphan("3z".ToTile()),
+			]),
+			11,
+			"a hand with only one distinct honor/terminal tile and one pair"
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new ThirteenOrphansWait(
+					"11223344z".ToTiles(),
+					[
+						new Pair("11z".ToTiles()),
+						new Pair("22z".ToTiles()),
+						new Pair("33z".ToTiles()),
+						new Pair("44z".ToTiles()),
+					]
+				),
+				new Orphan("4m".ToTile()),
+				new Orphan("7m".ToTile()),
+				new Orphan("2s".ToTile()),
+				new Orphan("5s".ToTile()),
+				new Orphan("8s".ToTile()),
+			]),
+			8,
+			"a hand with multiple pairs"
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				// Would not be returned by GetPossible, but just to defensively test
+				new ThirteenOrphansWait(
+					"1111p11s19m23667z".ToTiles(),
+					[
+						new Pair("11p".ToTiles()),
+						new Pair("11s".ToTiles()),
+						new Pair("66z".ToTiles()),
+					]),
+			]),
+			4,
+			"a hand with redundant honor/terminal tiles",
+		];
+	}
+
+	private static IEnumerable<object[]>ThirteenOrphansTilesToReadyEdgeTestCases()
+	{
+		yield return
+		[
+			new BlockSet(
+			[
+				new Orphan("1m".ToTile()),
+				new Orphan("4m".ToTile()),
+				new Orphan("7m".ToTile()),
+				new Orphan("2s".ToTile()),
+				new Orphan("5s".ToTile()),
+				new Orphan("8s".ToTile()),
+				new Orphan("3p".ToTile()),
+				new Orphan("6p".ToTile()),
+				new Orphan("9p".ToTile()),
+				new Orphan("1z".ToTile()),
+				new Orphan("2z".ToTile()),
+				new Orphan("3z".ToTile()),
+				new Orphan("4z".ToTile()),
+			]),
+			"a fully disconnected hand",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new SevenPairsWait(
+					"11223344z".ToTiles(),
+					[
+						new Pair("11z".ToTiles()),
+						new Pair("22z".ToTiles()),
+						new Pair("33z".ToTiles()),
+						new Pair("44z".ToTiles()),
+					]
+				),
+				new Orphan("4m".ToTile()),
+				new Orphan("7m".ToTile()),
+				new Orphan("2s".ToTile()),
+				new Orphan("5s".ToTile()),
+				new Orphan("8s".ToTile()),
+			]),
+			"a hand with a seven pairs wait",
 		];
 	}
 }
