@@ -12,7 +12,9 @@ public static class Readiness
 
 	public static int TilesToReady(BlockSet hand, out Type chosenReadinessType)
 	{
-		// TODOTODO: Test
+		// UNTESTED: Looking around I did not notice any mocking libraries that both supported static methods and
+		// weren't AI slop. I could write a test that runs through this code, but it would not truly verify the code's
+		// functionality in picking the right function to call. So, alas.
 		if (hand.Any(b => b is SevenPairsWait))
 		{
 			chosenReadinessType = Type.SevenPairs;
@@ -32,21 +34,16 @@ public static class Readiness
 
 	public static int TilesToReady(BlockSet hand, Type readinessType)
 	{
-		// TODOTODO: Test
-		switch (readinessType)
+		// UNTESTED: Looking around I did not notice any mocking libraries that both supported static methods and
+		// weren't AI slop. I could write a test that runs through this code, but it would not truly verify the code's
+		// functionality in picking the right function to call. So, alas.
+		return readinessType switch
 		{
-			case Type.Standard:
-				return StandardTilesToReady(hand);
-
-			case Type.SevenPairs:
-				return SevenPairsTilesToReady(hand);
-
-			case Type.ThirteenOrphans:
-				return ThirteenOrphansTilesToReady(hand);
-
-			default:
-				throw new InvalidOperationException($"Passed in unknown readiness type when calculating TilesToReady!: {readinessType}");
-		}
+			Type.Standard => StandardTilesToReady(hand),
+			Type.SevenPairs => SevenPairsTilesToReady(hand),
+			Type.ThirteenOrphans => ThirteenOrphansTilesToReady(hand),
+			_ => throw new InvalidOperationException($"Passed in unknown readiness type when calculating TilesToReady!: {readinessType}"),
+		};
 	}
 
 	public static int StandardTilesToReady(BlockSet hand)
