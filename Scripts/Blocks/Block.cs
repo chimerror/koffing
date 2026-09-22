@@ -5,7 +5,7 @@ using System.Linq;
 
 public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEquatable<Block>
 {
-	private readonly List<Tile> _tiles;
+	protected readonly List<Tile> _tiles;
 
 	public Block(IEnumerable<Tile> tiles = null)
 	{
