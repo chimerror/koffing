@@ -77,6 +77,18 @@ public static partial class Extensions
 		return builder.ToString();
 	}
 
+	public static string GetSuitString(this Suit suit)
+	{
+		return suit switch
+		{
+			Suit.Man => "m",
+			Suit.Sou => "s",
+			Suit.Pin => "p",
+			Suit.Zi => "z",
+			_ => throw new InvalidOperationException($"Invalid suit passed into GetSuitString: {suit}"),
+		};
+	}
+
 	private static void AppendSuit(Suit suit, StringBuilder builder)
 	{
 		switch (suit)
