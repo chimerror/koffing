@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class Kong : Meld, IBlock
+public class Kong : Meld, IBlock, IDowngradable<Pung>
 {
 	public Kong(IEnumerable<Tile> tiles = null) : base(tiles)
 	{
@@ -32,5 +32,29 @@ public class Kong : Meld, IBlock
 	public static new int GetHashCodeBasis()
 	{
 		return 5;
+	}
+
+	IEnumerable<MadeBlockContext> IDowngradable<Pung>.Downgrade()
+	{
+		var redFive = _tiles.SingleOrDefault(t => t.Rank == 0);
+		if (redFive != default)
+		{
+			var nonRedFives = _tiles.Where(t => t.Rank == 5);
+			yield return new MadeBlockContext(
+				new Pung(nonRedFives.Take(2).Append(redFive)),
+				nonRedFives.Skip(2)
+			);
+			yield return new MadeBlockContext(
+				new Pung(nonRedFives),
+				[redFive]
+			);
+		}
+		else
+		{
+			yield return new MadeBlockContext(
+				new Pung(_tiles.Take(3)),
+				_tiles.Skip(3)
+			);
+		}
 	}
 }

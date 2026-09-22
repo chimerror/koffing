@@ -53,6 +53,17 @@ public class UpgradableDowngradableTests
 		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
+	[TestCase]
+	[DataPoint(nameof(DowngradeKongToPungTestCases))]
+	public static void DowngradeKongToPungIsCorrect(Kong kong, IEnumerable<MadeBlockContext> expectedOutput)
+	{
+		LoggingPrefix = nameof(DowngradeKongToPungIsCorrect);
+
+		var actualOutput = ((IDowngradable<Pung>)kong).Downgrade();
+		PrefixInfo($"Checking that downgrading kong \"{kong.Tiles.NotationFromTiles()}\" to pung works");
+		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
+	}
+
 	private static IEnumerable<object[]> DowngradeChowToKanchanTestCases()
 	{
 		foreach (var suit in Enum.GetValues<Suit>())
@@ -149,6 +160,48 @@ public class UpgradableDowngradableTests
 					new Chow([lowTile, middleTile, highTile]),
 					expectedMadeBlocks,
 				];
+			}
+		}
+	}
+
+	private static IEnumerable<object[]> DowngradeKongToPungTestCases()
+	{
+		foreach (var suit in Enum.GetValues<Suit>())
+		{
+			for (int rank = 1; rank <=9; rank++)
+			{
+				if (suit == Suit.Zi && rank > 7)
+				{
+					break;
+				}
+
+				var suitString = suit.GetSuitString();
+				if (suit != Suit.Zi && rank == 5)
+				{
+					var nonRedFives = $"555{suitString}".ToTiles();
+					var redFive = $"0{suitString}".ToTile();
+					yield return
+					[
+						new Kong(nonRedFives.Append(redFive)),
+						new List<MadeBlockContext>()
+						{
+							new(new Pung(nonRedFives), [redFive]),
+							new(new Pung(nonRedFives.Take(2).Append(redFive)), nonRedFives.Skip(2)),
+						},
+					];
+				}
+				else
+				{
+					var tiles = $"{rank}{rank}{rank}{rank}{suitString}".ToTiles();
+					yield return
+					[
+						new Kong(tiles),
+						new List<MadeBlockContext>()
+						{
+							new(new Pung(tiles.Take(3)), tiles.Skip(3)),
+						},
+					];
+				}
 			}
 		}
 	}
