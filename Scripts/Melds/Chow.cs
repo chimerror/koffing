@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class Chow : Meld, IBlock
+public class Chow : Meld, IBlock, IDowngradable<Kanchan>, IDowngradable<Penchan>, IDowngradable<Ryanmen>
 {
 	public Chow(IEnumerable<Tile> tiles = null) : base(tiles)
 	{
@@ -86,5 +86,50 @@ public class Chow : Meld, IBlock
 	{
 		// TODO: Should we put these in an enum so we can make sure numbers are unique?
 		return 2;
+	}
+
+	IEnumerable<MadeBlockContext> IDowngradable<Kanchan>.Downgrade()
+	{
+		var sortedTiles = _tiles.Order().ToList();
+		var lowTile = sortedTiles[0];
+		var middleTile = sortedTiles[1];
+		var highTile = sortedTiles[2];
+
+		yield return new MadeBlockContext(new Kanchan([lowTile, highTile]), [middleTile]);
+	}
+
+	IEnumerable<MadeBlockContext> IDowngradable<Penchan>.Downgrade()
+	{
+		var sortedTiles = _tiles.Order().ToList();
+		var lowTile = sortedTiles[0];
+		var middleTile = sortedTiles[1];
+		var highTile = sortedTiles[2];
+
+		if (lowTile.Rank == 1)
+		{
+			yield return new MadeBlockContext(new Penchan([lowTile, middleTile]), [highTile]);
+		}
+		else if (highTile.Rank == 9)
+		{
+			yield return new MadeBlockContext(new Penchan([middleTile, highTile]), [lowTile]);
+		}
+	}
+
+	IEnumerable<MadeBlockContext> IDowngradable<Ryanmen>.Downgrade()
+	{
+		var sortedTiles = _tiles.Order().ToList();
+		var lowTile = sortedTiles[0];
+		var middleTile = sortedTiles[1];
+		var highTile = sortedTiles[2];
+
+		if (lowTile.Rank > 1)
+		{
+			yield return new MadeBlockContext(new Ryanmen([lowTile, middleTile]), [highTile]);
+		}
+
+		if (middleTile.Rank < 8)
+		{
+			yield return new MadeBlockContext(new Ryanmen([middleTile, highTile]), [lowTile]);
+		}
 	}
 }
