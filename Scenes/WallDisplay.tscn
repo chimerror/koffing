@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://en441bre5wvc"]
+
+[ext_resource type="Script" uid="uid://04ftcjr8buq8" path="res://Scripts/Matches/WallDisplay.cs" id="1_81alg"]
+
+[node name="WallDisplay" type="Node2D" unique_id=1954642753]
+script = ExtResource("1_81alg")

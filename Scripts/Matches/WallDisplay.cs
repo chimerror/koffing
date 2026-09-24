@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 
 [Tool]
-public partial class Wall : Node2D
+public partial class WallDisplay : Node2D
 {
 	private ulong _seed = 0ul;
 	private RandomNumberGenerator _rng = new RandomNumberGenerator();
@@ -14,7 +14,7 @@ public partial class Wall : Node2D
 	private bool _listPositions = false;
 
 	[Export]
-	public PackedScene TileScene { get; set; } = ResourceLoader.Load<PackedScene>("res://TileSprite.tscn");
+	public PackedScene TileScene { get; set; } = ResourceLoader.Load<PackedScene>("res://Scenes/TileSprite.tscn");
 
 	[Export]
 	public ulong Seed
@@ -120,7 +120,7 @@ public partial class Wall : Node2D
 		_tiles.Clear();
 	}
 
-	public Wall()
+	public WallDisplay()
 	{
 		UpdateWall();
 	}
