@@ -1,5 +1,4 @@
 using Godot;
-using System;
 using System.Collections.Generic;
 
 [Tool]
@@ -9,7 +8,8 @@ public partial class WallDisplay : Node2D
 	private readonly GodotRandomNumberGenerator _rng = new();
 	private PlayerCount _playerCount = PlayerCount.Four;
 	private bool _hasRedFives = true;
-	private List<TileSprite> _tiles = [];
+	private Wall _wall;
+	private readonly List<TileSprite> _tileSprites = [];
 
 	private bool _listPositions = false;
 
@@ -73,51 +73,26 @@ public partial class WallDisplay : Node2D
 			GD.Print($"RNG Set to {_rng.Seed}");
 		}
 
-		foreach (var suit in Enum.GetValues<Suit>())
+		_wall = new Wall(_rng, _playerCount, _hasRedFives);
+		foreach (var tile in _wall.Tiles)
 		{
-			for (var rank = 1; rank <= 9; rank++)
-			{
-				if (suit == Suit.Zi && rank > 7)
-				{
-					continue;
-				}
-				else if (_playerCount == PlayerCount.Three && suit == Suit.Man && !(rank == 1 || rank == 9))
-				{
-					continue;
-				}
-
-				for (var instance = 0; instance < 4; instance++)
-				{
-					var adjustedRank = rank;
-					if (_hasRedFives && suit != Suit.Zi && rank == 5 && instance == 0)
-					{
-						adjustedRank = 0;
-					}
-
-					var tile = TileScene.Instantiate<TileSprite>();
-					tile.Suit = suit;
-					tile.Rank = adjustedRank;
-					_tiles.Add(tile);
-				}
-			}
+			var tileSprite = TileScene.Instantiate<TileSprite>();
+			tileSprite.Tile = tile;
+			_tileSprites.Add(tileSprite);
+			AddChild(tileSprite);
 		}
 
-		_tiles = _rng.Shuffle(_tiles);
-		foreach (var tile in _tiles)
-		{
-			AddChild(tile);
-		}
 		_listPositions = true;
 	}
 
 	private void FreeTiles()
 	{
-		foreach (var tile in _tiles)
+		foreach (var tileSprite in _tileSprites)
 		{
-			RemoveChild(tile);
-			tile.QueueFree();
+			RemoveChild(tileSprite);
+			tileSprite.QueueFree();
 		}
-		_tiles.Clear();
+		_tileSprites.Clear();
 	}
 
 	public WallDisplay()
@@ -136,14 +111,14 @@ public partial class WallDisplay : Node2D
 		var currentTileInRow = 1;
 		var currentZIndex = 0;
 
-		foreach (var tile in _tiles)
+		foreach (var tileSprite in _tileSprites)
 		{
-			tile.Position = new Vector2(currentX, currentY);
-			tile.ZIndex = currentZIndex;
+			tileSprite.Position = new Vector2(currentX, currentY);
+			tileSprite.ZIndex = currentZIndex;
 
 			if (_listPositions)
 			{
-				GD.Print($"Positioning {tile.Rank} of {tile.Suit} at ({tile.Position.X}, {tile.Position.Y}, {tile.ZIndex})");
+				GD.Print($"Positioning {tileSprite.Rank} of {tileSprite.Suit} at ({tileSprite.Position.X}, {tileSprite.Position.Y}, {tileSprite.ZIndex})");
 			}
 			currentX += 150f;
 			currentTileInRow++;

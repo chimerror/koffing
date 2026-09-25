@@ -3,9 +3,21 @@ using Godot;
 [Tool]
 public partial class TileSprite : Sprite2D
 {
-	private readonly Tile _tile = new();
+	private Tile _tile = new();
 
-	public Tile Tile => _tile;
+	public Tile Tile
+	{
+		get => _tile;
+		set
+		{
+			var needUpdate = _tile != value;
+			_tile = value;
+			if (needUpdate)
+			{
+				UpdateTileSprite();
+			}
+		}
+	}
 
 	[Export]
 	public Suit Suit
@@ -15,7 +27,8 @@ public partial class TileSprite : Sprite2D
 		{
 			var needUpdate = value != _tile.Suit;
 			_tile.Suit = value;
-			if (needUpdate) {
+			if (needUpdate)
+			{
 				UpdateTileSprite();
 			}
 		}
@@ -33,7 +46,8 @@ public partial class TileSprite : Sprite2D
 			}
 			var needUpdate = value != _tile.Rank;
 			_tile.Rank = value;
-			if (needUpdate) {
+			if (needUpdate)
+			{
 				UpdateTileSprite();
 			}
 		}
@@ -47,7 +61,8 @@ public partial class TileSprite : Sprite2D
 		{
 			var needUpdate = value != _tile.FaceUp;
 			_tile.FaceUp = value;
-			if (needUpdate) {
+			if (needUpdate)
+			{
 				UpdateTileSprite();
 			}
 		}
