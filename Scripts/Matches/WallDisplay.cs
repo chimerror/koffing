@@ -6,10 +6,10 @@ using System.Collections.Generic;
 public partial class WallDisplay : Node2D
 {
 	private ulong _seed = 0ul;
-	private RandomNumberGenerator _rng = new RandomNumberGenerator();
+	private readonly GodotRandomNumberGenerator _rng = new();
 	private PlayerCount _playerCount = PlayerCount.Four;
 	private bool _hasRedFives = true;
-	private List<TileSprite> _tiles = new List<TileSprite>();
+	private List<TileSprite> _tiles = [];
 
 	private bool _listPositions = false;
 
