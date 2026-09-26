@@ -29,16 +29,16 @@ public class RandomNumberGeneratorTests
 	{
 		LoggingPrefix = nameof(GodotRandomNumberGeneratorCanBeUsed);
 
-		PrefixInfo($"Checking that Godot RNG can be constructed...");
+		PrefixInfo("Checking that Godot RNG can be constructed...");
 		var rng = new GodotRandomNumberGenerator();
-		PrefixInfo($"Checking that Godot RNG can be randomized...");
+		PrefixInfo("Checking that Godot RNG can be randomized...");
 		rng.Randomize();
-		PrefixInfo($"Checking that Godot RNG can return ranged integer...");
+		PrefixInfo("Checking that Godot RNG can return ranged integer...");
 		AssertThat(rng.GetIntegerInRange(-13, 13)).IsBetween(-13, 13);
-		PrefixInfo($"Checking that Godot RNG can have seed set...");
+		PrefixInfo("Checking that Godot RNG can have seed set...");
 		rng.Seed = 13;
 		AssertThat(rng.GetIntegerInRange(-13, 13)).IsEqual(-4);
-		PrefixInfo($"Checking that Godot RNG can shuffle tiles...");
+		PrefixInfo("Checking that Godot RNG can shuffle tiles...");
 		List<Tile> tiles = [.. _windTileStrings.Select(s => s.ToTile())];
 		var shuffledTiles = rng.Shuffle(tiles);
 		List<Tile> expectedTiles = [.. _godotExpectedShuffleTileStrings.Select(s => s.ToTile())];
@@ -50,16 +50,16 @@ public class RandomNumberGeneratorTests
 	{
 		LoggingPrefix = nameof(SystemRandomNumberGeneratorCanBeUsed);
 
-		PrefixInfo($"Checking that System RNG can be constructed...");
+		PrefixInfo("Checking that System RNG can be constructed...");
 		var rng = new SystemRandomNumberGenerator();
-		PrefixInfo($"Checking that System RNG can be randomized...");
+		PrefixInfo("Checking that System RNG can be randomized...");
 		rng.Randomize();
-		PrefixInfo($"Checking that System RNG can return ranged integer...");
+		PrefixInfo("Checking that System RNG can return ranged integer...");
 		AssertThat(rng.GetIntegerInRange(-13, 13)).IsBetween(-13, 13);
-		PrefixInfo($"Checking that System RNG can have seed set...");
+		PrefixInfo("Checking that System RNG can have seed set...");
 		rng.Seed = 13;
 		AssertThat(rng.GetIntegerInRange(-13, 13)).IsEqual(0);
-		PrefixInfo($"Checking that System RNG can shuffle tiles...");
+		PrefixInfo("Checking that System RNG can shuffle tiles...");
 		List<Tile> tiles = [.. _windTileStrings.Select(s => s.ToTile())];
 		var shuffledTiles = rng.Shuffle(tiles);
 		List<Tile> expectedTiles = [.. _systemExpectedShuffleTileStrings.Select(s => s.ToTile())];
