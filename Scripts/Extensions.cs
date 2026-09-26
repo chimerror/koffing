@@ -19,6 +19,16 @@ public static partial class Extensions
 		return result;
 	}
 
+	public static int RollDice(this IRandomNumberGenerator rng, int numberOfDice = 2, int sidesOfDie = 6)
+	{
+		var totalRoll = 0;
+		for (int currentRoll = 0; currentRoll < numberOfDice; currentRoll++)
+		{
+			totalRoll += rng.GetIntegerInRange(1, sidesOfDie);
+		}
+		return totalRoll;
+	}
+
 	public static Tile ToTile(this string input)
 	{
 		var tiles = input.ToTiles().ToList();

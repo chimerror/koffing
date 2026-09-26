@@ -43,6 +43,8 @@ public class RandomNumberGeneratorTests
 		var shuffledTiles = rng.Shuffle(tiles);
 		List<Tile> expectedTiles = [.. _godotExpectedShuffleTileStrings.Select(s => s.ToTile())];
 		AssertArray(expectedTiles).ContainsExactly(shuffledTiles);
+		PrefixInfo("Checking that Godot RNG can roll dice...");
+		AssertThat(rng.RollDice()).IsEqual(8);
 	}
 
 	[TestCase]
@@ -64,5 +66,7 @@ public class RandomNumberGeneratorTests
 		var shuffledTiles = rng.Shuffle(tiles);
 		List<Tile> expectedTiles = [.. _systemExpectedShuffleTileStrings.Select(s => s.ToTile())];
 		AssertArray(expectedTiles).ContainsExactly(shuffledTiles);
+		PrefixInfo("Checking that System RNG can roll dice...");
+		AssertThat(rng.RollDice()).IsEqual(11);
 	}
 }
