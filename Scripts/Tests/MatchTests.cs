@@ -210,9 +210,9 @@ public class MatchTests
 			true, // Red Fives?
 			2, // Dice Roll
 			40, // Live Wall Start, Next Live Tile
-			26, // Next Replacement Tile
-			30, // Last Revealed Dora Indicator
-			32, // Next Dora Indicator
+			20, // Next Replacement Tile
+			28, // Last Revealed Dora Indicator
+			30, // Next Dora Indicator
 		];
 		yield return
 		[
@@ -220,9 +220,9 @@ public class MatchTests
 			false, // Red Fives?
 			3, // Dice Roll
 			78, // Live Wall Start, Next Live Tile
-			64, // Next Replacement Tile
-			68, // Last Revealed Dora Indicator
-			70, // Next Dora Indicator
+			58, // Next Replacement Tile
+			66, // Last Revealed Dora Indicator
+			68, // Next Dora Indicator
 		];
 		yield return
 		[
@@ -230,9 +230,9 @@ public class MatchTests
 			true, // Red Fives?
 			4, // Dice Roll
 			8, // Live Wall Start, Next Live Tile
-			102, // Next Replacement Tile
-			106, // Last Revealed Dora Indicator
-			0, // Next Dora Indicator
+			96, // Next Replacement Tile
+			104, // Last Revealed Dora Indicator
+			106, // Next Dora Indicator
 		];
 		yield return
 		[
@@ -240,9 +240,9 @@ public class MatchTests
 			false, // Red Fives?
 			5, // Dice Roll
 			46, // Live Wall Start, Next Live Tile
-			32, // Next Replacement Tile
-			36, // Last Revealed Dora Indicator
-			38, // Next Dora Indicator
+			26, // Next Replacement Tile
+			34, // Last Revealed Dora Indicator
+			36, // Next Dora Indicator
 		];
 		yield return
 		[
@@ -250,9 +250,9 @@ public class MatchTests
 			true, // Red Fives?
 			6, // Dice Roll
 			84, // Live Wall Start, Next Live Tile
-			70, // Next Replacement Tile
-			74, // Last Revealed Dora Indicator
-			76, // Next Dora Indicator
+			64, // Next Replacement Tile
+			72, // Last Revealed Dora Indicator
+			74, // Next Dora Indicator
 		];
 		yield return
 		[
@@ -260,9 +260,9 @@ public class MatchTests
 			false, // Red Fives?
 			7, // Dice Roll
 			14, // Live Wall Start, Next Live Tile
-			0, // Next Replacement Tile
-			4, // Last Revealed Dora Indicator
-			6, // Next Dora Indicator
+			102, // Next Replacement Tile
+			2, // Last Revealed Dora Indicator
+			4, // Next Dora Indicator
 		];
 		yield return
 		[
@@ -270,9 +270,9 @@ public class MatchTests
 			true, // Red Fives?
 			8, // Dice Roll
 			52, // Live Wall Start, Next Live Tile
-			38, // Next Replacement Tile
-			42, // Last Revealed Dora Indicator
-			44, // Next Dora Indicator
+			32, // Next Replacement Tile
+			40, // Last Revealed Dora Indicator
+			42, // Next Dora Indicator
 		];
 		yield return
 		[
@@ -280,9 +280,9 @@ public class MatchTests
 			false, // Red Fives?
 			9, // Dice Roll
 			90, // Live Wall Start, Next Live Tile
-			76, // Next Replacement Tile
-			80, // Last Revealed Dora Indicator
-			82, // Next Dora Indicator
+			70, // Next Replacement Tile
+			78, // Last Revealed Dora Indicator
+			80, // Next Dora Indicator
 		];
 		yield return
 		[
@@ -290,9 +290,9 @@ public class MatchTests
 			true, // Red Fives?
 			10, // Dice Roll
 			20, // Live Wall Start, Next Live Tile
-			6, // Next Replacement Tile
-			10, // Last Revealed Dora Indicator
-			12, // Next Dora Indicator
+			0, // Next Replacement Tile
+			8, // Last Revealed Dora Indicator
+			10, // Next Dora Indicator
 		];
 		yield return
 		[
@@ -300,9 +300,9 @@ public class MatchTests
 			false, // Red Fives?
 			11, // Dice Roll
 			58, // Live Wall Start, Next Live Tile
-			44, // Next Replacement Tile
-			48, // Last Revealed Dora Indicator
-			50, // Next Dora Indicator
+			38, // Next Replacement Tile
+			46, // Last Revealed Dora Indicator
+			48, // Next Dora Indicator
 		];
 		yield return
 		[
@@ -310,9 +310,9 @@ public class MatchTests
 			true, // Red Fives?
 			12, // Dice Roll
 			96, // Live Wall Start, Next Live Tile
-			82, // Next Replacement Tile
-			86, // Last Revealed Dora Indicator
-			88, // Next Dora Indicator
+			76, // Next Replacement Tile
+			84, // Last Revealed Dora Indicator
+			86, // Next Dora Indicator
 		];
 	}
 }

@@ -9,6 +9,7 @@ public class Wall
 
 	private readonly List<Tile> _tiles = [];
 	private readonly int _liveWallStartIndex;
+	private readonly int _deadWallCount;
 	private int _nextLiveTileIndex;
 	private int _nextReplacementTileIndex;
 	private int _lastRevealedDoraIndicatorIndex;
@@ -19,7 +20,10 @@ public class Wall
 	// These properties are here mostly for testing purposes.
 	public int LiveWallStartIndex => _liveWallStartIndex;
 	public int LiveWallEndIndex => GetSafeIndex(_liveWallStartIndex - 2);
-	public int DeadWallStartIndex => GetSafeIndex(_liveWallStartIndex - 14);
+	// TODOTODO: This should be 20 for 3-player. Throws off all my math. Double check the other assumed "constants" as
+	// well.
+	public int DeadWallStartIndex => GetSafeIndex(_liveWallStartIndex - _deadWallCount);
+
 	public int DeadWallEndIndex => GetSafeIndex(_liveWallStartIndex - 1);
 	public int NextLiveTileIndex => _nextLiveTileIndex;
 	public int NextReplacementTileIndex => _nextReplacementTileIndex;
@@ -64,10 +68,14 @@ public class Wall
 			(_fourPlayerWallStartIndices, 4);
 		var dieRoll = breakDiceRoll == -1 ? rng.RollDice() : breakDiceRoll;
 		_liveWallStartIndex = wallStartIndices[dieRoll % numberOfWallSides] + (2 * dieRoll);
-
 		_nextLiveTileIndex = _liveWallStartIndex;
+
+		_deadWallCount = playerCount == PlayerCount.Three ? 20 : 14;
+
+		var numberOfReplacementTiles = playerCount == PlayerCount.Three ? 8 : 4;
 		_nextReplacementTileIndex = DeadWallStartIndex;
-		_lastRevealedDoraIndicatorIndex = GetSafeIndex(_nextReplacementTileIndex + 4);
+		_lastRevealedDoraIndicatorIndex = GetSafeIndex(_nextReplacementTileIndex + numberOfReplacementTiles);
+
 		_nextDoraIndicatorIndex = GetSafeIndex(_lastRevealedDoraIndicatorIndex + 2);
 	}
 
