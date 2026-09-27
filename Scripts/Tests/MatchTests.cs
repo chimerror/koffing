@@ -99,14 +99,47 @@ public class MatchTests
 		PrefixInfo($"Checking that next dora indicator is index {expectedNextDoraIndicator}...");
 		AssertThat(expectedNextDoraIndicator).IsEqual(createdWall.NextDoraIndicatorIndex);
 
-		PrefixInfo($"Checking there is only one face up tile...");
+		PrefixInfo("Checking there is only one face up tile...");
 		AssertThat(1).IsEqual(createdWallTiles.Count(t => t.FaceUp));
 
 		var revealedDoraIndicator = createdWallTiles[createdWall.LastRevealedDoraIndicatorIndex];
-		PrefixInfo($"Checking that the revealed Dora is face up...");
+		PrefixInfo("Checking that the revealed Dora is face up...");
 		AssertThat(revealedDoraIndicator.FaceUp).IsTrue();
 		PrefixInfo($"Checking that the revealed Dora is {expectedRevealedDoraIndicatorTile}...");
 		AssertThat(revealedDoraIndicator).IsEqual(expectedRevealedDoraIndicatorTile);
+	}
+
+	[TestCase]
+	[DataPoint(nameof(MatchCreationTestCases))]
+	public static void MatchIsCreatedCorrectly(
+		PlayerCount playerCount,
+		bool hasRedFives,
+		int numberOfRounds,
+		int expectedStartingEastIndex)
+	{
+		LoggingPrefix = nameof(MatchIsCreatedCorrectly);
+
+		SystemRandomNumberGenerator rng = new()
+		{
+			Seed = 13
+		};
+		var createdMatch = new Match(rng, playerCount, hasRedFives, numberOfRounds);
+		PrefixInfo($"Checking that created match has the right player count enum {playerCount}");
+		AssertThat(playerCount).IsEqual(createdMatch.PlayerCount);
+		PrefixInfo($"Checking that created match has the right red five setting {hasRedFives}");
+		AssertThat(hasRedFives).IsEqual(createdMatch.HasRedFives);
+		PrefixInfo($"Checking that created match has the right number of rounds {numberOfRounds}");
+		AssertThat(numberOfRounds).IsEqual(createdMatch.NumberOfRounds);
+
+		var actualPlayers = createdMatch.Players.ToList();
+		PrefixInfo("Checking that there are the right number of players...");
+		AssertThat((int)playerCount).IsEqual(actualPlayers.Count);
+		PrefixInfo("Checking that the players have the correct starting scores...");
+		AssertThat(actualPlayers.All(p => p.Points == (playerCount == PlayerCount.Three ? 30000 : 25000)));
+
+		PrefixInfo($"Checking that the correct player (index {expectedStartingEastIndex}) was chosen as East...");
+		AssertThat(createdMatch.CurrentEastIndex).IsEqual(expectedStartingEastIndex);
+		AssertObject(createdMatch.CurrentEastPlayer).IsSame(actualPlayers[expectedStartingEastIndex]);
 	}
 
 	private static IEnumerable<object[]> WallCreationTestCases()
@@ -352,6 +385,94 @@ public class MatchTests
 			84, // Last Revealed Dora Indicator
 			86, // Next Dora Indicator
 			"8s".ToTile(), // Expected Revealed Dora
+		];
+	}
+
+	private static IEnumerable<object[]> MatchCreationTestCases()
+	{
+		yield return
+		[
+			PlayerCount.Four,
+			true,
+			2,
+			0,
+		];
+		yield return
+		[
+			PlayerCount.Four,
+			false,
+			2,
+			0,
+		];
+		yield return
+		[
+			PlayerCount.Four,
+			true,
+			1,
+			0,
+		];
+		yield return
+		[
+			PlayerCount.Four,
+			false,
+			1,
+			0,
+		];
+		yield return
+		[
+			PlayerCount.Three,
+			true,
+			2,
+			1,
+		];
+		yield return
+		[
+			PlayerCount.Three,
+			false,
+			2,
+			1,
+		];
+		yield return
+		[
+			PlayerCount.Three,
+			true,
+			1,
+			1,
+		];
+		yield return
+		[
+			PlayerCount.Three,
+			false,
+			1,
+			1,
+		];
+		yield return
+		[
+			PlayerCount.Two,
+			true,
+			2,
+			0,
+		];
+		yield return
+		[
+			PlayerCount.Two,
+			false,
+			2,
+			0,
+		];
+		yield return
+		[
+			PlayerCount.Two,
+			true,
+			1,
+			0,
+		];
+		yield return
+		[
+			PlayerCount.Two,
+			false,
+			1,
+			0,
 		];
 	}
 }

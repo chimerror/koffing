@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
+using RE = System.Text.RegularExpressions;
 
 public static partial class Extensions
 {
@@ -37,7 +37,7 @@ public static partial class Extensions
 
 	public static IEnumerable<Tile> ToTiles(this string input)
 	{
-		foreach (Match match in TileNotationRegex().Matches(input))
+		foreach (RE.Match match in TileNotationRegex().Matches(input))
 		{
 			var stringSuit = match.Groups["suit"].Value;
 			var suit = Suit.Man;
@@ -120,7 +120,7 @@ public static partial class Extensions
 		}
 	}
 
-	[GeneratedRegex(@"(?<suitOfTiles>((?<ranks>[0-9]+)(?<suit>[mps])|(?<ranks>[1-7]+)(?<suit>z)))")]
-	private static partial Regex TileNotationRegex();
+	[RE.GeneratedRegex(@"(?<suitOfTiles>((?<ranks>[0-9]+)(?<suit>[mps])|(?<ranks>[1-7]+)(?<suit>z)))")]
+	private static partial RE.Regex TileNotationRegex();
 
 }
