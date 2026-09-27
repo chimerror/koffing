@@ -17,11 +17,13 @@ public class Wall
 
 	public IEnumerable<Tile> Tiles => _tiles.AsReadOnly();
 
+	// TODO: Probably should add properties to get revealed dora and ura dora, a method to reveal a dora, a method to
+	// deal a tile, a method to take a replacement tile. These can wait until you get to them in the match code, but I
+	// wanted to make a list just in case one gets missed.
+
 	// These properties are here mostly for testing purposes.
 	public int LiveWallStartIndex => _liveWallStartIndex;
 	public int LiveWallEndIndex => GetSafeIndex(_liveWallStartIndex - 2);
-	// TODOTODO: This should be 20 for 3-player. Throws off all my math. Double check the other assumed "constants" as
-	// well.
 	public int DeadWallStartIndex => GetSafeIndex(_liveWallStartIndex - _deadWallCount);
 
 	public int DeadWallEndIndex => GetSafeIndex(_liveWallStartIndex - 1);
@@ -30,8 +32,6 @@ public class Wall
 	public int LastRevealedDoraIndicatorIndex => _lastRevealedDoraIndicatorIndex;
 	public int NextDoraIndicatorIndex => _nextDoraIndicatorIndex;
 
-	// TODO: Correctly handle face up and face down. For right now, leaving everything up so WallDisplay doesn't just
-	// show face-down tiles.
 	public Wall(IRandomNumberGenerator rng, PlayerCount playerCount, bool hasRedFives, int breakDiceRoll = -1)
 	{
 		foreach (var suit in Enum.GetValues<Suit>())
@@ -55,7 +55,10 @@ public class Wall
 						adjustedRank = 0;
 					}
 
-					var tile = new Tile(suit, adjustedRank);
+					var tile = new Tile(suit, adjustedRank)
+					{
+						FaceUp = false
+					};
 					_tiles.Add(tile);
 				}
 			}
@@ -75,6 +78,9 @@ public class Wall
 		var numberOfReplacementTiles = playerCount == PlayerCount.Three ? 8 : 4;
 		_nextReplacementTileIndex = DeadWallStartIndex;
 		_lastRevealedDoraIndicatorIndex = GetSafeIndex(_nextReplacementTileIndex + numberOfReplacementTiles);
+
+		// By the rules, this shouldn't happen until after the deal, but it won't hurt to do it now.
+		_tiles[_lastRevealedDoraIndicatorIndex].FaceUp = true;
 
 		_nextDoraIndicatorIndex = GetSafeIndex(_lastRevealedDoraIndicatorIndex + 2);
 	}

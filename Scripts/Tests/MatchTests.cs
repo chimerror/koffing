@@ -30,17 +30,22 @@ public class MatchTests
 		int expectedLiveWallStart,
 		int expectedNextReplacementTile,
 		int expectedLastRevealedDoraIndicator,
-		int expectedNextDoraIndicator
+		int expectedNextDoraIndicator,
+		Tile expectedRevealedDoraIndicatorTile
 	)
 	{
 		LoggingPrefix = nameof(WallIsCreatedCorrectly);
 
-		SystemRandomNumberGenerator rng = new();
+		SystemRandomNumberGenerator rng = new()
+		{
+			Seed = 13
+		};
 		var createdWall = new Wall(rng, playerCount, hasRedFives, breakDiceRoll);
+		var createdWallTiles = createdWall.Tiles.ToList();
 
 		var expectedTileCount = playerCount == PlayerCount.Three ? 108 : 136;
 		PrefixInfo($"Checking tile count is {expectedTileCount}");
-		AssertThat(createdWall.Tiles.Count()).IsEqual(expectedTileCount);
+		AssertThat(createdWallTiles.Count).IsEqual(expectedTileCount);
 
 		var redFivesOutcome = hasRedFives ? "does" : "does NOT";
 		var redFiveCountExpected = hasRedFives ? 3 : 0;
@@ -49,7 +54,7 @@ public class MatchTests
 			redFiveCountExpected--;
 		}
 		PrefixInfo($"Checking that created wall {redFivesOutcome} has the right number of red fives...");
-		AssertThat(createdWall.Tiles.Count(t => t.Rank == 0)).IsEqual(redFiveCountExpected);
+		AssertThat(createdWallTiles.Count(t => t.Rank == 0)).IsEqual(redFiveCountExpected);
 
 		foreach (var suit in Enum.GetValues<Suit>())
 		{
@@ -61,23 +66,26 @@ public class MatchTests
 					break;
 				}
 
-				var tilesExpected = Tile.IsValidTile(suit, rank) ? 4 : 0;
-				if (suit != Suit.Zi && hasRedFives && rank == 5)
+				var tileCountExpected = Tile.IsValidTile(suit, rank) ? 4 : 0;
+				if (playerCount == PlayerCount.Three && suit == Suit.Man && rank != 1 && rank != 9)
 				{
-					tilesExpected--;
+					tileCountExpected = 0;
 				}
-				else if (playerCount == PlayerCount.Three && suit == Suit.Man && rank != 1 && rank != 9)
+				else if (suit != Suit.Zi && hasRedFives && rank == 5)
 				{
-					tilesExpected = 0;
+					tileCountExpected--;
 				}
-				PrefixInfo($"Checking that there are {tilesExpected} {rank} of {suit} in the wall...");
-				AssertThat(createdWall.Tiles.Count(t => t.Suit == suit && t.Rank == rank));
+				PrefixInfo($"Checking that there are {tileCountExpected} {rank} of {suit} in the wall...");
+				var tileCountActual = createdWallTiles.Count(t => t.Rank == rank && t.Suit == suit);
+				AssertThat(tileCountActual).IsEqual(tileCountExpected);
 			}
 
 			var redFivesExpected = hasRedFives ? 1 : 0;
 			PrefixInfo($"Checking that there are {redFivesExpected} red fives of {suit} in the wall...");
 		}
 
+		// TODO: I learned that IsEqual makes this work the opposite way from the Array assertions, so these parameters
+		// should be swapped.
 		PrefixInfo($"Checking that start of live wall and next live tile is index {expectedLiveWallStart}...");
 		AssertThat(expectedLiveWallStart).IsEqual(createdWall.LiveWallStartIndex);
 		AssertThat(expectedLiveWallStart).IsEqual(createdWall.NextLiveTileIndex);
@@ -90,6 +98,15 @@ public class MatchTests
 
 		PrefixInfo($"Checking that next dora indicator is index {expectedNextDoraIndicator}...");
 		AssertThat(expectedNextDoraIndicator).IsEqual(createdWall.NextDoraIndicatorIndex);
+
+		PrefixInfo($"Checking there is only one face up tile...");
+		AssertThat(1).IsEqual(createdWallTiles.Count(t => t.FaceUp));
+
+		var revealedDoraIndicator = createdWallTiles[createdWall.LastRevealedDoraIndicatorIndex];
+		PrefixInfo($"Checking that the revealed Dora is face up...");
+		AssertThat(revealedDoraIndicator.FaceUp).IsTrue();
+		PrefixInfo($"Checking that the revealed Dora is {expectedRevealedDoraIndicatorTile}...");
+		AssertThat(revealedDoraIndicator).IsEqual(expectedRevealedDoraIndicatorTile);
 	}
 
 	private static IEnumerable<object[]> WallCreationTestCases()
@@ -103,6 +120,7 @@ public class MatchTests
 			24, // Next Replacement Tile
 			28, // Last Revealed Dora Indicator
 			30, // Next Dora Indicator
+			"6m".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -113,6 +131,7 @@ public class MatchTests
 			60, // Next Replacement Tile
 			64, // Last Revealed Dora Indicator
 			66, // Next Dora Indicator
+			"4m".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -123,6 +142,7 @@ public class MatchTests
 			96, // Next Replacement Tile
 			100, // Last Revealed Dora Indicator
 			102, // Next Dora Indicator
+			"5m".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -133,6 +153,7 @@ public class MatchTests
 			132, // Next Replacement Tile
 			0, // Last Revealed Dora Indicator
 			2, // Next Dora Indicator
+			"9p".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -143,6 +164,7 @@ public class MatchTests
 			32, // Next Replacement Tile
 			36, // Last Revealed Dora Indicator
 			38, // Next Dora Indicator
+			"9s".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -153,6 +175,7 @@ public class MatchTests
 			68, // Next Replacement Tile
 			72, // Last Revealed Dora Indicator
 			74, // Next Dora Indicator
+			"9p".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -163,6 +186,7 @@ public class MatchTests
 			104, // Next Replacement Tile
 			108, // Last Revealed Dora Indicator
 			110, // Next Dora Indicator
+			"8m".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -173,6 +197,7 @@ public class MatchTests
 			4, // Next Replacement Tile
 			8, // Last Revealed Dora Indicator
 			10, // Next Dora Indicator
+			"2s".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -183,6 +208,7 @@ public class MatchTests
 			40, // Next Replacement Tile
 			44, // Last Revealed Dora Indicator
 			46, // Next Dora Indicator
+			"9s".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -193,6 +219,7 @@ public class MatchTests
 			76, // Next Replacement Tile
 			80, // Last Revealed Dora Indicator
 			82, // Next Dora Indicator
+			"6m".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -203,6 +230,7 @@ public class MatchTests
 			112, // Next Replacement Tile
 			116, // Last Revealed Dora Indicator
 			118, // Next Dora Indicator
+			"8s".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -213,6 +241,7 @@ public class MatchTests
 			20, // Next Replacement Tile
 			28, // Last Revealed Dora Indicator
 			30, // Next Dora Indicator
+			"3p".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -223,6 +252,7 @@ public class MatchTests
 			58, // Next Replacement Tile
 			66, // Last Revealed Dora Indicator
 			68, // Next Dora Indicator
+			"2p".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -233,6 +263,7 @@ public class MatchTests
 			96, // Next Replacement Tile
 			104, // Last Revealed Dora Indicator
 			106, // Next Dora Indicator
+			"4p".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -243,6 +274,7 @@ public class MatchTests
 			26, // Next Replacement Tile
 			34, // Last Revealed Dora Indicator
 			36, // Next Dora Indicator
+			"4p".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -253,6 +285,7 @@ public class MatchTests
 			64, // Next Replacement Tile
 			72, // Last Revealed Dora Indicator
 			74, // Next Dora Indicator
+			"4s".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -263,6 +296,7 @@ public class MatchTests
 			102, // Next Replacement Tile
 			2, // Last Revealed Dora Indicator
 			4, // Next Dora Indicator
+			"4z".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -273,6 +307,7 @@ public class MatchTests
 			32, // Next Replacement Tile
 			40, // Last Revealed Dora Indicator
 			42, // Next Dora Indicator
+			"2s".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -283,6 +318,7 @@ public class MatchTests
 			70, // Next Replacement Tile
 			78, // Last Revealed Dora Indicator
 			80, // Next Dora Indicator
+			"2z".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -293,6 +329,7 @@ public class MatchTests
 			0, // Next Replacement Tile
 			8, // Last Revealed Dora Indicator
 			10, // Next Dora Indicator
+			"5s".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -303,6 +340,7 @@ public class MatchTests
 			38, // Next Replacement Tile
 			46, // Last Revealed Dora Indicator
 			48, // Next Dora Indicator
+			"2z".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -313,6 +351,7 @@ public class MatchTests
 			76, // Next Replacement Tile
 			84, // Last Revealed Dora Indicator
 			86, // Next Dora Indicator
+			"8s".ToTile(), // Expected Revealed Dora
 		];
 	}
 }
