@@ -10,7 +10,7 @@ public class Wall
 	private readonly List<Tile> _tiles = [];
 	private readonly int _liveWallStartIndex;
 	private readonly int _deadWallCount;
-	private int _liveWallEndIndex;
+	private int _tilesLeftToPop;
 	private int _nextLiveTileIndex;
 	private int _nextReplacementTileIndex;
 	private int _lastRevealedDoraIndicatorIndex;
@@ -24,10 +24,10 @@ public class Wall
 
 	// These properties are here mostly for testing purposes.
 	public int LiveWallStartIndex => _liveWallStartIndex;
-	public int LiveWallEndIndex => _liveWallEndIndex;
 	public int DeadWallStartIndex => GetSafeIndex(_liveWallStartIndex - 2);
 	public int DeadWallEndIndex => GetSafeIndex(_liveWallStartIndex - _deadWallCount);
 	public int NextLiveTileIndex => _nextLiveTileIndex;
+	public bool CanTakeLiveTile => _tilesLeftToPop > 0;
 	public int NextReplacementTileIndex => _nextReplacementTileIndex;
 	public int LastRevealedDoraIndicatorIndex => _lastRevealedDoraIndicatorIndex;
 	public int NextDoraIndicatorIndex => _nextDoraIndicatorIndex;
@@ -72,11 +72,10 @@ public class Wall
 		var dieRoll = breakDiceRoll == -1 ? rng.RollDice() : breakDiceRoll;
 		_liveWallStartIndex = wallStartIndices[dieRoll % numberOfWallSides] + (2 * dieRoll);
 		_nextLiveTileIndex = _liveWallStartIndex;
-
-		_deadWallCount = playerCount == PlayerCount.Three ? 20 : 14;
-		_liveWallEndIndex = GetSafeIndex(DeadWallEndIndex - 1);
+		_tilesLeftToPop = playerCount == PlayerCount.Three ? 108 : 136;
 
 		var numberOfReplacementTiles = playerCount == PlayerCount.Three ? 8 : 4;
+		_deadWallCount = playerCount == PlayerCount.Three ? 20 : 14;
 		_nextReplacementTileIndex = DeadWallStartIndex;
 
 		// Minus here, because the dead wall runs counter-clockwise
@@ -88,6 +87,18 @@ public class Wall
 		// Minus here, because the dead wall runs counter-clockwise
 		_nextDoraIndicatorIndex = GetSafeIndex(_lastRevealedDoraIndicatorIndex - 2);
 	}
+
+	public Tile PopNextLiveTile()
+	{
+		if (!CanTakeLiveTile)
+		{
+			return null;
+		}
+
+		var nextTile = _tiles[_nextLiveTileIndex];
+		_nextLiveTileIndex = GetSafeIndex(++_nextLiveTileIndex);
+		_tilesLeftToPop--;
+		return nextTile;
 	}
 
 	private int GetSafeIndex(int index)

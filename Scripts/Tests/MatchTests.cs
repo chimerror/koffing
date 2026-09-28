@@ -28,7 +28,6 @@ public class MatchTests
 		bool hasRedFives,
 		int breakDiceRoll,
 		int expectedLiveWallStart,
-		int expectedLiveWallEnd,
 		int expectedNextReplacementTile,
 		int expectedLastRevealedDoraIndicator,
 		int expectedNextDoraIndicator,
@@ -89,9 +88,6 @@ public class MatchTests
 		AssertThat(createdWall.LiveWallStartIndex).IsEqual(expectedLiveWallStart);
 		AssertThat(createdWall.NextLiveTileIndex).IsEqual(expectedLiveWallStart);
 
-		PrefixInfo($"Checking that end of live wall is index {expectedLiveWallStart}...");
-		AssertThat(createdWall.LiveWallEndIndex).IsEqual(expectedLiveWallEnd);
-
 		PrefixInfo($"Checking that next replacement Tile is index {expectedNextReplacementTile}...");
 		AssertThat(createdWall.NextReplacementTileIndex).IsEqual(expectedNextReplacementTile);
 
@@ -109,6 +105,44 @@ public class MatchTests
 		AssertThat(revealedDoraIndicator.FaceUp).IsTrue();
 		PrefixInfo($"Checking that the revealed Dora is {expectedRevealedDoraIndicatorTile}...");
 		AssertThat(revealedDoraIndicator).IsEqual(expectedRevealedDoraIndicatorTile);
+	}
+
+	[TestCase]
+	[DataPoint(nameof(PopLiveTileTestCases))]
+	public static void PopLiveTileIsCorrect(
+		PlayerCount playerCount,
+		bool hasRedFives,
+		int numberOfRounds,
+		IEnumerable<Tile> expectedPoppedTiles
+	)
+	{
+		LoggingPrefix = nameof(PopLiveTileIsCorrect);
+
+		SystemRandomNumberGenerator rng = new()
+		{
+			Seed = 13
+		};
+		var createdWall = new Wall(rng, playerCount, hasRedFives);
+
+		PrefixInfo("Checking that CanTakeLiveTile reports that a tile can be taken");
+		AssertThat(createdWall.CanTakeLiveTile).IsTrue();
+
+		List<Tile> actualPoppedTiles = [];
+		while (createdWall.CanTakeLiveTile)
+		{
+			actualPoppedTiles.Add(createdWall.PopNextLiveTile());
+		}
+
+		// PrefixInfo($"DEBUG: Actual Popped Tiles: \"{actualPoppedTiles.NotationFromTiles()}\"");
+		PrefixInfo("Checking that actual popped tiles matched expected popped tiles...");
+		AssertArray(expectedPoppedTiles).ContainsExactly(actualPoppedTiles);
+
+		PrefixInfo("Checking that CanTakeLiveTile reports that a tile can't be taken");
+		AssertThat(createdWall.CanTakeLiveTile).IsFalse();
+
+		var exhaustedWallTile = createdWall.PopNextLiveTile();
+		PrefixInfo("Checking that PopNextLiveTile returns null");
+		AssertObject(exhaustedWallTile).IsNull();
 	}
 
 	[TestCase]
@@ -152,7 +186,6 @@ public class MatchTests
 			false, // Red Fives?
 			2, // Dice Roll
 			38, // Live Wall Start, Next Live Tile
-			23, // Live Wall End
 			36, // Next Replacement Tile
 			32, // Last Revealed Dora Indicator
 			30, // Next Dora Indicator
@@ -164,7 +197,6 @@ public class MatchTests
 			true, // Red Fives?
 			3, // Dice Roll
 			74, // Live Wall Start, Next Live Tile
-			59, // Live Wall End
 			72, // Next Replacement Tile
 			68, // Last Revealed Dora Indicator
 			66, // Next Dora Indicator
@@ -176,7 +208,6 @@ public class MatchTests
 			false, // Red Fives?
 			4, // Dice Roll
 			110, // Live Wall Start, Next Live Tile
-			95, // Live Wall End
 			108, // Next Replacement Tile
 			104, // Last Revealed Dora Indicator
 			102, // Next Dora Indicator
@@ -188,7 +219,6 @@ public class MatchTests
 			true, // Red Fives?
 			5, // Dice Roll
 			10, // Live Wall Start, Next Live Tile
-			131, // Live Wall End
 			8, // Next Replacement Tile
 			4, // Last Revealed Dora Indicator
 			2, // Next Dora Indicator
@@ -200,7 +230,6 @@ public class MatchTests
 			false, // Red Fives?
 			6, // Dice Roll
 			46, // Live Wall Start, Next Live Tile
-			31, // Live Wall End
 			44, // Next Replacement Tile
 			40, // Last Revealed Dora Indicator
 			38, // Next Dora Indicator
@@ -212,7 +241,6 @@ public class MatchTests
 			true, // Red Fives?
 			7, // Dice Roll
 			82, // Live Wall Start, Next Live Tile
-			67, // Live Wall End
 			80, // Next Replacement Tile
 			76, // Last Revealed Dora Indicator
 			74, // Next Dora Indicator
@@ -224,7 +252,6 @@ public class MatchTests
 			false, // Red Fives?
 			8, // Dice Roll
 			118, // Live Wall Start, Next Live Tile
-			103, // Live Wall End
 			116, // Next Replacement Tile
 			112, // Last Revealed Dora Indicator
 			110, // Next Dora Indicator
@@ -236,7 +263,6 @@ public class MatchTests
 			true, // Red Fives?
 			9, // Dice Roll
 			18, // Live Wall Start, Next Live Tile
-			3, // Live Wall End
 			16, // Next Replacement Tile
 			12, // Last Revealed Dora Indicator
 			10, // Next Dora Indicator
@@ -248,7 +274,6 @@ public class MatchTests
 			false, // Red Fives?
 			10, // Dice Roll
 			54, // Live Wall Start, Next Live Tile
-			39, // Live Wall End
 			52, // Next Replacement Tile
 			48, // Last Revealed Dora Indicator
 			46, // Next Dora Indicator
@@ -260,7 +285,6 @@ public class MatchTests
 			true, // Red Fives?
 			11, // Dice Roll
 			90, // Live Wall Start, Next Live Tile
-			75, // Live Wall End
 			88, // Next Replacement Tile
 			84, // Last Revealed Dora Indicator
 			82, // Next Dora Indicator
@@ -272,7 +296,6 @@ public class MatchTests
 			false, // Red Fives?
 			12, // Dice Roll
 			126, // Live Wall Start, Next Live Tile
-			111, // Live Wall End
 			124, // Next Replacement Tile
 			120, // Last Revealed Dora Indicator
 			118, // Next Dora Indicator
@@ -284,7 +307,6 @@ public class MatchTests
 			true, // Red Fives?
 			2, // Dice Roll
 			40, // Live Wall Start, Next Live Tile
-			19, // Live Wall End
 			38, // Next Replacement Tile
 			30, // Last Revealed Dora Indicator
 			28, // Next Dora Indicator
@@ -296,7 +318,6 @@ public class MatchTests
 			false, // Red Fives?
 			3, // Dice Roll
 			78, // Live Wall Start, Next Live Tile
-			57, // Live Wall End
 			76, // Next Replacement Tile
 			68, // Last Revealed Dora Indicator
 			66, // Next Dora Indicator
@@ -308,7 +329,6 @@ public class MatchTests
 			true, // Red Fives?
 			4, // Dice Roll
 			8, // Live Wall Start, Next Live Tile
-			95, // Live Wall End
 			6, // Next Replacement Tile
 			106, // Last Revealed Dora Indicator
 			104, // Next Dora Indicator
@@ -320,7 +340,6 @@ public class MatchTests
 			false, // Red Fives?
 			5, // Dice Roll
 			46, // Live Wall Start, Next Live Tile
-			25, // Live Wall End
 			44, // Next Replacement Tile
 			36, // Last Revealed Dora Indicator
 			34, // Next Dora Indicator
@@ -332,7 +351,6 @@ public class MatchTests
 			true, // Red Fives?
 			6, // Dice Roll
 			84, // Live Wall Start, Next Live Tile
-			63, // Live Wall End
 			82, // Next Replacement Tile
 			74, // Last Revealed Dora Indicator
 			72, // Next Dora Indicator
@@ -344,7 +362,6 @@ public class MatchTests
 			false, // Red Fives?
 			7, // Dice Roll
 			14, // Live Wall Start, Next Live Tile
-			101, // Live Wall End
 			12, // Next Replacement Tile
 			4, // Last Revealed Dora Indicator
 			2, // Next Dora Indicator
@@ -356,7 +373,6 @@ public class MatchTests
 			true, // Red Fives?
 			8, // Dice Roll
 			52, // Live Wall Start, Next Live Tile
-			31, // Live Wall End
 			50, // Next Replacement Tile
 			42, // Last Revealed Dora Indicator
 			40, // Next Dora Indicator
@@ -368,7 +384,6 @@ public class MatchTests
 			false, // Red Fives?
 			9, // Dice Roll
 			90, // Live Wall Start, Next Live Tile
-			69, // Live Wall End
 			88, // Next Replacement Tile
 			80, // Last Revealed Dora Indicator
 			78, // Next Dora Indicator
@@ -380,7 +395,6 @@ public class MatchTests
 			true, // Red Fives?
 			10, // Dice Roll
 			20, // Live Wall Start, Next Live Tile
-			107, // Live Wall End
 			18, // Next Replacement Tile
 			10, // Last Revealed Dora Indicator
 			8, // Next Dora Indicator
@@ -392,7 +406,6 @@ public class MatchTests
 			false, // Red Fives?
 			11, // Dice Roll
 			58, // Live Wall Start, Next Live Tile
-			37, // Live Wall End
 			56, // Next Replacement Tile
 			48, // Last Revealed Dora Indicator
 			46, // Next Dora Indicator
@@ -404,11 +417,48 @@ public class MatchTests
 			true, // Red Fives?
 			12, // Dice Roll
 			96, // Live Wall Start, Next Live Tile
-			75, // Live Wall End
 			94, // Next Replacement Tile
 			86, // Last Revealed Dora Indicator
 			84, // Next Dora Indicator
 			"3z".ToTile(), // Expected Revealed Dora
+		];
+	}
+
+	private static IEnumerable<object[]> PopLiveTileTestCases()
+	{
+		yield return
+		[
+			PlayerCount.Four,
+			true,
+			2,
+			("1z7614p7m172z14m7z4m1p2m7s5p0m9p6s2z9m87p1z7s6m73p8m5s6p2z6p26s4z1s4z0p3s89p469s5m7p064s3z2m1p8m4s66z" +
+			"2p5s1m1p8s82p8s4m12z7m54z617m2p7s6z5p4m5p9m9p4s3z3p3m5z7s6z2s3m3z31s836m3p21m4p1s28m3s74z5m8s6m1s73z92p" +
+			"7m3p9s9m2s484p389s9m95s6p55z2s35m").ToTiles(),
+		];
+		yield return
+		[
+			PlayerCount.Two,
+			false,
+			2,
+			("1z7614p7m172z14m7z4m1p2m7s5p5m9p6s2z9m87p1z7s6m73p8m5s6p2z6p26s4z1s4z5p3s89p469s5m7p564s3z2m1p8m4s66z" +
+			"2p5s1m1p8s82p8s4m12z7m54z617m2p7s6z5p4m5p9m9p4s3z3p3m5z7s6z2s3m3z31s836m3p21m4p1s28m3s74z5m8s6m1s73z92p" +
+			"7m3p9s9m2s484p389s9m95s6p55z2s35m").ToTiles(),
+		];
+		yield return
+		[
+			PlayerCount.Three,
+			true,
+			1,
+			("82s3z179s5z5s6z7p6s9p7s7p8s1z1m5p7s5z4p6z1m2p37s4z7p9m5z9s7z5s9m4z64s0138p91m8p4s9m4p6s74z2p1z3p0s73z3s" +
+			"748p2z6p5s9p2s8p6s11z5p2z81s65z4s12p2z21s694p373z1m1p6z261p91s3p48s4z6p32s2z9s3p3s95p").ToTiles(),
+		];
+		yield return
+		[
+			PlayerCount.Three,
+			false,
+			1,
+			("82s3z179s5z5s6z7p6s9p7s7p8s1z1m5p7s5z4p6z1m2p37s4z7p9m5z9s7z5s9m4z64s5138p91m8p4s9m4p6s74z2p1z3p5s73z3s" +
+			"748p2z6p5s9p2s8p6s11z5p2z81s65z4s12p2z21s694p373z1m1p6z261p91s3p48s4z6p32s2z9s3p3s95p").ToTiles(),
 		];
 	}
 
@@ -499,4 +549,5 @@ public class MatchTests
 			0,
 		];
 	}
+
 }
