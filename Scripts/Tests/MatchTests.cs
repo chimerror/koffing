@@ -28,6 +28,7 @@ public class MatchTests
 		bool hasRedFives,
 		int breakDiceRoll,
 		int expectedLiveWallStart,
+		int expectedLiveWallEnd,
 		int expectedNextReplacementTile,
 		int expectedLastRevealedDoraIndicator,
 		int expectedNextDoraIndicator,
@@ -75,7 +76,7 @@ public class MatchTests
 				{
 					tileCountExpected--;
 				}
-				PrefixInfo($"Checking that there are {tileCountExpected} {rank} of {suit} in the wall...");
+				PrefixInfo($"Checking that the number of {rank} of {suit} in the wall is {tileCountExpected}...");
 				var tileCountActual = createdWallTiles.Count(t => t.Rank == rank && t.Suit == suit);
 				AssertThat(tileCountActual).IsEqual(tileCountExpected);
 			}
@@ -84,20 +85,21 @@ public class MatchTests
 			PrefixInfo($"Checking that there are {redFivesExpected} red fives of {suit} in the wall...");
 		}
 
-		// TODO: I learned that IsEqual makes this work the opposite way from the Array assertions, so these parameters
-		// should be swapped.
 		PrefixInfo($"Checking that start of live wall and next live tile is index {expectedLiveWallStart}...");
-		AssertThat(expectedLiveWallStart).IsEqual(createdWall.LiveWallStartIndex);
-		AssertThat(expectedLiveWallStart).IsEqual(createdWall.NextLiveTileIndex);
+		AssertThat(createdWall.LiveWallStartIndex).IsEqual(expectedLiveWallStart);
+		AssertThat(createdWall.NextLiveTileIndex).IsEqual(expectedLiveWallStart);
+
+		PrefixInfo($"Checking that end of live wall is index {expectedLiveWallStart}...");
+		AssertThat(createdWall.LiveWallEndIndex).IsEqual(expectedLiveWallEnd);
 
 		PrefixInfo($"Checking that next replacement Tile is index {expectedNextReplacementTile}...");
-		AssertThat(expectedNextReplacementTile).IsEqual(createdWall.NextReplacementTileIndex);
+		AssertThat(createdWall.NextReplacementTileIndex).IsEqual(expectedNextReplacementTile);
 
 		PrefixInfo($"Checking that last revealed dora indicator is index {expectedLastRevealedDoraIndicator}...");
-		AssertThat(expectedLastRevealedDoraIndicator).IsEqual(createdWall.LastRevealedDoraIndicatorIndex);
+		AssertThat(createdWall.LastRevealedDoraIndicatorIndex).IsEqual(expectedLastRevealedDoraIndicator);
 
 		PrefixInfo($"Checking that next dora indicator is index {expectedNextDoraIndicator}...");
-		AssertThat(expectedNextDoraIndicator).IsEqual(createdWall.NextDoraIndicatorIndex);
+		AssertThat(createdWall.NextDoraIndicatorIndex).IsEqual(expectedNextDoraIndicator);
 
 		PrefixInfo("Checking there is only one face up tile...");
 		AssertThat(1).IsEqual(createdWallTiles.Count(t => t.FaceUp));
@@ -150,10 +152,11 @@ public class MatchTests
 			false, // Red Fives?
 			2, // Dice Roll
 			38, // Live Wall Start, Next Live Tile
-			24, // Next Replacement Tile
-			28, // Last Revealed Dora Indicator
+			23, // Live Wall End
+			36, // Next Replacement Tile
+			32, // Last Revealed Dora Indicator
 			30, // Next Dora Indicator
-			"6m".ToTile(), // Expected Revealed Dora
+			"9p".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -161,10 +164,11 @@ public class MatchTests
 			true, // Red Fives?
 			3, // Dice Roll
 			74, // Live Wall Start, Next Live Tile
-			60, // Next Replacement Tile
-			64, // Last Revealed Dora Indicator
+			59, // Live Wall End
+			72, // Next Replacement Tile
+			68, // Last Revealed Dora Indicator
 			66, // Next Dora Indicator
-			"4m".ToTile(), // Expected Revealed Dora
+			"2m".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -172,10 +176,11 @@ public class MatchTests
 			false, // Red Fives?
 			4, // Dice Roll
 			110, // Live Wall Start, Next Live Tile
-			96, // Next Replacement Tile
-			100, // Last Revealed Dora Indicator
+			95, // Live Wall End
+			108, // Next Replacement Tile
+			104, // Last Revealed Dora Indicator
 			102, // Next Dora Indicator
-			"5m".ToTile(), // Expected Revealed Dora
+			"4s".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -183,10 +188,11 @@ public class MatchTests
 			true, // Red Fives?
 			5, // Dice Roll
 			10, // Live Wall Start, Next Live Tile
-			132, // Next Replacement Tile
-			0, // Last Revealed Dora Indicator
+			131, // Live Wall End
+			8, // Next Replacement Tile
+			4, // Last Revealed Dora Indicator
 			2, // Next Dora Indicator
-			"9p".ToTile(), // Expected Revealed Dora
+			"3m".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -194,10 +200,11 @@ public class MatchTests
 			false, // Red Fives?
 			6, // Dice Roll
 			46, // Live Wall Start, Next Live Tile
-			32, // Next Replacement Tile
-			36, // Last Revealed Dora Indicator
+			31, // Live Wall End
+			44, // Next Replacement Tile
+			40, // Last Revealed Dora Indicator
 			38, // Next Dora Indicator
-			"9s".ToTile(), // Expected Revealed Dora
+			"8p".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -205,10 +212,11 @@ public class MatchTests
 			true, // Red Fives?
 			7, // Dice Roll
 			82, // Live Wall Start, Next Live Tile
-			68, // Next Replacement Tile
-			72, // Last Revealed Dora Indicator
+			67, // Live Wall End
+			80, // Next Replacement Tile
+			76, // Last Revealed Dora Indicator
 			74, // Next Dora Indicator
-			"9p".ToTile(), // Expected Revealed Dora
+			"8p".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -216,10 +224,11 @@ public class MatchTests
 			false, // Red Fives?
 			8, // Dice Roll
 			118, // Live Wall Start, Next Live Tile
-			104, // Next Replacement Tile
-			108, // Last Revealed Dora Indicator
+			103, // Live Wall End
+			116, // Next Replacement Tile
+			112, // Last Revealed Dora Indicator
 			110, // Next Dora Indicator
-			"8m".ToTile(), // Expected Revealed Dora
+			"2p".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -227,10 +236,11 @@ public class MatchTests
 			true, // Red Fives?
 			9, // Dice Roll
 			18, // Live Wall Start, Next Live Tile
-			4, // Next Replacement Tile
-			8, // Last Revealed Dora Indicator
+			3, // Live Wall End
+			16, // Next Replacement Tile
+			12, // Last Revealed Dora Indicator
 			10, // Next Dora Indicator
-			"2s".ToTile(), // Expected Revealed Dora
+			"1s".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -238,10 +248,11 @@ public class MatchTests
 			false, // Red Fives?
 			10, // Dice Roll
 			54, // Live Wall Start, Next Live Tile
-			40, // Next Replacement Tile
-			44, // Last Revealed Dora Indicator
+			39, // Live Wall End
+			52, // Next Replacement Tile
+			48, // Last Revealed Dora Indicator
 			46, // Next Dora Indicator
-			"9s".ToTile(), // Expected Revealed Dora
+			"6p".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -249,10 +260,11 @@ public class MatchTests
 			true, // Red Fives?
 			11, // Dice Roll
 			90, // Live Wall Start, Next Live Tile
-			76, // Next Replacement Tile
-			80, // Last Revealed Dora Indicator
+			75, // Live Wall End
+			88, // Next Replacement Tile
+			84, // Last Revealed Dora Indicator
 			82, // Next Dora Indicator
-			"6m".ToTile(), // Expected Revealed Dora
+			"5s".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -260,10 +272,11 @@ public class MatchTests
 			false, // Red Fives?
 			12, // Dice Roll
 			126, // Live Wall Start, Next Live Tile
-			112, // Next Replacement Tile
-			116, // Last Revealed Dora Indicator
+			111, // Live Wall End
+			124, // Next Replacement Tile
+			120, // Last Revealed Dora Indicator
 			118, // Next Dora Indicator
-			"8s".ToTile(), // Expected Revealed Dora
+			"4m".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -271,10 +284,11 @@ public class MatchTests
 			true, // Red Fives?
 			2, // Dice Roll
 			40, // Live Wall Start, Next Live Tile
-			20, // Next Replacement Tile
-			28, // Last Revealed Dora Indicator
-			30, // Next Dora Indicator
-			"3p".ToTile(), // Expected Revealed Dora
+			19, // Live Wall End
+			38, // Next Replacement Tile
+			30, // Last Revealed Dora Indicator
+			28, // Next Dora Indicator
+			"7z".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -282,10 +296,11 @@ public class MatchTests
 			false, // Red Fives?
 			3, // Dice Roll
 			78, // Live Wall Start, Next Live Tile
-			58, // Next Replacement Tile
-			66, // Last Revealed Dora Indicator
-			68, // Next Dora Indicator
-			"2p".ToTile(), // Expected Revealed Dora
+			57, // Live Wall End
+			76, // Next Replacement Tile
+			68, // Last Revealed Dora Indicator
+			66, // Next Dora Indicator
+			"1p".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -293,10 +308,11 @@ public class MatchTests
 			true, // Red Fives?
 			4, // Dice Roll
 			8, // Live Wall Start, Next Live Tile
-			96, // Next Replacement Tile
-			104, // Last Revealed Dora Indicator
-			106, // Next Dora Indicator
-			"4p".ToTile(), // Expected Revealed Dora
+			95, // Live Wall End
+			6, // Next Replacement Tile
+			106, // Last Revealed Dora Indicator
+			104, // Next Dora Indicator
+			"1m".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -304,10 +320,11 @@ public class MatchTests
 			false, // Red Fives?
 			5, // Dice Roll
 			46, // Live Wall Start, Next Live Tile
-			26, // Next Replacement Tile
-			34, // Last Revealed Dora Indicator
-			36, // Next Dora Indicator
-			"4p".ToTile(), // Expected Revealed Dora
+			25, // Live Wall End
+			44, // Next Replacement Tile
+			36, // Last Revealed Dora Indicator
+			34, // Next Dora Indicator
+			"2z".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -315,10 +332,11 @@ public class MatchTests
 			true, // Red Fives?
 			6, // Dice Roll
 			84, // Live Wall Start, Next Live Tile
-			64, // Next Replacement Tile
-			72, // Last Revealed Dora Indicator
-			74, // Next Dora Indicator
-			"4s".ToTile(), // Expected Revealed Dora
+			63, // Live Wall End
+			82, // Next Replacement Tile
+			74, // Last Revealed Dora Indicator
+			72, // Next Dora Indicator
+			"4z".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -326,10 +344,11 @@ public class MatchTests
 			false, // Red Fives?
 			7, // Dice Roll
 			14, // Live Wall Start, Next Live Tile
-			102, // Next Replacement Tile
-			2, // Last Revealed Dora Indicator
-			4, // Next Dora Indicator
-			"4z".ToTile(), // Expected Revealed Dora
+			101, // Live Wall End
+			12, // Next Replacement Tile
+			4, // Last Revealed Dora Indicator
+			2, // Next Dora Indicator
+			"9m".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -337,10 +356,11 @@ public class MatchTests
 			true, // Red Fives?
 			8, // Dice Roll
 			52, // Live Wall Start, Next Live Tile
-			32, // Next Replacement Tile
-			40, // Last Revealed Dora Indicator
-			42, // Next Dora Indicator
-			"2s".ToTile(), // Expected Revealed Dora
+			31, // Live Wall End
+			50, // Next Replacement Tile
+			42, // Last Revealed Dora Indicator
+			40, // Next Dora Indicator
+			"6s".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -348,10 +368,11 @@ public class MatchTests
 			false, // Red Fives?
 			9, // Dice Roll
 			90, // Live Wall Start, Next Live Tile
-			70, // Next Replacement Tile
-			78, // Last Revealed Dora Indicator
-			80, // Next Dora Indicator
-			"2z".ToTile(), // Expected Revealed Dora
+			69, // Live Wall End
+			88, // Next Replacement Tile
+			80, // Last Revealed Dora Indicator
+			78, // Next Dora Indicator
+			"3p".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -359,10 +380,11 @@ public class MatchTests
 			true, // Red Fives?
 			10, // Dice Roll
 			20, // Live Wall Start, Next Live Tile
-			0, // Next Replacement Tile
-			8, // Last Revealed Dora Indicator
-			10, // Next Dora Indicator
-			"5s".ToTile(), // Expected Revealed Dora
+			107, // Live Wall End
+			18, // Next Replacement Tile
+			10, // Last Revealed Dora Indicator
+			8, // Next Dora Indicator
+			"4z".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -370,10 +392,11 @@ public class MatchTests
 			false, // Red Fives?
 			11, // Dice Roll
 			58, // Live Wall Start, Next Live Tile
-			38, // Next Replacement Tile
-			46, // Last Revealed Dora Indicator
-			48, // Next Dora Indicator
-			"2z".ToTile(), // Expected Revealed Dora
+			37, // Live Wall End
+			56, // Next Replacement Tile
+			48, // Last Revealed Dora Indicator
+			46, // Next Dora Indicator
+			"1s".ToTile(), // Expected Revealed Dora
 		];
 		yield return
 		[
@@ -381,10 +404,11 @@ public class MatchTests
 			true, // Red Fives?
 			12, // Dice Roll
 			96, // Live Wall Start, Next Live Tile
-			76, // Next Replacement Tile
-			84, // Last Revealed Dora Indicator
-			86, // Next Dora Indicator
-			"8s".ToTile(), // Expected Revealed Dora
+			75, // Live Wall End
+			94, // Next Replacement Tile
+			86, // Last Revealed Dora Indicator
+			84, // Next Dora Indicator
+			"3z".ToTile(), // Expected Revealed Dora
 		];
 	}
 

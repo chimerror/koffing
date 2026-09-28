@@ -10,6 +10,7 @@ public class Wall
 	private readonly List<Tile> _tiles = [];
 	private readonly int _liveWallStartIndex;
 	private readonly int _deadWallCount;
+	private int _liveWallEndIndex;
 	private int _nextLiveTileIndex;
 	private int _nextReplacementTileIndex;
 	private int _lastRevealedDoraIndicatorIndex;
@@ -23,10 +24,9 @@ public class Wall
 
 	// These properties are here mostly for testing purposes.
 	public int LiveWallStartIndex => _liveWallStartIndex;
-	public int LiveWallEndIndex => GetSafeIndex(_liveWallStartIndex - 2);
-	public int DeadWallStartIndex => GetSafeIndex(_liveWallStartIndex - _deadWallCount);
-
-	public int DeadWallEndIndex => GetSafeIndex(_liveWallStartIndex - 1);
+	public int LiveWallEndIndex => _liveWallEndIndex;
+	public int DeadWallStartIndex => GetSafeIndex(_liveWallStartIndex - 2);
+	public int DeadWallEndIndex => GetSafeIndex(_liveWallStartIndex - _deadWallCount);
 	public int NextLiveTileIndex => _nextLiveTileIndex;
 	public int NextReplacementTileIndex => _nextReplacementTileIndex;
 	public int LastRevealedDoraIndicatorIndex => _lastRevealedDoraIndicatorIndex;
@@ -74,15 +74,20 @@ public class Wall
 		_nextLiveTileIndex = _liveWallStartIndex;
 
 		_deadWallCount = playerCount == PlayerCount.Three ? 20 : 14;
+		_liveWallEndIndex = GetSafeIndex(DeadWallEndIndex - 1);
 
 		var numberOfReplacementTiles = playerCount == PlayerCount.Three ? 8 : 4;
 		_nextReplacementTileIndex = DeadWallStartIndex;
-		_lastRevealedDoraIndicatorIndex = GetSafeIndex(_nextReplacementTileIndex + numberOfReplacementTiles);
+
+		// Minus here, because the dead wall runs counter-clockwise
+		_lastRevealedDoraIndicatorIndex = GetSafeIndex(_nextReplacementTileIndex - numberOfReplacementTiles);
 
 		// By the rules, this shouldn't happen until after the deal, but it won't hurt to do it now.
 		_tiles[_lastRevealedDoraIndicatorIndex].FaceUp = true;
 
-		_nextDoraIndicatorIndex = GetSafeIndex(_lastRevealedDoraIndicatorIndex + 2);
+		// Minus here, because the dead wall runs counter-clockwise
+		_nextDoraIndicatorIndex = GetSafeIndex(_lastRevealedDoraIndicatorIndex - 2);
+	}
 	}
 
 	private int GetSafeIndex(int index)
