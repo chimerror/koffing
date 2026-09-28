@@ -75,12 +75,12 @@ public static partial class Extensions
 			{
 				if (tile.Suit != currentSuit)
 				{
-					AppendSuit(currentSuit, builder);
+					builder.Append(currentSuit.GetSuitString());
 					currentSuit = tile.Suit;
 				}
 				builder.Append(tile.Rank);
 			}
-			AppendSuit(currentSuit, builder);
+			builder.Append(currentSuit.GetSuitString());
 		}
 
 		return builder.ToString();
@@ -96,28 +96,6 @@ public static partial class Extensions
 			Suit.Zi => "z",
 			_ => throw new InvalidOperationException($"Invalid suit passed into GetSuitString: {suit}"),
 		};
-	}
-
-	private static void AppendSuit(Suit suit, StringBuilder builder)
-	{
-		switch (suit)
-		{
-			case Suit.Man:
-				builder.Append('m');
-				break;
-
-			case Suit.Pin:
-				builder.Append('p');
-				break;
-
-			case Suit.Sou:
-				builder.Append('s');
-				break;
-
-			case Suit.Zi:
-				builder.Append('z');
-				break;
-		}
 	}
 
 	[RE.GeneratedRegex(@"(?<suitOfTiles>((?<ranks>[0-9]+)(?<suit>[mps])|(?<ranks>[1-7]+)(?<suit>z)))")]
