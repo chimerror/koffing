@@ -255,7 +255,7 @@ public class MatchTests
 			}
 		}
 
-		PrefixInfo($"DEBUG: Actual Revealed Dora Indicators Tiles: \"{actualRevealedDoraIndicators.NotationFromTiles()}\"");
+		// PrefixInfo($"DEBUG: Actual Revealed Dora Indicators Tiles: \"{actualRevealedDoraIndicators.NotationFromTiles()}\"");
 		PrefixInfo("Checking that actual revealed dora indicators matched expected revealed dora indicators...");
 		AssertArray(expectedRevealedDoraIndicators).ContainsExactly(actualRevealedDoraIndicators);
 
