@@ -1,6 +1,7 @@
 using Godot;
 using System.Collections.Generic;
 
+// TODO: We will probably be able to remove these Node2D versions of UI as we get more of the UI up as Controls.
 [Tool]
 public partial class WallDisplay : Node2D
 {
