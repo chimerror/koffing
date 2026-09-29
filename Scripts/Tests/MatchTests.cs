@@ -331,6 +331,35 @@ public class MatchTests
 		}
 	}
 
+	[TestCase]
+	[DataPoint(nameof(DealHandsTestCases))]
+	public static void DealHandsIsCorrect(
+		PlayerCount playerCount,
+		bool hasRedFives,
+		int numberOfRounds,
+		List<IEnumerable<Tile>> expectedDealtHands)
+	{
+		LoggingPrefix = nameof(DealHandsIsCorrect);
+
+		SystemRandomNumberGenerator rng = new()
+		{
+			Seed = 13
+		};
+		var createdMatch = new Match(rng, playerCount, hasRedFives, numberOfRounds);
+		createdMatch.DealHands();
+
+		var currentWind = Wind.East;
+		var playerCountInt = (int)playerCount;
+		for (var currentPlayer = 0 ; currentPlayer < playerCountInt; currentPlayer++)
+		{
+			var expectedDealtHand = expectedDealtHands[currentPlayer].ToList();
+			var actualDealtHand = createdMatch.WindsToPlayers[currentWind].Hand;
+			PrefixInfo($"Checking that hand dealt for {currentWind}, \"{actualDealtHand.NotationFromTiles()}\", is the same as expected \"{expectedDealtHand.NotationFromTiles()}\"...");
+			AssertArray(expectedDealtHand).ContainsExactly(actualDealtHand);
+			currentWind++;
+		}
+	}
+
 	private static IEnumerable<object[]> WallCreationTestCases()
 	{
 		yield return
@@ -770,6 +799,46 @@ public class MatchTests
 			false,
 			1,
 			0,
+		];
+	}
+
+	private static IEnumerable<object[]> DealHandsTestCases()
+	{
+		yield return
+		[
+			PlayerCount.Four,
+			true,
+			2,
+			new List<IEnumerable<Tile>> ()
+			{
+				"1z7615p0m9p6s2z6p260s2m".ToTiles(),
+				"4p7m172z9m87p4z1s4z0p6s".ToTiles(),
+				"2z14m71z7s6m7p3s89p44s".ToTiles(),
+				"4m1p2m7s3p8m5s6p69s5m7p3z".ToTiles(),
+			},
+		];
+		yield return
+		[
+			PlayerCount.Two,
+			false,
+			2,
+			new List<IEnumerable<Tile>> ()
+			{
+				"1z761p2z14m7z5p5m9p6s1z6m".ToTiles(),
+				"4p7m17z4m1p2m7s2z9m87p7s".ToTiles(),
+			},
+		];
+		yield return
+		[
+			PlayerCount.Three,
+			true,
+			1,
+			new List<IEnumerable<Tile>> ()
+			{
+				"82s3z17s7p8s1z37s4z7p4s3p".ToTiles(),
+				"79s5z5s1m5p7s5z9m5z9s7z0p".ToTiles(),
+				"6z7p6s94p6z1m2p5s9m4z6s1p".ToTiles(),
+			},
 		];
 	}
 }

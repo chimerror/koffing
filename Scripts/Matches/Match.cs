@@ -42,6 +42,51 @@ public class Match
 		UpdateWindsToPlayers();
 	}
 
+	// TODO: Public for now, but as we add more of working through match mechanics, I bet it will make sense to make
+	// it private, and encapsulate progressing through the game state into something like UpdateGameState
+	public void DealHands()
+	{
+		Dictionary<Wind, List<Tile>> dealtHands = [];
+		var setsOfFourToDeal = 3;
+		var currentWind = Wind.East;
+		do
+		{
+			for (var currentPlayer = 0; currentPlayer < _players.Count; currentPlayer++)
+			{
+				List<Tile> dealtTiles = [];
+				var tilesToDeal = setsOfFourToDeal > 0 ? 4 : 1;
+				for (var currentDealtTile = 0; currentDealtTile < tilesToDeal; currentDealtTile++)
+				{
+					dealtTiles.Add(_wall.PopNextLiveTile());
+				}
+
+				if (!dealtHands.TryGetValue(currentWind, out List<Tile> dealtHand))
+				{
+					dealtHands[currentWind] = dealtTiles;
+				}
+				else
+				{
+					dealtHand.AddRange(dealtTiles);
+				}
+				currentWind++;
+			}
+
+			if (setsOfFourToDeal == 0)
+			{
+				dealtHands[Wind.East].Add(_wall.PopNextLiveTile());
+				break;
+			}
+
+			setsOfFourToDeal--;
+			currentWind = Wind.East;
+		} while (true); // Infinite loop, must break inside
+
+		foreach ((Wind playerWind, List<Tile> playerHand) in dealtHands)
+		{
+			_windsToPlayers[playerWind].Hand = playerHand;
+		}
+	}
+
 	private void UpdateWindsToPlayers()
 	{
 		var currentIndex = _currentEastIndex;
