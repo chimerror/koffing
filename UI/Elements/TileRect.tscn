@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://7x8sg627kqv5"]
+
+[ext_resource type="Texture2D" uid="uid://v0xc3pihs804" path="res://Sprites/Tiles/1sou.png" id="1_as6t5"]
+[ext_resource type="Script" uid="uid://cwg2e7tlrpw7b" path="res://UI/Elements/TileRect.cs" id="2_efhwj"]
+
+[node name="TileRect" type="TextureRect" unique_id=1907166075]
+offset_right = 190.0
+offset_bottom = 240.0
+texture = ExtResource("1_as6t5")
+stretch_mode = 2
+script = ExtResource("2_efhwj")
+Suit = 5
+Rank = 1
+FaceUp = true
