@@ -14,6 +14,7 @@ public class Wall
 	private int _replacementTilesLeftToPop;
 	private int _nextLiveTileIndex;
 	private int _nextReplacementTileIndex;
+	private int _doraIndicatorsLeftToReveal = 4;
 	private int _lastRevealedDoraIndicatorIndex;
 	private int _nextDoraIndicatorIndex;
 
@@ -31,6 +32,7 @@ public class Wall
 	public bool CanTakeLiveTile => _tilesLeftToPop > 0;
 	public bool CanTakeReplacementTile => _replacementTilesLeftToPop > 0;
 	public int NextReplacementTileIndex => _nextReplacementTileIndex;
+	public bool CanRevealDoraIndicator => _doraIndicatorsLeftToReveal > 0;
 	public int LastRevealedDoraIndicatorIndex => _lastRevealedDoraIndicatorIndex;
 	public int NextDoraIndicatorIndex => _nextDoraIndicatorIndex;
 
@@ -115,6 +117,21 @@ public class Wall
 		_tilesLeftToPop--;
 		_replacementTilesLeftToPop--;
 		return nextReplacementTile;
+	}
+
+	public Tile RevealNextDoraIndicator()
+	{
+		if (!CanRevealDoraIndicator)
+		{
+			return null;
+		}
+
+		var nextIndicator = _tiles[_nextDoraIndicatorIndex];
+		nextIndicator.FaceUp = true;
+		_nextDoraIndicatorIndex -= 2;
+		_nextDoraIndicatorIndex = GetSafeIndex(_nextDoraIndicatorIndex); // minus because dead wall runs CCW
+		_doraIndicatorsLeftToReveal--;
+		return nextIndicator;
 	}
 
 	private int GetSafeIndex(int index)

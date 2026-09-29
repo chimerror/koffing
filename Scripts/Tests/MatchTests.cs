@@ -212,6 +212,65 @@ public class MatchTests
 	}
 
 	[TestCase]
+	[DataPoint(nameof(RevealDoraIndicatorTestCases))]
+	public static void RevealDoraIndicatorIsCorrect(
+		PlayerCount playerCount,
+		bool hasRedFives,
+		int numberOfDoraTilesToReveal,
+		IEnumerable<Tile> expectedRevealedDoraIndicators)
+	{
+		LoggingPrefix = nameof(RevealDoraIndicatorIsCorrect);
+
+		SystemRandomNumberGenerator rng = new()
+		{
+			Seed = 13
+		};
+		var createdWall = new Wall(rng, playerCount, hasRedFives);
+
+		PrefixInfo("Checking that CanRevealDoraIndicator reports that a tile can be taken...");
+		AssertThat(createdWall.CanRevealDoraIndicator).IsTrue();
+
+		List<Tile> actualRevealedDoraIndicators= [];
+		if (numberOfDoraTilesToReveal == -1)
+		{
+			while(createdWall.CanRevealDoraIndicator)
+			{
+				actualRevealedDoraIndicators.Add(createdWall.RevealNextDoraIndicator());
+			}
+		}
+		else
+		{
+			for (int i = 0; i < numberOfDoraTilesToReveal; i++)
+			{
+				actualRevealedDoraIndicators.Add(createdWall.RevealNextDoraIndicator());
+			}
+		}
+
+		PrefixInfo($"DEBUG: Actual Revealed Dora Indicators Tiles: \"{actualRevealedDoraIndicators.NotationFromTiles()}\"");
+		PrefixInfo("Checking that actual revealed dora indicators matched expected revealed dora indicators...");
+		AssertArray(expectedRevealedDoraIndicators).ContainsExactly(actualRevealedDoraIndicators);
+
+		PrefixInfo("Checking that all revealed dora indicators are face-up");
+		AssertThat(actualRevealedDoraIndicators.All(t => t.FaceUp = true));
+
+		var doraIndicatorsExhausted = numberOfDoraTilesToReveal == -1 || numberOfDoraTilesToReveal == 4;
+		if (doraIndicatorsExhausted)
+		{
+			PrefixInfo("Checking that CanRevealDoraIndicator reports that a dora can't be revealed after exhaustion...");
+			AssertThat(createdWall.CanRevealDoraIndicator).IsFalse();
+
+			var exhaustedDoraIndicator = createdWall.RevealNextDoraIndicator();
+			PrefixInfo("Checking that RevealNextDoraIndicator returns null...");
+			AssertObject(exhaustedDoraIndicator).IsNull();
+		}
+		else
+		{
+			PrefixInfo("Checking that CanRevealDoraIndicator reports that a dora can still be revealed after revealing less than the available number of indicators...");
+			AssertThat(createdWall.CanTakeReplacementTile).IsTrue();
+		}
+	}
+
+	[TestCase]
 	[DataPoint(nameof(MatchCreationTestCases))]
 	public static void MatchIsCreatedCorrectly(
 		PlayerCount playerCount,
@@ -563,6 +622,38 @@ public class MatchTests
 			"9p3s3p9s2z".ToTiles(),
 			("82s3z179s5z5s6z7p6s9p7s7p8s1z1m5p7s5z4p6z1m2p37s4z7p9m5z9s7z5s9m4z64s5138p91m8p4s9m4p6s74z2p1z3p5s73z3s" +
 			"748p2z6p5s9p2s8p6s11z5p2z81s65z4s12p2z21s694p373z1m1p6z261p91s3p48s4z6p32s2z").ToTiles(),
+		];
+	}
+
+	private static IEnumerable<object[]> RevealDoraIndicatorTestCases()
+	{
+		yield return
+		[
+			PlayerCount.Four,
+			true,
+			-1, // Take to exhaustion (4)
+			"993s8p".ToTiles(),
+		];
+		yield return
+		[
+			PlayerCount.Two,
+			false,
+			2,
+			"99s".ToTiles(),
+		];
+		yield return
+		[
+			PlayerCount.Three,
+			true,
+			-1, // Take to exhaustion (4),
+			"41s12p".ToTiles(),
+		];
+		yield return
+		[
+			PlayerCount.Three,
+			false,
+			3,
+			"41s1p".ToTiles(),
 		];
 	}
 
