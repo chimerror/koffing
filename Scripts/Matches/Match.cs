@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 using static Helpers;
@@ -8,7 +7,7 @@ public class Match
 {
 	private Wall _wall;
 	private int _currentEastIndex;
-	private Dictionary<Wind, Player> _windsToPlayers;
+	private readonly Dictionary<Wind, Player> _windsToPlayers = [];
 	private readonly List<Player> _players;
 	private readonly IRandomNumberGenerator _rng;
 
@@ -18,7 +17,7 @@ public class Match
 	public bool HasRedFives { get; private set; }
 	public IEnumerable<Player> Players => _players.AsReadOnly();
 	public Player CurrentEastPlayer => _players[_currentEastIndex];
-	public ReadOnlyDictionary<Wind, Player> WindsToPlayers => _windsToPlayers.AsReadOnly();
+	public IDictionary<Wind, Player> WindsToPlayers => _windsToPlayers.AsReadOnly();
 	public int CurrentEastIndex => _currentEastIndex;
 
 	// TODO: Think about wrapping this up in a MatchContext class. But then consider if it would make more sense for
@@ -40,10 +39,14 @@ public class Match
 		];
 		rng.Shuffle(_players);
 		_currentEastIndex = rng.GetIntegerInRange(0, _players.Count - 1);
+		UpdateWindsToPlayers();
+	}
 
+	private void UpdateWindsToPlayers()
+	{
 		var currentIndex = _currentEastIndex;
 		var currentWind = Wind.East;
-		_windsToPlayers = [];
+		_windsToPlayers.Clear();
 		for (var i = 0; i < _players.Count; i++)
 		{
 			_windsToPlayers.Add(currentWind, _players[currentIndex]);
