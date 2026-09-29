@@ -314,6 +314,21 @@ public class MatchTests
 		PrefixInfo($"Checking that the correct player (index {expectedStartingEastIndex}) was chosen as East...");
 		AssertThat(createdMatch.CurrentEastIndex).IsEqual(expectedStartingEastIndex);
 		AssertObject(createdMatch.CurrentEastPlayer).IsSame(actualPlayers[expectedStartingEastIndex]);
+		var currentIndex = expectedStartingEastIndex;
+		foreach (var currentWind in Enum.GetValues<Wind>())
+		{
+			if ((playerCount == PlayerCount.Three && currentWind == Wind.North) ||
+				(playerCount == PlayerCount.Two && currentWind == Wind.West))
+			{
+				break;
+			}
+
+			var currentPlayer = actualPlayers[currentIndex];
+			PrefixInfo($"Checking that the player at index {currentIndex} is assigned wind {currentWind}...");
+			AssertObject(createdMatch.WindsToPlayers[currentWind]).IsSame(currentPlayer);
+
+			currentIndex = GetSafeIndex(++currentIndex, actualPlayers.Count);
+		}
 	}
 
 	private static IEnumerable<object[]> WallCreationTestCases()
