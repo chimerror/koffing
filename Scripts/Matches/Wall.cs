@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+using static Helpers;
+
 public class Wall
 {
 	// The last stack is listed first so that die roll % players is the right index.
@@ -26,8 +28,8 @@ public class Wall
 
 	// These properties are here mostly for testing purposes.
 	public int LiveWallStartIndex => _liveWallStartIndex;
-	public int DeadWallStartIndex => GetSafeIndex(_liveWallStartIndex - 2);
-	public int DeadWallEndIndex => GetSafeIndex(_liveWallStartIndex - _deadWallCount);
+	public int DeadWallStartIndex => GetSafeIndex(_liveWallStartIndex - 2, _tiles.Count);
+	public int DeadWallEndIndex => GetSafeIndex(_liveWallStartIndex - _deadWallCount, _tiles.Count);
 	public int NextLiveTileIndex => _nextLiveTileIndex;
 	public bool CanTakeLiveTile => _tilesLeftToPop > 0;
 	public bool CanTakeReplacementTile => _replacementTilesLeftToPop > 0;
@@ -83,13 +85,15 @@ public class Wall
 		_nextReplacementTileIndex = DeadWallStartIndex;
 
 		// Minus here, because the dead wall runs counter-clockwise
-		_lastRevealedDoraIndicatorIndex = GetSafeIndex(_nextReplacementTileIndex - _replacementTilesLeftToPop);
+		_lastRevealedDoraIndicatorIndex = GetSafeIndex(
+			_nextReplacementTileIndex - _replacementTilesLeftToPop,
+			_tiles.Count);
 
 		// By the rules, this shouldn't happen until after the deal, but it won't hurt to do it now.
 		_tiles[_lastRevealedDoraIndicatorIndex].FaceUp = true;
 
 		// Minus here, because the dead wall runs counter-clockwise
-		_nextDoraIndicatorIndex = GetSafeIndex(_lastRevealedDoraIndicatorIndex - 2);
+		_nextDoraIndicatorIndex = GetSafeIndex(_lastRevealedDoraIndicatorIndex - 2, _tiles.Count);
 	}
 
 	public Tile PopNextLiveTile()
@@ -100,7 +104,7 @@ public class Wall
 		}
 
 		var nextTile = _tiles[_nextLiveTileIndex];
-		_nextLiveTileIndex = GetSafeIndex(++_nextLiveTileIndex);
+		_nextLiveTileIndex = GetSafeIndex(++_nextLiveTileIndex, _tiles.Count);
 		_tilesLeftToPop--;
 		return nextTile;
 	}
@@ -113,7 +117,8 @@ public class Wall
 		}
 
 		var nextReplacementTile = _tiles[_nextReplacementTileIndex];
-		_nextReplacementTileIndex = GetSafeIndex(--_nextReplacementTileIndex); // minus because dead wall runs CCW
+		// minus because dead wall runs CCW
+		_nextReplacementTileIndex = GetSafeIndex(--_nextReplacementTileIndex, _tiles.Count);
 		_tilesLeftToPop--;
 		_replacementTilesLeftToPop--;
 		return nextReplacementTile;
@@ -128,25 +133,11 @@ public class Wall
 
 		var nextIndicator = _tiles[_nextDoraIndicatorIndex];
 		nextIndicator.FaceUp = true;
+		_lastRevealedDoraIndicatorIndex = _nextDoraIndicatorIndex;
 		_nextDoraIndicatorIndex -= 2;
-		_nextDoraIndicatorIndex = GetSafeIndex(_nextDoraIndicatorIndex); // minus because dead wall runs CCW
+		// minus because dead wall runs CCW
+		_nextDoraIndicatorIndex = GetSafeIndex(_nextDoraIndicatorIndex, _tiles.Count);
 		_doraIndicatorsLeftToReveal--;
 		return nextIndicator;
-	}
-
-	private int GetSafeIndex(int index)
-	{
-		if (index < 0)
-		{
-			return index + _tiles.Count;
-		}
-		else if (index >= _tiles.Count)
-		{
-			return index - _tiles.Count;
-		}
-		else
-		{
-			return index;
-		}
 	}
 }

@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GdUnit4;
+
 using static GdUnit4.Assertions;
+using static Helpers;
 using static TestLoggingHelpers;
 
 [TestSuite]
@@ -230,19 +232,26 @@ public class MatchTests
 		PrefixInfo("Checking that CanRevealDoraIndicator reports that a tile can be taken...");
 		AssertThat(createdWall.CanRevealDoraIndicator).IsTrue();
 
+		var wallTiles = createdWall.Tiles.ToList();
 		List<Tile> actualRevealedDoraIndicators= [];
 		if (numberOfDoraTilesToReveal == -1)
 		{
 			while(createdWall.CanRevealDoraIndicator)
 			{
-				actualRevealedDoraIndicators.Add(createdWall.RevealNextDoraIndicator());
+				var revealedDoraIndicator = createdWall.RevealNextDoraIndicator();
+				actualRevealedDoraIndicators.Add(revealedDoraIndicator);
+				PrefixInfo("Checking that just revealed dora indicator is the same as accessing it through its index...");
+				AssertObject(wallTiles[createdWall.LastRevealedDoraIndicatorIndex]).IsSame(revealedDoraIndicator);
 			}
 		}
 		else
 		{
 			for (int i = 0; i < numberOfDoraTilesToReveal; i++)
 			{
-				actualRevealedDoraIndicators.Add(createdWall.RevealNextDoraIndicator());
+				var revealedDoraIndicator = createdWall.RevealNextDoraIndicator();
+				actualRevealedDoraIndicators.Add(revealedDoraIndicator);
+				PrefixInfo("Checking that just revealed dora indicator is the same as accessing it through its index...");
+				AssertObject(wallTiles[createdWall.LastRevealedDoraIndicatorIndex]).IsSame(revealedDoraIndicator);
 			}
 		}
 
@@ -268,6 +277,10 @@ public class MatchTests
 			PrefixInfo("Checking that CanRevealDoraIndicator reports that a dora can still be revealed after revealing less than the available number of indicators...");
 			AssertThat(createdWall.CanTakeReplacementTile).IsTrue();
 		}
+
+		var lastRevealedDoraIndicator = wallTiles[createdWall.LastRevealedDoraIndicatorIndex];
+		PrefixInfo("Checking that last revealed dora indicator is the same as accessing it through its index...");
+		AssertObject(wallTiles[createdWall.LastRevealedDoraIndicatorIndex]).IsSame(lastRevealedDoraIndicator);
 	}
 
 	[TestCase]
