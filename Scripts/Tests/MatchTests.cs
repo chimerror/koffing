@@ -124,7 +124,7 @@ public class MatchTests
 		};
 		var createdWall = new Wall(rng, playerCount, hasRedFives);
 
-		PrefixInfo("Checking that CanTakeLiveTile reports that a tile can be taken");
+		PrefixInfo("Checking that CanTakeLiveTile reports that a tile can be taken...");
 		AssertThat(createdWall.CanTakeLiveTile).IsTrue();
 
 		List<Tile> actualPoppedTiles = [];
@@ -137,11 +137,11 @@ public class MatchTests
 		PrefixInfo("Checking that actual popped tiles matched expected popped tiles...");
 		AssertArray(expectedPoppedTiles).ContainsExactly(actualPoppedTiles);
 
-		PrefixInfo("Checking that CanTakeLiveTile reports that a tile can't be taken");
+		PrefixInfo("Checking that CanTakeLiveTile reports that a tile can't be taken...");
 		AssertThat(createdWall.CanTakeLiveTile).IsFalse();
 
 		var exhaustedWallTile = createdWall.PopNextLiveTile();
-		PrefixInfo("Checking that PopNextLiveTile returns null");
+		PrefixInfo("Checking that PopNextLiveTile returns null...");
 		AssertObject(exhaustedWallTile).IsNull();
 	}
 
