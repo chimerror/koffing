@@ -35,9 +35,7 @@ public class Match
 		_players = [.. Enumerable.Range(0, (int)PlayerCount)
 			.Select(i => new Player()
 			{
-				// TODOTODO: Should 2-player use a different number of points?
-				// TODOTODO: On Yakuman GB, 2-player uses 30000 points, so that's what I'll do.
-				Points = PlayerCount == PlayerCount.Three ? 30000 : 25000
+				Points = PlayerCount == PlayerCount.Four ? 25000 : 30000,
 			})
 		];
 		rng.Shuffle(_players);
