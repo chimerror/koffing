@@ -146,6 +146,74 @@ public class MatchTests
 	}
 
 	[TestCase]
+	[DataPoint(nameof(PopReplacementTileRestCases))]
+	public static void PopReplacementTileIsCorrect(
+		PlayerCount playerCount,
+		bool hasRedFives,
+		int numberOfRounds,
+		int numberOfReplacementTilesToPop,
+		IEnumerable<Tile> expectedPoppedReplacementTiles,
+		IEnumerable<Tile> expectedPoppedLiveTiles)
+	{
+		LoggingPrefix = nameof(PopReplacementTileIsCorrect);
+
+		SystemRandomNumberGenerator rng = new()
+		{
+			Seed = 13
+		};
+		var createdWall = new Wall(rng, playerCount, hasRedFives);
+
+		PrefixInfo("Checking that CanTakeReplacementTile reports that a tile can be taken...");
+		AssertThat(createdWall.CanTakeReplacementTile).IsTrue();
+
+		List<Tile> actualPoppedReplacementTiles = [];
+		if (numberOfReplacementTilesToPop == -1)
+		{
+			while(createdWall.CanTakeReplacementTile)
+			{
+				actualPoppedReplacementTiles.Add(createdWall.PopNextReplacementTile());
+			}
+		}
+		else
+		{
+			for (int i = 0; i < numberOfReplacementTilesToPop; i++)
+			{
+				actualPoppedReplacementTiles.Add(createdWall.PopNextReplacementTile());
+			}
+		}
+
+		PrefixInfo($"DEBUG: Actual Popped Replacement Tiles: \"{actualPoppedReplacementTiles.NotationFromTiles()}\"");
+		PrefixInfo("Checking that actual popped replacement tiles matched expected popped replacement tiles...");
+		AssertArray(expectedPoppedReplacementTiles).ContainsExactly(actualPoppedReplacementTiles);
+
+		var replacementTilesExhausted =
+			numberOfReplacementTilesToPop == -1 ||
+			numberOfReplacementTilesToPop == (playerCount == PlayerCount.Three ? 8 : 4);
+		if (replacementTilesExhausted)
+		{
+			PrefixInfo("Checking that CanTakeReplacementTile reports that a tile can't be taken after exhaustion...");
+			AssertThat(createdWall.CanTakeReplacementTile).IsFalse();
+
+			var exhaustedReplacementTile = createdWall.PopNextReplacementTile();
+			PrefixInfo("Checking that PopNextReplacementTile returns null...");
+			AssertObject(exhaustedReplacementTile).IsNull();
+		}
+		else
+		{
+			PrefixInfo("Checking that CanTakeReplacementTile reports that a tile can still be taken after taking less than the available number of tiles...");
+			AssertThat(createdWall.CanTakeReplacementTile).IsTrue();
+		}
+
+		List<Tile> actualPoppedLiveTiles = [];
+		while (createdWall.CanTakeLiveTile)
+		{
+			actualPoppedLiveTiles.Add(createdWall.PopNextLiveTile());
+		}
+		PrefixInfo("Checking that the correct number of live tiles were not drawn after taking replacement tiles...");
+		AssertArray(expectedPoppedLiveTiles).ContainsExactly(actualPoppedLiveTiles);
+	}
+
+	[TestCase]
 	[DataPoint(nameof(MatchCreationTestCases))]
 	public static void MatchIsCreatedCorrectly(
 		PlayerCount playerCount,
@@ -459,6 +527,52 @@ public class MatchTests
 			1,
 			("82s3z179s5z5s6z7p6s9p7s7p8s1z1m5p7s5z4p6z1m2p37s4z7p9m5z9s7z5s9m4z64s5138p91m8p4s9m4p6s74z2p1z3p5s73z3s" +
 			"748p2z6p5s9p2s8p6s11z5p2z81s65z4s12p2z21s694p373z1m1p6z261p91s3p48s4z6p32s2z9s3p3s95p").ToTiles(),
+		];
+	}
+
+	private static IEnumerable<object[]> PopReplacementTileRestCases()
+	{
+		yield return
+		[
+			PlayerCount.Four,
+			true,
+			2,
+			-1, // Take to exhaustion (4)
+			"3m2s55z".ToTiles(),
+			("1z7614p7m172z14m7z4m1p2m7s5p0m9p6s2z9m87p1z7s6m73p8m5s6p2z6p26s4z1s4z0p3s89p469s5m7p064s3z2m1p8m4s66z" +
+			"2p5s1m1p8s82p8s4m12z7m54z617m2p7s6z5p4m5p9m9p4s3z3p3m5z7s6z2s3m3z31s836m3p21m4p1s28m3s74z5m8s6m1s73z92p" +
+			"7m3p9s9m2s484p389s9m95s6p5z").ToTiles(),
+		];
+		yield return
+		[
+			PlayerCount.Two,
+			false,
+			2,
+			2,
+			"3m2s".ToTiles(),
+			("1z7614p7m172z14m7z4m1p2m7s5p5m9p6s2z9m87p1z7s6m73p8m5s6p2z6p26s4z1s4z5p3s89p469s5m7p564s3z2m1p8m4s66z" +
+			"2p5s1m1p8s82p8s4m12z7m54z617m2p7s6z5p4m5p9m9p4s3z3p3m5z7s6z2s3m3z31s836m3p21m4p1s28m3s74z5m8s6m1s73z92p" +
+			"7m3p9s9m2s484p389s9m95s6p55z2s").ToTiles(),
+		];
+		yield return
+		[
+			PlayerCount.Three,
+			true,
+			1,
+			-1, // Take to exhaustion (8),
+			"9p3s3p9s2z23s6p".ToTiles(),
+			("82s3z179s5z5s6z7p6s9p7s7p8s1z1m5p7s5z4p6z1m2p37s4z7p9m5z9s7z5s9m4z64s0138p91m8p4s9m4p6s74z2p1z3p0s73z3s" +
+			"748p2z6p5s9p2s8p6s11z5p2z81s65z4s12p2z21s694p373z1m1p6z261p91s3p48s4z6p").ToTiles(),
+		];
+		yield return
+		[
+			PlayerCount.Three,
+			false,
+			1,
+			5,
+			"9p3s3p9s2z".ToTiles(),
+			("82s3z179s5z5s6z7p6s9p7s7p8s1z1m5p7s5z4p6z1m2p37s4z7p9m5z9s7z5s9m4z64s5138p91m8p4s9m4p6s74z2p1z3p5s73z3s" +
+			"748p2z6p5s9p2s8p6s11z5p2z81s65z4s12p2z21s694p373z1m1p6z261p91s3p48s4z6p32s2z").ToTiles(),
 		];
 	}
 

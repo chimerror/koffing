@@ -11,6 +11,7 @@ public class Wall
 	private readonly int _liveWallStartIndex;
 	private readonly int _deadWallCount;
 	private int _tilesLeftToPop;
+	private int _replacementTilesLeftToPop;
 	private int _nextLiveTileIndex;
 	private int _nextReplacementTileIndex;
 	private int _lastRevealedDoraIndicatorIndex;
@@ -28,6 +29,7 @@ public class Wall
 	public int DeadWallEndIndex => GetSafeIndex(_liveWallStartIndex - _deadWallCount);
 	public int NextLiveTileIndex => _nextLiveTileIndex;
 	public bool CanTakeLiveTile => _tilesLeftToPop > 0;
+	public bool CanTakeReplacementTile => _replacementTilesLeftToPop > 0;
 	public int NextReplacementTileIndex => _nextReplacementTileIndex;
 	public int LastRevealedDoraIndicatorIndex => _lastRevealedDoraIndicatorIndex;
 	public int NextDoraIndicatorIndex => _nextDoraIndicatorIndex;
@@ -74,12 +76,12 @@ public class Wall
 		_nextLiveTileIndex = _liveWallStartIndex;
 		_tilesLeftToPop = playerCount == PlayerCount.Three ? 108 : 136;
 
-		var numberOfReplacementTiles = playerCount == PlayerCount.Three ? 8 : 4;
+		_replacementTilesLeftToPop = playerCount == PlayerCount.Three ? 8 : 4;
 		_deadWallCount = playerCount == PlayerCount.Three ? 20 : 14;
 		_nextReplacementTileIndex = DeadWallStartIndex;
 
 		// Minus here, because the dead wall runs counter-clockwise
-		_lastRevealedDoraIndicatorIndex = GetSafeIndex(_nextReplacementTileIndex - numberOfReplacementTiles);
+		_lastRevealedDoraIndicatorIndex = GetSafeIndex(_nextReplacementTileIndex - _replacementTilesLeftToPop);
 
 		// By the rules, this shouldn't happen until after the deal, but it won't hurt to do it now.
 		_tiles[_lastRevealedDoraIndicatorIndex].FaceUp = true;
@@ -99,6 +101,20 @@ public class Wall
 		_nextLiveTileIndex = GetSafeIndex(++_nextLiveTileIndex);
 		_tilesLeftToPop--;
 		return nextTile;
+	}
+
+	public Tile PopNextReplacementTile()
+	{
+		if (!CanTakeReplacementTile)
+		{
+			return null;
+		}
+
+		var nextReplacementTile = _tiles[_nextReplacementTileIndex];
+		_nextReplacementTileIndex = GetSafeIndex(--_nextReplacementTileIndex); // minus because dead wall runs CCW
+		_tilesLeftToPop--;
+		_replacementTilesLeftToPop--;
+		return nextReplacementTile;
 	}
 
 	private int GetSafeIndex(int index)
