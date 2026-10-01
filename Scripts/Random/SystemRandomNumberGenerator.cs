@@ -1,8 +1,10 @@
-using System;
+using S = System;
+
+namespace Koffing.Random;
 
 public class SystemRandomNumberGenerator : IRandomNumberGenerator
 {
-	private Random _rng = new();
+	private S.Random _rng = new();
 	private ulong _seed = 0ul;
 
 	public SystemRandomNumberGenerator()
@@ -18,7 +20,7 @@ public class SystemRandomNumberGenerator : IRandomNumberGenerator
 			// Set to truncatedSeed, not value so that we don't imply any extra consideration of truncated high bits
 			int truncatedSeed = (int)value;
 			_seed = (ulong)truncatedSeed;
-			_rng = new Random(truncatedSeed);
+			_rng = new S.Random(truncatedSeed);
 		}
 	}
 
@@ -33,6 +35,6 @@ public class SystemRandomNumberGenerator : IRandomNumberGenerator
 	{
 		var tempSeed = _rng.Next();
 		_seed = (ulong)tempSeed;
-		_rng = new Random(tempSeed);
+		_rng = new S.Random(tempSeed);
 	}
 }

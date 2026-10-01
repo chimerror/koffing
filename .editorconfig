@@ -1,7 +1,10 @@
 [*.cs]
 
-# CA1050: Declare types in namespaces
-dotnet_diagnostic.CA1050.severity = silent
-
 # IDE0290: Use primary constructor
 dotnet_diagnostic.IDE0290.severity = silent
+
+# IDE0160: Convert to block scoped namespace
+dotnet_diagnostic.IDE0160.severity = none
+
+# IDE0130: Namespace does not match folder structure
+dotnet_diagnostic.IDE0130.severity = silent

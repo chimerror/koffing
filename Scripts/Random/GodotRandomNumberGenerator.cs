@@ -1,4 +1,7 @@
 using Godot;
+using Koffing.Random;
+
+namespace Koffing.Godot.Random;
 
 public class GodotRandomNumberGenerator : IRandomNumberGenerator
 {

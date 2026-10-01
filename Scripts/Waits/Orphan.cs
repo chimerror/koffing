@@ -1,3 +1,7 @@
+using Koffing.Tiles;
+
+namespace Koffing.Waits;
+
 public class Orphan : Wait
 {
 	public Orphan() : base()

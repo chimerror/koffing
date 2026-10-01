@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using Koffing.Blocks;
+using Koffing.Tiles;
 
+namespace Koffing.Waits;
 // TODO: Since I ended up using English terms most everywhere, I am considering using them for these waits as well. I
 // do not think it would make as much sense to do that with the basic melds though. But this is a very minor style
 // thing.

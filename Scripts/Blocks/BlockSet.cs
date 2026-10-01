@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+namespace Koffing.Blocks;
+
 public class BlockSet : IEnumerable<Block>, IComparable<BlockSet>, IEquatable<BlockSet>
 {
 	private readonly List<Block> _blocks;

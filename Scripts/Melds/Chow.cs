@@ -1,5 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
+using Koffing.Blocks;
+using Koffing.Tiles;
+using Koffing.Waits;
+
+namespace Koffing.Melds;
 
 public class Chow : Meld, IBlock, IDowngradable<Kanchan>, IDowngradable<Penchan>, IDowngradable<Ryanmen>
 {

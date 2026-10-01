@@ -1,5 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using Koffing.Blocks;
+using Koffing.Tiles;
+
+namespace Koffing.Melds;
 
 public abstract class Meld : Block
 {

@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+using Koffing.Tiles;
+
+namespace Koffing.Players;
 
 public class Player
 {

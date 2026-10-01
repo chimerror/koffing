@@ -2,10 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GdUnit4;
+using Koffing;
+using Koffing.Matches;
+using Koffing.Random;
+using Koffing.Tiles;
 
 using static GdUnit4.Assertions;
-using static Helpers;
+using static Koffing.Helpers;
 using static TestLoggingHelpers;
+
+namespace Koffing.Tests;
 
 [TestSuite]
 public class MatchTests

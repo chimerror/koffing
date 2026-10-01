@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Koffing.Blocks;
+using Koffing.Tiles;
+
+namespace Koffing.Waits;
 
 public class Penchan : Wait, IBlock
 {

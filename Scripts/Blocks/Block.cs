@@ -2,6 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Koffing.Melds;
+using Koffing.Tiles;
+using Koffing.Waits;
+
+namespace Koffing.Blocks;
 
 public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEquatable<Block>
 {

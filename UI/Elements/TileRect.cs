@@ -1,4 +1,7 @@
 using Godot;
+using Koffing.Tiles;
+
+namespace Koffing.Godot.UI.Elements;
 
 [Tool]
 public partial class TileRect : TextureRect

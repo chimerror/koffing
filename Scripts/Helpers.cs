@@ -1,3 +1,5 @@
+namespace Koffing;
+
 public static class Helpers
 {
 	public static int GetSafeIndex(int index, int numberOfItems)

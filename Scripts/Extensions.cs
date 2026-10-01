@@ -2,7 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Koffing.Random;
+using Koffing.Tiles;
 using RE = System.Text.RegularExpressions;
+
+namespace Koffing;
 
 public static partial class Extensions
 {

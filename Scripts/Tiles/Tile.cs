@@ -1,5 +1,7 @@
 using System;
 
+namespace Koffing.Tiles;
+
 public class Tile : IComparable<Tile>, IEquatable<Tile>
 {
 	public Suit Suit = Suit.Man;

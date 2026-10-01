@@ -1,5 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
+using Koffing.Blocks;
+using Koffing.Melds;
+using Koffing.Tiles;
+
+namespace Koffing.Waits;
 
 public class ThirteenOrphansWait : Wait, IBlock
 {

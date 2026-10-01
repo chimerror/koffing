@@ -1,3 +1,5 @@
+namespace Koffing.Matches;
+
 public enum PlayerCount
 {
 	Two = 2,

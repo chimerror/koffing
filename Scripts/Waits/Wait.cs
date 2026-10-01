@@ -1,5 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using Koffing.Blocks;
+using Koffing.Tiles;
+
+namespace Koffing.Waits;
 
 public abstract class Wait : Block
 {

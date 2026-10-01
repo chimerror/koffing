@@ -1,4 +1,8 @@
 using Godot;
+using Koffing;
+using Koffing.Tiles;
+
+namespace Koffing.Godot.Tiles;
 
 // TODO: We will probably be able to remove these Node2D versions of UI as we get more of the UI up as Controls.
 [Tool]

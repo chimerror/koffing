@@ -1,7 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
+using Koffing;
+using Koffing.Players;
+using Koffing.Random;
+using Koffing.Tiles;
+using static Koffing.Helpers;
 
-using static Helpers;
+namespace Koffing.Matches;
 
 public class Match
 {

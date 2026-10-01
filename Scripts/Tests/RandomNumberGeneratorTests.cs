@@ -1,8 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using GdUnit4;
+using Koffing;
+using Koffing.Godot.Random;
+using Koffing.Random;
+using Koffing.Tiles;
+
 using static GdUnit4.Assertions;
 using static TestLoggingHelpers;
+
+namespace Koffing.Tests;
 
 [TestSuite]
 public class RandomNumberGeneratorTests

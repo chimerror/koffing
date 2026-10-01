@@ -2,9 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GdUnit4;
+using Koffing;
+using Koffing.Blocks;
+using Koffing.Calculations;
+using Koffing.Melds;
+using Koffing.Waits;
+
 using static GdUnit4.Assertions;
-using static Readiness;
+using static Koffing.Calculations.Readiness;
 using static TestLoggingHelpers;
+
+namespace Koffing.Tests;
 
 [TestSuite]
 public class CalculationTests

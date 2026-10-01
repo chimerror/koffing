@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
+using Koffing.Random;
+using Koffing.Tiles;
 
-using static Helpers;
+using static Koffing.Helpers;
+
+namespace Koffing.Matches;
 
 public class Wall
 {

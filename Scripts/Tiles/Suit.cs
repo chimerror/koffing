@@ -1,3 +1,5 @@
+namespace Koffing.Tiles;
+
 public enum Suit
 {
 	Man = 2,

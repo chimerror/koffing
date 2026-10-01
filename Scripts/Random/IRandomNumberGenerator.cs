@@ -1,3 +1,5 @@
+namespace Koffing.Random;
+
 public interface IRandomNumberGenerator
 {
 	ulong Seed { get; set; }

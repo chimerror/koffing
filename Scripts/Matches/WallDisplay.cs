@@ -1,5 +1,9 @@
 using Godot;
+using Koffing.Godot.Random;
+using Koffing.Godot.Tiles;
 using System.Collections.Generic;
+
+namespace Koffing.Matches;
 
 // TODO: We will probably be able to remove these Node2D versions of UI as we get more of the UI up as Controls.
 [Tool]
