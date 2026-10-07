@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GdUnit4;
-using Koffing;
 using Koffing.Blocks;
 using Koffing.Melds;
 using Koffing.Tiles;
@@ -35,7 +34,7 @@ public class UpgradableDowngradableTests
 		LoggingPrefix = nameof(DowngradeChowToKanchanIsCorrect);
 
 		var actualOutput = ((IDowngradable<Kanchan>)chow).Downgrade();
-		PrefixInfo($"Checking that downgrading chow \"{chow.Tiles.NotationFromTiles()}\" to kanchan works");
+		PrefixInfo($"Checking that downgrading chow \"{chow.NotationFromTiles()}\" to kanchan works");
 		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
@@ -46,7 +45,7 @@ public class UpgradableDowngradableTests
 		LoggingPrefix = nameof(DowngradeChowToPenchanIsCorrect);
 
 		var actualOutput = ((IDowngradable<Penchan>)chow).Downgrade();
-		PrefixInfo($"Checking that downgrading chow \"{chow.Tiles.NotationFromTiles()}\" to penchan works when given {because}");
+		PrefixInfo($"Checking that downgrading chow \"{chow.NotationFromTiles()}\" to penchan works when given {because}");
 		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
@@ -57,7 +56,7 @@ public class UpgradableDowngradableTests
 		LoggingPrefix = nameof(DowngradeChowToRyanmenIsCorrect);
 
 		var actualOutput = ((IDowngradable<Ryanmen>)chow).Downgrade();
-		PrefixInfo($"Checking that downgrading chow \"{chow.Tiles.NotationFromTiles()}\" to ryanmen works");
+		PrefixInfo($"Checking that downgrading chow \"{chow.NotationFromTiles()}\" to ryanmen works");
 		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
@@ -68,7 +67,7 @@ public class UpgradableDowngradableTests
 		LoggingPrefix = nameof(DowngradeKongToPungIsCorrect);
 
 		var actualOutput = ((IDowngradable<Pung>)kong).Downgrade();
-		PrefixInfo($"Checking that downgrading kong \"{kong.Tiles.NotationFromTiles()}\" to pung works");
+		PrefixInfo($"Checking that downgrading kong \"{kong.NotationFromTiles()}\" to pung works");
 		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
@@ -79,7 +78,7 @@ public class UpgradableDowngradableTests
 		LoggingPrefix = nameof(DowngradePungToPairIsCorrect);
 
 		var actualOutput = ((IDowngradable<Pair>)pung).Downgrade();
-		PrefixInfo($"Checking that downgrading pung \"{pung.Tiles.NotationFromTiles()}\" to pair works");
+		PrefixInfo($"Checking that downgrading pung \"{pung.NotationFromTiles()}\" to pair works");
 		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
@@ -90,7 +89,7 @@ public class UpgradableDowngradableTests
 		LoggingPrefix = nameof(UpgradePungToKongSoughtTilesIsCorrect);
 
 		var actualOutput = ((IUpgradable<Kong>)pung).SoughtTiles;
-		PrefixInfo($"Checking that tiles sought for upgrading pung \"{pung.Tiles.NotationFromTiles()}\" to kong works");
+		PrefixInfo($"Checking that tiles sought for upgrading pung \"{pung.NotationFromTiles()}\" to kong works");
 		AssertArray(expectedOutput).ContainsExactlyInAnyOrder(actualOutput);
 	}
 
@@ -102,7 +101,7 @@ public class UpgradableDowngradableTests
 
 		var actualResult = ((IUpgradable<Kong>)pung).CanUpgradeWith(tile);
 		var outcomeString = expectedResult ? "can" : "can NOT";
-		PrefixInfo($"Checking that tile \"{tile}\" {outcomeString} upgrade pung \"{pung.Tiles.NotationFromTiles()}\" to kong when given {because}");
+		PrefixInfo($"Checking that tile \"{tile}\" {outcomeString} upgrade pung \"{pung.NotationFromTiles()}\" to kong when given {because}");
 		AssertThat(expectedResult).IsEqual(actualResult);
 	}
 
@@ -113,7 +112,7 @@ public class UpgradableDowngradableTests
 	{
 		LoggingPrefix = nameof(UpgradePungToKongNegativeCasesAreCorrect);
 
-		PrefixInfo($"Checking that trying upgrade pung \"{pung.Tiles.NotationFromTiles()}\" to kong with tile \"{tile}\" throws an ArgumentException when given {because}");
+		PrefixInfo($"Checking that trying upgrade pung \"{pung.NotationFromTiles()}\" to kong with tile \"{tile}\" throws an ArgumentException when given {because}");
 		((IUpgradable<Kong>)pung).Upgrade(tile); // will throw
 	}
 
@@ -124,7 +123,7 @@ public class UpgradableDowngradableTests
 		LoggingPrefix = nameof(UpgradePungToKongPositiveCasesAreCorrect);
 
 		var actualOutput = ((IUpgradable<Kong>)pung).Upgrade(tile); // will throw
-		PrefixInfo($"Checking that it is possible to upgrade pung \"{pung.Tiles.NotationFromTiles()}\" to kong with tile \"{tile}\" when given {because}");
+		PrefixInfo($"Checking that it is possible to upgrade pung \"{pung.NotationFromTiles()}\" to kong with tile \"{tile}\" when given {because}");
 		AssertThat(expectedOutput).IsEqual(actualOutput);
 	}
 

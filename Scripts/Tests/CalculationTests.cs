@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GdUnit4;
-using Koffing;
 using Koffing.Blocks;
 using Koffing.Calculations;
 using Koffing.Melds;
@@ -35,7 +34,7 @@ public class CalculationTests
 	{
 		LoggingPrefix = nameof(IsReadyIsCorrect);
 
-		var handTiles = hand.Blocks.SelectMany(b => b.Tiles).ToList();
+		var handTiles = hand.SelectMany(b => b).ToList();
 
 		var outcomeString = expectedResult ? "is ready" : "is NOT ready";
 		PrefixInfo($"Checking that hand \"{handTiles.NotationFromTiles()}\" {outcomeString} given {because}");
@@ -50,7 +49,7 @@ public class CalculationTests
 	{
 		LoggingPrefix = nameof(IsReadyIsCorrect);
 
-		var handTiles = hand.Blocks.SelectMany(b => b.Tiles).ToList();
+		var handTiles = hand.SelectMany(b => b).ToList();
 
 		var outcomeString = expectedResult ? "is past-ready" : "is NOT past-ready";
 		PrefixInfo($"Checking that hand \"{handTiles.NotationFromTiles()}\" {outcomeString} given {because}");
@@ -65,7 +64,7 @@ public class CalculationTests
 	{
 		LoggingPrefix = nameof(StandardTilesToReadyIsCorrect);
 
-		var handTiles = hand.Blocks.SelectMany(b => b.Tiles).ToList();
+		var handTiles = hand.SelectMany(b => b).ToList();
 
 		PrefixInfo($"Checking that hand \"{handTiles.NotationFromTiles()}\" has standard readiness calculated as {expectedResult} given that it's {because}");
 		AssertThat(StandardTilesToReady(hand)).IsEqual(expectedResult);
@@ -88,7 +87,7 @@ public class CalculationTests
 	{
 		LoggingPrefix = nameof(SevenPairsTilesToReadyIsCorrect);
 
-		var handTiles = hand.Blocks.SelectMany(b => b.Tiles).ToList();
+		var handTiles = hand.SelectMany(b => b).ToList();
 
 		PrefixInfo($"Checking that hand \"{handTiles.NotationFromTiles()}\" has seven pairs readiness calculated as {expectedResult} given that it's {because}");
 		AssertThat(SevenPairsTilesToReady(hand)).IsEqual(expectedResult);
@@ -111,7 +110,7 @@ public class CalculationTests
 	{
 		LoggingPrefix = nameof(ThirteenOrphansTilesToReadyIsCorrect);
 
-		var handTiles = hand.Blocks.SelectMany(b => b.Tiles).ToList();
+		var handTiles = hand.SelectMany(b => b).ToList();
 
 		PrefixInfo($"Checking that hand \"{handTiles.NotationFromTiles()}\" has thirteen orphans readiness calculated as {expectedResult} given that it's {because}");
 		AssertThat(ThirteenOrphansTilesToReady(hand)).IsEqual(expectedResult);

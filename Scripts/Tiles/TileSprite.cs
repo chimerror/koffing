@@ -1,5 +1,4 @@
 using Godot;
-using Koffing;
 using Koffing.Tiles;
 
 namespace Koffing.Godot.Tiles;

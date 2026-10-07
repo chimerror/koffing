@@ -12,9 +12,9 @@ public class PairWait : Wait, IBlock
 	{
 	}
 
-	public static explicit operator Pair(PairWait pairWait) => new(pairWait.Tiles);
+	public static explicit operator Pair(PairWait pairWait) => new(pairWait);
 
-	public static explicit operator PairWait(Pair pair) => new(pair.Tiles);
+	public static explicit operator PairWait(Pair pair) => new(pair);
 
 	public static new IEnumerable<MadeBlockContext> GetPossible(IEnumerable<Tile> tiles)
 	{
@@ -24,7 +24,7 @@ public class PairWait : Wait, IBlock
 	public static new IEnumerable<MadeBlockContext> GetPossibleForTile(Tile tile, IEnumerable<Tile> otherTiles)
 	{
 		return Pair.GetPossibleForTile(tile, otherTiles)
-			.Select(c => new MadeBlockContext(new PairWait(c.MadeBlock.Tiles), c.RemainingTiles));
+			.Select(c => new MadeBlockContext(new PairWait(c.MadeBlock), c.RemainingTiles));
 	}
 
 	public static new int GetHashCodeBasis()

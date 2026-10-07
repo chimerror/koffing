@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GdUnit4;
-using Koffing;
 using Koffing.Matches;
 using Koffing.Random;
 using Koffing.Tiles;
@@ -28,7 +27,6 @@ public class MatchTests
 		TearDownLogging();
 	}
 
-	// TODO: In a different test, check that we have the right tiles at the right locations based on a seed.
 	[TestCase]
 	[DataPoint(nameof(WallCreationTestCases))]
 	public static void WallIsCreatedCorrectly(

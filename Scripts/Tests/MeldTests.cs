@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using GdUnit4;
-using Koffing;
 using Koffing.Blocks;
 using Koffing.Melds;
 using Koffing.Waits;
@@ -83,7 +82,7 @@ public class MeldTests
 		var otherTiles = otherTilesNotation.ToTiles();
 		var actualOutput = PairWait.GetPossibleForTile(tile, otherTiles).ToList();
 		var convertedExpected = expectedOutput
-			.Select(c => new MadeBlockContext(new PairWait(c.MadeBlock.Tiles), c.RemainingTiles))
+			.Select(c => new MadeBlockContext(new PairWait(c.MadeBlock), c.RemainingTiles))
 			.ToList();
 
 		PrefixInfo($"Checking that PairWait.GetPossibleForTile with tile \"{tileNotation}\" and other tiles \"{otherTilesNotation}\" is correct when {because}");
@@ -99,7 +98,7 @@ public class MeldTests
 		var tiles = tilesNotation.ToTiles();
 		var actualOutput = PairWait.GetPossible(tiles).ToList();
 		var convertedExpected = expectedOutput
-			.Select(c => new MadeBlockContext(new PairWait(c.MadeBlock.Tiles), c.RemainingTiles))
+			.Select(c => new MadeBlockContext(new PairWait(c.MadeBlock), c.RemainingTiles))
 			.ToList();
 
 		PrefixInfo($"Checking that PairWait.GetPossible with tiles \"{tilesNotation}\" is correct when {because}");

@@ -18,6 +18,7 @@ namespace Koffing.Blocks;
 /// </remarks>
 public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEquatable<Block>
 {
+	// TODOTODO: Protected shows up in docs, so write XML documentation for this.
 	protected readonly List<Tile> _tiles;
 
 	/// <summary>
@@ -58,13 +59,6 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 		get => _tiles[index];
 	}
 
-	// TODO: There is probably no need for this property since `Block` already implements IEnumerable, so we can remove
-	// it.
-	public IEnumerable<Tile> Tiles
-	{
-		get => _tiles.AsReadOnly();
-	}
-
 	/// <summary>
 	/// Returns all possible <see cref="BlockSet"/>s that can be created from a collection of <see cref="Tile"/>s.
 	/// </summary>
@@ -96,54 +90,6 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 		foreach (var madeBlockSet in sortedMadeBlockSets)
 		{
 			yield return madeBlockSet;
-		}
-	}
-
-	// TODO: Style violation: Should be listed after the public and protected static methods.
-	private static IEnumerable<BlockSet> GetPossibleBlockSetsHelper(IEnumerable<Tile> tiles)
-	{
-		var tilesList = tiles.ToList();
-		if (tilesList.Count == 0)
-		{
-			yield return [];
-		}
-		else if (tilesList.Count == 1)
-		{
-			yield return new BlockSet([new Orphan(tiles.Single())]);
-		}
-
-		bool meldMade = false;
-		var firstLevelMelds = Meld.GetFirstLevelMelds(tiles);
-		foreach (var firstLevelMeld in firstLevelMelds)
-		{
-			meldMade = true;
-			var madeBlock = firstLevelMeld.MadeBlock;
-			var nextLevelBlockSets = GetPossibleBlockSetsHelper(firstLevelMeld.RemainingTiles);
-			foreach (var blockSet in nextLevelBlockSets)
-			{
-				yield return new BlockSet(blockSet.Blocks.Append(madeBlock));
-			}
-		}
-
-		if (!meldMade)
-		{
-			bool waitMade = false;
-			var firstLevelWaits = Wait.GetFirstLevelWaits(tiles);
-			foreach (var firstLevelWait in firstLevelWaits)
-			{
-				waitMade = true;
-				var madeWait = firstLevelWait.MadeBlock;
-				var nextLevelBlockSets = GetPossibleBlockSetsHelper(firstLevelWait.RemainingTiles);
-				foreach (var blockSet in nextLevelBlockSets)
-				{
-					yield return new BlockSet(blockSet.Blocks.Append(madeWait));
-				}
-			}
-
-			if (!waitMade)
-			{
-				yield return new BlockSet(tiles.Select(t => new Orphan(t)));
-			}
 		}
 	}
 
@@ -226,6 +172,53 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 			foreach (var madeBlock in possibleBlocks)
 			{
 				yield return madeBlock;
+			}
+		}
+	}
+
+	private static IEnumerable<BlockSet> GetPossibleBlockSetsHelper(IEnumerable<Tile> tiles)
+	{
+		var tilesList = tiles.ToList();
+		if (tilesList.Count == 0)
+		{
+			yield return [];
+		}
+		else if (tilesList.Count == 1)
+		{
+			yield return new BlockSet([new Orphan(tiles.Single())]);
+		}
+
+		bool meldMade = false;
+		var firstLevelMelds = Meld.GetFirstLevelMelds(tiles);
+		foreach (var firstLevelMeld in firstLevelMelds)
+		{
+			meldMade = true;
+			var madeBlock = firstLevelMeld.MadeBlock;
+			var nextLevelBlockSets = GetPossibleBlockSetsHelper(firstLevelMeld.RemainingTiles);
+			foreach (var blockSet in nextLevelBlockSets)
+			{
+				yield return new BlockSet(blockSet.Append(madeBlock));
+			}
+		}
+
+		if (!meldMade)
+		{
+			bool waitMade = false;
+			var firstLevelWaits = Wait.GetFirstLevelWaits(tiles);
+			foreach (var firstLevelWait in firstLevelWaits)
+			{
+				waitMade = true;
+				var madeWait = firstLevelWait.MadeBlock;
+				var nextLevelBlockSets = GetPossibleBlockSetsHelper(firstLevelWait.RemainingTiles);
+				foreach (var blockSet in nextLevelBlockSets)
+				{
+					yield return new BlockSet(blockSet.Append(madeWait));
+				}
+			}
+
+			if (!waitMade)
+			{
+				yield return new BlockSet(tiles.Select(t => new Orphan(t)));
 			}
 		}
 	}

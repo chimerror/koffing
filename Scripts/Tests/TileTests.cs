@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GdUnit4;
-using Koffing;
 using Koffing.Tiles;
 
 using static GdUnit4.Assertions;

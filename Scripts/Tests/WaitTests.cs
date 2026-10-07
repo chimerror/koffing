@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GdUnit4;
-using Koffing;
 using Koffing.Blocks;
 using Koffing.Melds;
 using Koffing.Tiles;
@@ -57,7 +56,7 @@ public class WaitTests
 				var tile = new Tile(suit, rank);
 				PrefixInfo($"Checking that we can create an orphan from tile \"{tile}\"...");
 				var orphan = new Orphan(tile);
-				AssertThat(tile).IsEqual(orphan.Tiles.Single());
+				AssertThat(tile).IsEqual(orphan.Single());
 			}
 		}
 	}

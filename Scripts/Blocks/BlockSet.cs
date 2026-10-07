@@ -26,11 +26,6 @@ public class BlockSet : IEnumerable<Block>, IComparable<BlockSet>, IEquatable<Bl
 		get => _blocks[index];
 	}
 
-	public IEnumerable<Block> Blocks
-	{
-		get => _blocks.AsReadOnly();
-	}
-
 	public int CompareTo(BlockSet that)
 	{
 		if (that == null)

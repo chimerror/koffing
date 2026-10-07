@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using GdUnit4;
-using Koffing;
 using Koffing.Blocks;
 using Koffing.Melds;
 using Koffing.Waits;
