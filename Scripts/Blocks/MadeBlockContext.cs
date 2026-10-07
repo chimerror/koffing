@@ -5,14 +5,38 @@ using Koffing.Tiles;
 
 namespace Koffing.Blocks;
 
+/// <summary>
+/// Represents a "made" block, a pair of a <see cref="Block"/> and the <see cref="Tile"/>s that remain after making the
+/// block.
+/// </summary>
+/// <remarks>
+/// By wrapping up these two values, we have an easy way to recursively generate blocks from a collection of tiles, by
+/// recursing on the <see cref="RemainingTiles"/> property.
+/// </remarks>
 public class MadeBlockContext : IComparable<MadeBlockContext>, IEquatable<MadeBlockContext>
 {
 	private readonly Block _madeBlock;
 	private readonly IEnumerable<Tile> _remainingTiles;
 
+	/// <summary>
+	/// The <see cref="Block"/> that was formed for this particular context.
+	/// </summary>
 	public Block MadeBlock => _madeBlock;
+
+	/// <summary>
+	/// An <see cref="IEnumerable{T}"/> of <see cref="Tile"/>s that are the tiles that were left over after forming the
+	/// block returned by <see cref="MadeBlock"/>.
+	/// </summary>
 	public IEnumerable<Tile> RemainingTiles => _remainingTiles;
 
+	/// <summary>
+	/// Constructor.
+	/// </summary>
+	/// <param name="madeBlock">The <see cref="Block"/> that was formed for this particular context.</param>
+	/// <param name="remainingTiles">
+	/// An <see cref="IEnumerable{T}"/> of <see cref="Tile"/>s representing the tiles that were left over after forming
+	/// <paramref name="madeBlock"/>.
+	/// </param>
 	public MadeBlockContext(Block madeBlock, IEnumerable<Tile> remainingTiles)
 	{
 		_madeBlock = madeBlock;
@@ -21,6 +45,21 @@ public class MadeBlockContext : IComparable<MadeBlockContext>, IEquatable<MadeBl
 
 	// TODO: There should probably be a set order for these common functions like Equals and CompareTo.
 
+	/// <inheritdoc/>
+	/// <remarks>
+	/// Equality is determined by checking:
+	/// <list type="number">
+	/// 	<item>
+	/// 		if <paramref name="that"/> is null (always false)
+	/// 	</item>
+	/// 	<item>
+	/// 		if <paramref name="that"/> is a <see cref="MadeBlockContext"/>
+	/// 	</item>
+	/// 	<item>
+	/// 		then deferring to <see cref="Equals(MadeBlockContext)"/>
+	/// 	</item>
+	/// </list>
+	/// </remarks>
 	public override bool Equals(object that)
 	{
 		if ((that == null) ||
@@ -32,6 +71,24 @@ public class MadeBlockContext : IComparable<MadeBlockContext>, IEquatable<MadeBl
 		return Equals(thatContext);
 	}
 
+	/// <inheritdoc/>
+	/// <remarks>
+	/// Equality is determined by checking:
+	/// <list type="number">
+	/// 	<item>
+	/// 		if <paramref name="thatContext"/> is null (always false)
+	/// 	</item>
+	/// 	<item>
+	/// 		the <see cref="MadeBlock"/> using <see cref="Block.Equals(Block)"/>
+	/// 	</item>
+	/// 	<item>
+	/// 		the count of tiles in <see cref="RemainingTiles"/>
+	/// 	</item>
+	/// 	<item>
+	/// 		the tiles in <see cref="RemainingTiles"/> (after sorting)
+	/// 	</item>
+	/// </list>
+	/// </remarks>
 	public bool Equals(MadeBlockContext thatContext)
 	{
 		if (thatContext == null)
@@ -64,6 +121,13 @@ public class MadeBlockContext : IComparable<MadeBlockContext>, IEquatable<MadeBl
 		return true;
 	}
 
+	/// <inheritdoc/>
+	/// <remarks>
+	/// Calculates hash value using the value returned from <see cref="IBlock.GetHashCodeBasis"/> for
+	/// <see cref="MadeBlock"/> as a basis which is combined using bitwise exclusive or with an "exponent" calculated by
+	/// that same basis and the hash code of the tiles in <see cref="RemainingTiles"/> using
+	/// <see cref="Tile.GetHashCode"/>.
+	/// </remarks>
 	public override int GetHashCode()
 	{
 		var hashCodeBasis = _madeBlock.GetHashCode();
@@ -73,10 +137,32 @@ public class MadeBlockContext : IComparable<MadeBlockContext>, IEquatable<MadeBl
 			hashCodeExponent = hashCodeExponent * hashCodeBasis + tile.GetHashCode();
 		}
 
+		// TODO: This isn't what we should be using for exponentiation; it's the bitwise xor operator. However, in this
+		// case I'm not sweating using xor here unlike in Block, where I _really_ want to make sure to make blocks
+		// uniquely hash based on type.
 		// This is not guaranteed to be under max int, but our numbers are pretty low so I'm not that worried about it.
 		return hashCodeBasis ^ hashCodeExponent;
 	}
 
+	/// <inheritdoc/>
+	/// <remarks>
+	/// Comparison is done by comparing:
+	/// <list type="number">
+	/// 	<item>
+	/// 		if <paramref name="thatContext"/> is null (always 1)
+	/// 	</item>
+	/// 	<item>
+	/// 		if the <see cref="MadeBlock"/>s aren't equal and then using <see cref="Block.CompareTo(Block)"/> on
+	/// 		them if not.
+	/// 	</item>
+	/// 	<item>
+	/// 		the count of tiles in <see cref="RemainingTiles"/>
+	/// 	</item>
+	/// 	<item>
+	/// 		the tiles in <see cref="RemainingTiles"/> using <see cref="Tile.CompareTo(Tile)"/> (after sorting)
+	/// 	</item>
+	/// </list>
+	/// </remarks>
 	public int CompareTo(MadeBlockContext that)
 	{
 		if (that == null)
@@ -109,6 +195,32 @@ public class MadeBlockContext : IComparable<MadeBlockContext>, IEquatable<MadeBl
 		return 0;
 	}
 
+	/// <inheritdoc/>
+	/// <remarks>
+	/// Prints:
+	/// <list type="number">
+	/// 	<item>
+	/// 		<c>"MadeBlockContext "</c>
+	/// 	</item>
+	/// 	<item>
+	/// 		the name of the <see cref="Type"/> of <see cref="MadeBlock"/>
+	/// 	</item>
+	/// 	<item>
+	/// 		<c>": "</c>
+	/// 	</item>
+	/// 	<item>
+	/// 		the MPSZ notation of <see cref="MadeBlock"/> as generated by
+	/// 		<see cref="Extensions.NotationFromTiles(IEnumerable{Tile})"/>.
+	/// 	</item>
+	/// 	<item>
+	/// 		<c>", "</c>
+	/// 	</item>
+	/// 	<item>
+	/// 		the MPSZ notation of <see cref="RemainingTiles"/> as generated by
+	/// 		<see cref="Extensions.NotationFromTiles(IEnumerable{Tile})"/>.
+	/// 	</item>
+	/// </list>
+	/// </remarks>
 	public override string ToString()
 	{
 		return $"MadeBlockContext {_madeBlock.GetType().Name}: {_madeBlock.NotationFromTiles()}, {_remainingTiles.NotationFromTiles()}";
