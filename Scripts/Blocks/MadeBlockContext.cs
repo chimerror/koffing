@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Koffing;
 using Koffing.Tiles;
 
 namespace Koffing.Blocks;
