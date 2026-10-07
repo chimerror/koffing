@@ -86,8 +86,6 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 			}
 		}
 
-		// TODO: Right now we are only considering melds, but I'm wondering what happens when a hand is
-		// fully in thirteen orphans or seven pairs.
 		if (!meldMade)
 		{
 			bool waitMade = false;
