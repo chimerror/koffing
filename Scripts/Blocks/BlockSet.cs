@@ -5,6 +5,8 @@ using System.Linq;
 
 namespace Koffing.Blocks;
 
+// TODO: What does this class look like when ToString is called? Bet it could be improved.
+
 public class BlockSet : IEnumerable<Block>, IComparable<BlockSet>, IEquatable<BlockSet>
 {
 	private readonly List<Block> _blocks;

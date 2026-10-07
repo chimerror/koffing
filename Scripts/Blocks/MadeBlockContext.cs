@@ -19,6 +19,8 @@ public class MadeBlockContext : IComparable<MadeBlockContext>, IEquatable<MadeBl
 		_remainingTiles = remainingTiles;
 	}
 
+	// TODO: There should probably be a set order for these common functions like Equals and CompareTo.
+
 	public override bool Equals(object that)
 	{
 		if ((that == null) ||
