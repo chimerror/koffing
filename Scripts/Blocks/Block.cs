@@ -8,10 +8,34 @@ using Koffing.Waits;
 
 namespace Koffing.Blocks;
 
+/// <summary>
+/// Abstract class representing a grouping of <see cref="Tile"/>s.
+/// </summary>
+/// <remarks>
+/// A block is a very generic grouping of <see cref="Tile"/>s. This should be the root class for all derived classes as
+/// it provides some basic implementations of the major interfaces of <see cref="IEnumerable{T}"/>,
+/// <see cref="IBlock"/>, <see cref="IComparable{T}"/>, and <see cref="IEquatable{T}"/>.
+/// </remarks>
 public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEquatable<Block>
 {
 	protected readonly List<Tile> _tiles;
 
+	/// <summary>
+	/// Constructor. Optionally takes in an <see cref="IEnumerable{T}"/> of <see cref="Tile"/>s.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// 	In general, this (and the other constructors for derived classes) should not be used in favor of using
+	/// 	<see cref="IBlock"/> static functions such as <see cref="IBlock.GetPossible(IEnumerable{Tile})"/> or the
+	/// 	<see cref="GetPossibleBlockSets(IEnumerable{Tile})"/> static helper function.
+	/// </para>
+	/// <para>
+	/// 	Those methods will ensure that Blocks created correctly match their intended semantic meaning, such as
+	/// 	<see cref="Pung"/>s having all the same tile or <see cref="Chow"/>s having a sequence of tiles in the same
+	/// 	suit.
+	/// </para>
+	/// </remarks>
+	/// <param name="tiles">The <see cref="Tile"/>s that make up the block.</param>
 	public Block(IEnumerable<Tile> tiles = null)
 	{
 		if (tiles != null)
@@ -24,16 +48,30 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 		}
 	}
 
+	/// <summary>
+	/// Indexer.
+	/// </summary>
+	/// <param name="index">The index to access.</param>
+	/// <returns>The <see cref="Tile"/> at index <paramref name="index"/> in the Block.</returns>
 	public Tile this[int index]
 	{
 		get => _tiles[index];
 	}
 
+	// TODO: There is probably no need for this property since `Block` already implements IEnumerable, so we can remove
+	// it.
 	public IEnumerable<Tile> Tiles
 	{
 		get => _tiles.AsReadOnly();
 	}
 
+	/// <summary>
+	/// Returns all possible <see cref="BlockSet"/>s that can be created from a collection of <see cref="Tile"/>s.
+	/// </summary>
+	/// <param name="tiles">The <see cref="Tile"/>s to use to create <see cref="BlockSet"/>s.</param>
+	/// <returns>
+	/// An <see cref="IEnumerable{T}"/> of <see cref="BlockSet"/>s that can be created from <paramref name="tiles"/>.
+	/// </returns>
 	public static IEnumerable<BlockSet> GetPossibleBlockSets(IEnumerable<Tile> tiles)
 	{
 		var madeBlockSets = new HashSet<BlockSet>();
@@ -61,6 +99,7 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 		}
 	}
 
+	// TODO: Style violation: Should be listed after the public and protected static methods.
 	private static IEnumerable<BlockSet> GetPossibleBlockSetsHelper(IEnumerable<Tile> tiles)
 	{
 		var tilesList = tiles.ToList();
@@ -108,6 +147,12 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 		}
 	}
 
+	/// <inheritdoc cref="IBlock.GetPossible(IEnumerable{Tile})"/>
+	/// <remarks>
+	/// As this is an abstract class not meant for concrete use, the implementation of this always throws
+	/// <see cref="NotImplementedException"/> to encourage overriding.
+	/// </remarks>
+	/// <exception cref="NotImplementedException">Thrown to encourage overriding.</exception>
 	public static IEnumerable<MadeBlockContext> GetPossible(IEnumerable<Tile> tiles)
 	{
 		// This is commented out to force implementation, but child classes should override this method with something
@@ -117,18 +162,53 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 		throw new NotImplementedException();
 	}
 
+	/// <inheritdoc cref="IBlock.GetPossibleForTile(Tile, IEnumerable{Tile})"/>
+	/// <remarks>
+	/// As this is an abstract class not meant for concrete use, the implementation of this always throws
+	/// <see cref="NotImplementedException"/> to encourage overriding.
+	/// </remarks>
+	/// <exception cref="NotImplementedException">Thrown to encourage overriding.</exception>
 	public static IEnumerable<MadeBlockContext> GetPossibleForTile(Tile tile, IEnumerable<Tile> otherTiles)
 	{
 		// Throwing because we want to force overriding
 		throw new NotImplementedException();
 	}
 
+	/// <inheritdoc cref="IBlock.GetHashCodeBasis"/>
+	/// <exception cref="NotImplementedException">
+	/// Thrown to encourage overriding, as this is an abstract class not meant for concrete use.
+	/// </exception>
 	public static int GetHashCodeBasis()
 	{
 		// Throwing because we want to force overriding
 		throw new NotImplementedException();
 	}
 
+	/// <summary>
+	/// Protected static helper function that can be used to simplify overrides of
+	/// <see cref="IBlock.GetPossible(IEnumerable{Tile})"/>.
+	/// </summary>
+	/// <remarks>
+	/// Most derived blocks have their logic for the <see cref="IBlock.GetPossible(IEnumerable{Tile})"/> function
+	///	implemented as an override of <see cref="IBlock.GetPossibleForTile(Tile, IEnumerable{Tile})"/>, as it is
+	/// often easier to write logic around a single given tile. Rather than duplicating the logic to go through all
+	/// distinct tiles and calling <see cref="IBlock.GetPossibleForTile(Tile, IEnumerable{Tile})"/> for each one,
+	/// this function can be used instead.
+	/// </remarks>
+	/// <example>
+	/// As an example of such an override taken from <see cref="Chow.GetPossible(IEnumerable{Tile})"/>:
+	/// <code>
+	/// 	public static new IEnumerable&lt;MadeBlockContext&gt; GetPossible(IEnumerable&lt;Tile&gt; tiles)
+	///		{
+	///			return GetPossibleHelper(tiles, typeof(Chow)).Distinct();
+	///		}
+	/// </code>
+	/// </example>
+	/// <param name="tiles">The <see cref="Tile"/>s to use to create <see cref="MadeBlockContext"/>s.</param>
+	/// <param name="blockType">The <see cref="Type"/> of block to return</param>
+	/// <returns>
+	/// An <see cref="IEnumerable{T}"/> of <see cref="MadeBlockContext"/>s of type <paramref name="blockType"/>.
+	/// </returns>
 	protected static IEnumerable<MadeBlockContext> GetPossibleHelper(IEnumerable<Tile> tiles, Type blockType)
 	{
 		var distinctTiles = tiles.DistinctBy(t => (t.Suit, t.Rank)).ToList();
@@ -150,6 +230,21 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 		}
 	}
 
+	/// <inheritdoc/>
+	/// <remarks>
+	/// Equality is determined by checking:
+	/// <list type="number">
+	/// 	<item>
+	/// 		if <paramref name="that"/> is null (always false)
+	/// 	</item>
+	/// 	<item>
+	/// 		type
+	/// 	</item>
+	/// 	<item>
+	/// 		then deferring to <see cref="Equals(Block)"/>
+	/// 	</item>
+	/// </list>
+	/// </remarks>
 	public override bool Equals(object that)
 	{
 		if ((that == null) ||
@@ -162,6 +257,24 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 		return Equals(thatBlock);
 	}
 
+	/// <inheritdoc/>
+	/// <remarks>
+	/// Equality is determined by checking:
+	/// <list type="number">
+	/// 	<item>
+	/// 		if <paramref name="that"/> is null (always false)
+	/// 	</item>
+	/// 	<item>
+	/// 		type
+	/// 	</item>
+	/// 	<item>
+	/// 		the number of tiles in the block
+	/// 	</item>
+	/// 	<item>
+	/// 		the actual tiles in the block (after sorting)
+	/// 	</item>
+	/// </list>
+	/// </remarks>
 	public virtual bool Equals(Block thatBlock)
 	{
 		if (thatBlock == null)
@@ -190,6 +303,11 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 		return true;
 	}
 
+	/// <inheritdoc/>
+	/// <remarks>
+	/// Calculates hash value using the value returned from <see cref="IBlock.GetHashCodeBasis"/> as a basis which is
+	/// then exponentiated using an exponent created using that same basis and the hash codes for the tiles of the block.
+	/// </remarks>
 	public override int GetHashCode()
 	{
 		unchecked
@@ -209,16 +327,36 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 		}
 	}
 
+	/// <inheritdoc/>
 	public IEnumerator<Tile> GetEnumerator()
 	{
 		return _tiles.GetEnumerator();
 	}
 
+	/// <inheritdoc/>
 	IEnumerator IEnumerable.GetEnumerator()
 	{
 		return this.GetEnumerator();
 	}
 
+	/// <inheritdoc/>
+	/// <remarks>
+	/// Comparison is done by comparing:
+	/// <list type="number">
+	/// 	<item>
+	/// 		if <paramref name="that"/> is null (always 1)
+	/// 	</item>
+	/// 	<item>
+	/// 		type (using <see cref="IBlock.GetHashCodeBasis"/>)
+	/// 	</item>
+	/// 	<item>
+	/// 		the number of tiles in the block
+	/// 	</item>
+	/// 	<item>
+	/// 		the actual tiles in the block (after sorting) using <see cref="Tile.CompareTo(Tile)"/>.
+	/// 	</item>
+	/// </list>
+	/// </remarks>
 	public int CompareTo(Block that)
 	{
 		if (that == null)
@@ -260,6 +398,12 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 		return 0;
 	}
 
+	/// <inheritdoc/>
+	/// <remarks>
+	/// Prints the type (through <see cref="Object.ToString"/>) followed by ": " and then the MPSZ notation of the tiles
+	/// as generated by <see cref="Extensions.NotationFromTiles(IEnumerable{Tile})"/>.
+	/// </remarks>
+	// TODOTODO: Should probably have a description of the MPSZ notation formation as a file in the documents.
 	public override string ToString()
 	{
 		return base.ToString() + ": " + this.NotationFromTiles();
