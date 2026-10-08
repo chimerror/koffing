@@ -1,5 +1,8 @@
 namespace Koffing.Tiles;
 
+/// <summary>
+/// Represents the suit of a tile.
+/// </summary>
 public enum Suit
 {
 	Man = 2,
