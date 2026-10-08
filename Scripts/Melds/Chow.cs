@@ -63,6 +63,17 @@ public class Chow : Meld, IBlock, IDowngradable<Kanchan>, IDowngradable<Penchan>
 		}
 	}
 
+	/// <summary>
+	/// Get the hash code basis representing a chow, which will be exponentiated as a part of calculating
+	/// <see cref="Block.GetHashCode"/>.
+	/// </summary>
+	/// <returns>The basis to use when calculating hash codes for chows.</returns>
+	public static new int GetHashCodeBasis()
+	{
+		// TODO: Should we put these in an enum so we can make sure numbers are unique?
+		return 2;
+	}
+
 	private static IEnumerable<Tile> GetRankTiles(int desiredRank, Tile tile, IEnumerable<Tile> otherTiles)
 	{
 		if (tile.RawRank == desiredRank)
@@ -84,13 +95,9 @@ public class Chow : Meld, IBlock, IDowngradable<Kanchan>, IDowngradable<Penchan>
 
 	private static bool NotChosen(Tile candidateTile, Tile lowTile, Tile middleTile, Tile highTile)
 	{
-		return !(ReferenceEquals(candidateTile, lowTile) || ReferenceEquals(candidateTile, middleTile) || ReferenceEquals(candidateTile, highTile));
-	}
-
-	public static new int GetHashCodeBasis()
-	{
-		// TODO: Should we put these in an enum so we can make sure numbers are unique?
-		return 2;
+		return !(ReferenceEquals(candidateTile, lowTile) ||
+			ReferenceEquals(candidateTile, middleTile) ||
+			ReferenceEquals(candidateTile, highTile));
 	}
 
 	IEnumerable<MadeBlockContext> IDowngradable<Kanchan>.Downgrade()
