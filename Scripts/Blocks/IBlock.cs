@@ -38,7 +38,7 @@ public interface IBlock
 
 	/// <summary>
 	/// Get the hash code basis representing this block type, which will be exponentiated as a part of calculating
-	/// <see cref="Object.GetHashCode"/>.
+	/// <see cref="Block.GetHashCode"/>.
 	/// </summary>
 	/// <remarks>
 	/// The number returned here should be a unique prime number among all derived <see cref="Blocks"/> to ensure proper
