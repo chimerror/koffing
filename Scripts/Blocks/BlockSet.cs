@@ -39,7 +39,10 @@ public class BlockSet : IEnumerable<Block>, IComparable<BlockSet>, IEquatable<Bl
 		get => _blocks[index];
 	}
 
-	/// <inheritdoc/>
+	/// <summary>
+	/// Compares the current instance with another object of the same type and returns an integer that indicates whether
+	/// the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
+	/// </summary>
 	/// <remarks>
 	/// Comparison is done by comparing:
 	/// <list type="number">
@@ -54,6 +57,30 @@ public class BlockSet : IEnumerable<Block>, IComparable<BlockSet>, IEquatable<Bl
 	/// 	</item>
 	/// </list>
 	/// </remarks>
+	/// <param name="that">A <see cref="BlockSet"/> to compare with this instance.</param>
+	/// <returns>
+	/// A value that indicates the relative order of the objects being compared. The return value has these meanings:
+	/// <list type="table">
+	/// 	<listheader>
+	/// 		<term>Value</term>
+	/// 		<description>Meaning</description>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<term>Less than zero</term>
+	/// 		<description>This instance precedes <paramref name="that"/> in the sort order.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term>Zero</term>
+	/// 		<description>
+	/// 			This instance occurs in the same position in the sort order as <paramref name="that"/>.
+	/// 		</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term>Greater than zero</term>
+	/// 		<description>This instance follows <paramref name="that"/> in the sort order.</description>
+	/// 	</item>
+	/// </list>
+	/// </returns>
 	public int CompareTo(BlockSet that)
 	{
 		if (that == null)
@@ -81,7 +108,9 @@ public class BlockSet : IEnumerable<Block>, IComparable<BlockSet>, IEquatable<Bl
 		return 0;
 	}
 
-	/// <inheritdoc/>
+	/// <summary>
+	/// Indicates whether the current object is equal to another object of the same type.
+	/// </summary>
 	/// <remarks>
 	/// Equality is determined by:
 	/// <list type="number">
@@ -96,11 +125,17 @@ public class BlockSet : IEnumerable<Block>, IComparable<BlockSet>, IEquatable<Bl
 	/// 	</item>
 	/// </list>
 	/// </remarks>
+	/// <param name="that">The <see cref="BlockSet"/> to compare with the current object.</param>
+	/// <returns>
+	/// <see langword="true"/> if the current object is equal to the <paramref name="that"/> parameter; otherwise,
+	/// <see langword="false"/>.
+	/// </returns>
 	public bool Equals(BlockSet that)
 	{
 		return CompareTo(that) == 0;
 	}
 
+	/// <inheritdoc/>
 	public IEnumerator<Block> GetEnumerator()
 	{
 		return _blocks.GetEnumerator();
@@ -113,11 +148,13 @@ public class BlockSet : IEnumerable<Block>, IComparable<BlockSet>, IEquatable<Bl
 
 	/// <inheritdoc/>
 	/// <remarks>
-	/// Defers to <see cref="Equals(BlockSet)"/> after converting <paramref name="obj"/> using the <c>as</c> keyword.
+	/// Defers to <see cref="Equals(BlockSet)"/> after converting <paramref name="that"/> using the
+	/// <see langword="as"/> keyword.
 	/// </remarks>
-	public override bool Equals(object obj)
+	/// <param name="that">The object to compare with the current object.</param>
+	public override bool Equals(object that)
 	{
-		return Equals(obj as BlockSet);
+		return Equals(that as BlockSet);
 	}
 
 	/// <inheritdoc/>

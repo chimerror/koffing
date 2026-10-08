@@ -60,6 +60,7 @@ public class MadeBlockContext : IComparable<MadeBlockContext>, IEquatable<MadeBl
 	/// 	</item>
 	/// </list>
 	/// </remarks>
+	/// <param name="that">The object to compare with the current object.</param>
 	public override bool Equals(object that)
 	{
 		if ((that == null) ||
@@ -71,7 +72,9 @@ public class MadeBlockContext : IComparable<MadeBlockContext>, IEquatable<MadeBl
 		return Equals(thatContext);
 	}
 
-	/// <inheritdoc/>
+	/// <summary>
+	/// Indicates whether the current object is equal to another object of the same type.
+	/// </summary>
 	/// <remarks>
 	/// Equality is determined by checking:
 	/// <list type="number">
@@ -89,6 +92,11 @@ public class MadeBlockContext : IComparable<MadeBlockContext>, IEquatable<MadeBl
 	/// 	</item>
 	/// </list>
 	/// </remarks>
+	/// <param name="thatContext">The <see cref="MadeBlockContext"/> to compare with the current object.</param>
+	/// <returns>
+	/// <see langword="true"/> if the current object is equal to the <paramref name="thatContext"/> parameter;
+	/// otherwise, <see langword="false"/>.
+	/// </returns>
 	public bool Equals(MadeBlockContext thatContext)
 	{
 		if (thatContext == null)
@@ -144,12 +152,15 @@ public class MadeBlockContext : IComparable<MadeBlockContext>, IEquatable<MadeBl
 		return hashCodeBasis ^ hashCodeExponent;
 	}
 
-	/// <inheritdoc/>
+	/// <summary>
+	/// Compares the current instance with another object of the same type and returns an integer that indicates whether
+	/// the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
+	/// </summary>
 	/// <remarks>
 	/// Comparison is done by comparing:
 	/// <list type="number">
 	/// 	<item>
-	/// 		if <paramref name="thatContext"/> is null (always 1)
+	/// 		if <paramref name="that"/> is null (always 1)
 	/// 	</item>
 	/// 	<item>
 	/// 		if the <see cref="MadeBlock"/>s aren't equal and then using <see cref="Block.CompareTo(Block)"/> on
@@ -163,6 +174,30 @@ public class MadeBlockContext : IComparable<MadeBlockContext>, IEquatable<MadeBl
 	/// 	</item>
 	/// </list>
 	/// </remarks>
+	/// <param name="that">A <see cref="MadeBlockContext"/> to compare with this instance.</param>
+	/// <returns>
+	/// A value that indicates the relative order of the objects being compared. The return value has these meanings:
+	/// <list type="table">
+	/// 	<listheader>
+	/// 		<term>Value</term>
+	/// 		<description>Meaning</description>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<term>Less than zero</term>
+	/// 		<description>This instance precedes <paramref name="that"/> in the sort order.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term>Zero</term>
+	/// 		<description>
+	/// 			This instance occurs in the same position in the sort order as <paramref name="that"/>.
+	/// 		</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term>Greater than zero</term>
+	/// 		<description>This instance follows <paramref name="that"/> in the sort order.</description>
+	/// 	</item>
+	/// </list>
+	/// </returns>
 	public int CompareTo(MadeBlockContext that)
 	{
 		if (that == null)
@@ -225,5 +260,4 @@ public class MadeBlockContext : IComparable<MadeBlockContext>, IEquatable<MadeBl
 	{
 		return $"MadeBlockContext {_madeBlock.GetType().Name}: {_madeBlock.NotationFromTiles()}, {_remainingTiles.NotationFromTiles()}";
 	}
-
 }

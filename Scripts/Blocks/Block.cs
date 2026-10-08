@@ -154,7 +154,7 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 	/// function does not do it itself.
 	/// </example>
 	/// <param name="tiles">The <see cref="Tile"/>s to use to create <see cref="MadeBlockContext"/>s.</param>
-	/// <param name="blockType">The <see cref="Type"/> of block to return</param>
+	/// <param name="blockType">The <see cref="Type"/> of block to return.</param>
 	/// <returns>
 	/// An <see cref="IEnumerable{T}"/> of <see cref="MadeBlockContext"/>s of type <paramref name="blockType"/>.
 	/// </returns>
@@ -243,6 +243,7 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 	/// 	</item>
 	/// </list>
 	/// </remarks>
+	/// <param name="that">The object to compare with the current object.</param>
 	public override bool Equals(object that)
 	{
 		if ((that == null) ||
@@ -255,12 +256,14 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 		return Equals(thatBlock);
 	}
 
-	/// <inheritdoc/>
+	/// <summary>
+	/// Indicates whether the current object is equal to another object of the same type.
+	/// </summary>
 	/// <remarks>
 	/// Equality is determined by checking:
 	/// <list type="number">
 	/// 	<item>
-	/// 		if <paramref name="that"/> is null (always false)
+	/// 		if <paramref name="thatBlock"/> is null (always false)
 	/// 	</item>
 	/// 	<item>
 	/// 		type
@@ -273,6 +276,11 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 	/// 	</item>
 	/// </list>
 	/// </remarks>
+	/// <param name="thatBlock">The <see cref="Block"/> to compare with the current object.</param>
+	/// <returns>
+	/// <see langword="true"/> if the current object is equal to the <paramref name="thatBlock"/> parameter; otherwise,
+	/// <see langword="false"/>.
+	/// </returns>
 	public virtual bool Equals(Block thatBlock)
 	{
 		if (thatBlock == null)
@@ -331,13 +339,15 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 		return _tiles.GetEnumerator();
 	}
 
-	/// <inheritdoc/>
 	IEnumerator IEnumerable.GetEnumerator()
 	{
 		return this.GetEnumerator();
 	}
 
-	/// <inheritdoc/>
+	/// <summary>
+	/// Compares the current instance with another object of the same type and returns an integer that indicates whether
+	/// the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
+	/// </summary>
 	/// <remarks>
 	/// Comparison is done by comparing:
 	/// <list type="number">
@@ -355,6 +365,30 @@ public abstract class Block : IEnumerable<Tile>, IBlock, IComparable<Block>, IEq
 	/// 	</item>
 	/// </list>
 	/// </remarks>
+	/// <param name="that">A <see cref="Block"/> to compare with this instance.</param>
+	/// <returns>
+	/// A value that indicates the relative order of the objects being compared. The return value has these meanings:
+	/// <list type="table">
+	/// 	<listheader>
+	/// 		<term>Value</term>
+	/// 		<description>Meaning</description>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<term>Less than zero</term>
+	/// 		<description>This instance precedes <paramref name="that"/> in the sort order.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term>Zero</term>
+	/// 		<description>
+	/// 			This instance occurs in the same position in the sort order as <paramref name="that"/>.
+	/// 		</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term>Greater than zero</term>
+	/// 		<description>This instance follows <paramref name="that"/> in the sort order.</description>
+	/// 	</item>
+	/// </list>
+	/// </returns>
 	public int CompareTo(Block that)
 	{
 		if (that == null)
