@@ -8,6 +8,8 @@ namespace Koffing.Waits;
 
 public class ThirteenOrphansWait : Wait, IBlock
 {
+	// TODO: With the XML comment I wrote for Melds, I imply that no waits are "complete". For that to actually be true,
+	// there should be a way to take special waits such as this and the seven pairs wait to "complete" melds.
 	private readonly List<Block> _pairs;
 
 	public IEnumerable<Block> Pairs => _pairs.AsReadOnly();
