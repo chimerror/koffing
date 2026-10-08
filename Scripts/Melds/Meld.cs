@@ -11,7 +11,7 @@ namespace Koffing.Melds;
 /// </summary>
 /// <remarks>
 /// A meld is a <see cref="Block"/> that does not need any additional tiles to be a useful part of a hand, compared to
-/// a <see cref="Waits.Wait"/>, which is incomplete, and would become a meld given additional tiles.
+/// a <see cref="Wait"/>, which is incomplete, and would become a meld given additional tiles.
 /// </remarks>
 public abstract class Meld : Block
 {

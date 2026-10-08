@@ -7,26 +7,66 @@ using Koffing.Tiles;
 
 namespace Koffing.Waits;
 
+/// <summary>
+/// A wait for the special seven pairs hand, made up of one or more pairs, such as "1133m99s55z".
+/// </summary>
 public class SevenPairsWait : Wait, IBlock
 {
-	private readonly List<Block> _pairs;
+	private readonly List<Pair> _pairs;
 
-	public IEnumerable<Block> Pairs => _pairs.AsReadOnly();
+	/// <summary>
+	/// The <see cref="Pair"/>s that make up this wait.
+	/// </summary>
+	/// <value>A read-only <see cref="IEnumerable{T}"/> of the <see cref="Pairs"/> in this wait.</value>
+	public IEnumerable<Pair> Pairs => _pairs.AsReadOnly();
 
-	// This constructor does not properly initialize _pairs, it is only here for testing purposes.
+	/// <summary>
+	/// Parameterless constructor.
+	/// </summary>
+	/// <remarks>
+	/// This constructor should not be used, and is only defined for testing purposes. Rather, use the
+	/// <see cref="GetPossible(IEnumerable{Tile})"/> and <see cref="GetPossibleForTile(Tile, IEnumerable{Tile})"/>
+	/// static helper functions in this class to maintain the semantic meaning of a seven pairs wait, as well as
+	/// properly initializing <see cref="Pairs"/>.
+	/// </remarks>
 	public SevenPairsWait(IEnumerable<Tile> tiles = null) : base(tiles)
 	{
 		_pairs = [];
 	}
 
-	public SevenPairsWait(IEnumerable<Tile> tiles, IEnumerable<Block> pairs) : base(tiles)
+	/// <summary>
+	/// Constructor taking an <see cref="IEnumerable{T}"/> of <see cref="Tile"/>s representing the tiles in this wait,
+	/// and an <see cref="IEnumerable{T}"/> of <see cref="Pair"/>s representing the same tiles, but arranged into pairs.
+	/// </summary>
+	/// <remarks>
+	/// This constructor should not be used in most cases, instead preferring the
+	/// <see cref="GetPossible(IEnumerable{Tile})"/> and <see cref="GetPossibleForTile(Tile, IEnumerable{Tile})"/>
+	/// static helper functions in this class to maintain the semantic meaning of a seven pairs wait.
+	/// </remarks>
+	/// <param name="tiles">
+	/// An <see cref="IEnumerable{T}"/> of <see cref="Tile"/>s representing the tiles in this wait.
+	/// </param>
+	/// <param name="pairs">
+	/// An <see cref="IEnumerable{T}"/> of <see cref="Pair"/>s representing the same tiles, but arranged into pairs.
+	/// </param>
+	public SevenPairsWait(IEnumerable<Tile> tiles, IEnumerable<Pair> pairs) : base(tiles)
 	{
 		_pairs = [.. pairs];
 	}
 
+	/// <summary>
+	/// Get possible seven pair waits that can be created from a collection of tiles.
+	/// </summary>
+	/// <param name="tiles">
+	/// The <see cref="Tile"/>s to use to create <see cref="MadeBlockContext"/>s of seven pair waits.
+	/// </param>
+	/// <returns>
+	/// An <see cref="IEnumerable{T}"/> of <see cref="MadeBlockContext"/>s of seven pair waits that can be created from
+	/// <paramref name="tiles"/>.
+	/// </returns>
 	public static new IEnumerable<MadeBlockContext> GetPossible(IEnumerable<Tile> tiles)
 	{
-		List<Block> nonFivePairs = [];
+		List<Pair> nonFivePairs = [];
 		List<Tile> remainingNonFives = [];
 		List<MadeBlockContext> manFivePairs = [];
 		List<MadeBlockContext> souFivePairs = [];
@@ -107,7 +147,7 @@ public class SevenPairsWait : Wait, IBlock
 		{
 			foreach (var pairToAdd in fivePairsToAdd[0])
 			{
-				var allPairs = nonFivePairs.Append(pairToAdd.MadeBlock);
+				var allPairs = nonFivePairs.Append((Pair)pairToAdd.MadeBlock);
 				var allRemainingTiles = remainingNonFives.Concat(pairToAdd.RemainingTiles);
 				var pairedTiles = allPairs.SelectMany(p => p);
 				yield return new MadeBlockContext(new SevenPairsWait(pairedTiles, allPairs), allRemainingTiles);
@@ -120,8 +160,8 @@ public class SevenPairsWait : Wait, IBlock
 				foreach (var secondPairToAdd in fivePairsToAdd[1])
 				{
 					var allPairs = nonFivePairs
-						.Append(firstPairToAdd.MadeBlock)
-						.Append(secondPairToAdd.MadeBlock);
+						.Append((Pair)firstPairToAdd.MadeBlock)
+						.Append((Pair)secondPairToAdd.MadeBlock);
 					var allRemainingTiles = remainingNonFives
 						.Concat(firstPairToAdd.RemainingTiles)
 						.Concat(secondPairToAdd.RemainingTiles);
@@ -139,9 +179,9 @@ public class SevenPairsWait : Wait, IBlock
 					foreach (var thirdPairToAdd in fivePairsToAdd[2])
 					{
 						var allPairs = nonFivePairs
-							.Append(firstPairToAdd.MadeBlock)
-							.Append(secondPairToAdd.MadeBlock)
-							.Append(thirdPairToAdd.MadeBlock);
+							.Append((Pair)firstPairToAdd.MadeBlock)
+							.Append((Pair)secondPairToAdd.MadeBlock)
+							.Append((Pair)thirdPairToAdd.MadeBlock);
 						var allRemainingTiles = remainingNonFives
 							.Concat(firstPairToAdd.RemainingTiles)
 							.Concat(secondPairToAdd.RemainingTiles)
@@ -154,17 +194,59 @@ public class SevenPairsWait : Wait, IBlock
 		}
 	}
 
+	/// <summary>
+	/// Get possible seven pair waits that can be created using a specified tile and set of other tiles.
+	/// </summary>
+	/// <param name="tile">The <see cref="Tile"/> that must be included in all created seven pair waits.</param>
+	/// <param name="otherTiles">An <see cref="IEnumerable{T}"/> of other <see cref="Tile"/>s to use.</param>
+	/// <returns>
+	/// An <see cref="IEnumerable{T}"/> of <see cref="MadeBlockContext"/>s of seven pair waits that can be created from
+	/// <paramref name="tile"/> and <paramref name="otherTiles"/>.
+	/// </returns>
 	public static new IEnumerable<MadeBlockContext> GetPossibleForTile(Tile tile, IEnumerable<Tile> otherTiles)
 	{
 		return GetPossible(otherTiles.Append(tile))
 		.Where(mbc => mbc.MadeBlock.Any(t => ReferenceEquals(tile, t)));
 	}
 
+	/// <summary>
+	/// Get the hash code basis representing a seven pair wait, which will be exponentiated as a part of calculating
+	/// <see cref="Block.GetHashCode"/>.
+	/// </summary>
+	/// <returns>The basis to use when calculating hash codes for seven pair waits.</returns>
 	public static new int GetHashCodeBasis()
 	{
 		return 29;
 	}
 
+	/// <summary>
+	/// Indicates whether the current object is equal to another object of the same type.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// This method should not generally be used, and is only present for testing purposes. As such, the proper
+	/// convention of overriding <see cref="Object.GetHashCode"/> has not been followed.
+	/// </para>
+	/// <para>
+	/// Equality is determined by checking:
+	/// <list type="number">
+	/// 	<item>
+	/// 		the result of <see cref="Block.Equals(Block)"/>
+	/// 	</item>
+	/// 	<item>
+	/// 		the count of pairs in <see cref="Pairs"/>
+	/// 	</item>
+	/// 	<item>
+	/// 		the actual pairs in <see cref="Pairs"/> (after sorting)
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// </remarks>
+	/// <param name="thatBlock">The <see cref="Block"/> to compare with the current object.</param>
+	/// <returns>
+	/// <see langword="true"/> if the current object is equal to the <paramref name="thatBlock"/> parameter; otherwise,
+	/// <see langword="false"/>.
+	/// </returns>
 	// Did not override GetHashCode even though we probably should in theory. The goal of the override was to make sure
 	// the blocking into pairs works properly in tests. But in regard to possible differences between values, as long
 	// as the blocking algorithm is not wrong, the list of pairs should not reveal any differences that we'd not notice

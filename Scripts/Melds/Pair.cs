@@ -9,7 +9,9 @@ namespace Koffing.Melds;
 /// A meld made up of a pair of two of the same tile such as 7 Pin, 7 Pin ("77p").
 /// </summary>
 /// <remarks>
-/// As always, a red five counts the same as a non-red five.
+/// The difference between this and <see cref="Waits.PairWait"/> is merely one of semantic intent, and this class can
+/// be explicitly cast to a <see cref="Waits.PairWait"/> as needed. As always, a red five counts the same as a non-red
+/// five.
 /// </remarks>
 public class Pair : Meld, IBlock
 {
