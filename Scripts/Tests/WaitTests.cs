@@ -1166,7 +1166,7 @@ public class WaitTests
 		yield return
 		[
 			new ThirteenOrphansWait(
-				"19m19s1199p123457".ToTiles(),
+				"19m19s1199p123457z".ToTiles(),
 				[
 					new Pair("11p".ToTiles()),
 					new Pair("99p".ToTiles()),
@@ -1179,14 +1179,14 @@ public class WaitTests
 		yield return
 		[
 			new ThirteenOrphansWait(
-				"19m19s1199p123457".ToTiles(),
+				"19m19s1199p123457z".ToTiles(),
 				[
 					new Pair("11p".ToTiles()),
 					new Pair("99p".ToTiles()),
 				]
 			),
 			new ThirteenOrphansWait(
-				"19m19s1199p123457".ToTiles(),
+				"19m19s1199p123457z".ToTiles(),
 				[
 					new Pair("11p".ToTiles()),
 					new Pair("99p".ToTiles()),
@@ -1198,14 +1198,14 @@ public class WaitTests
 		yield return
 		[
 			new ThirteenOrphansWait(
-				"19m19s1199p123457".ToTiles(),
+				"19m19s1199p123457z".ToTiles(),
 				[
 					new Pair("11p".ToTiles()),
 					new Pair("99p".ToTiles()),
 				]
 			),
 			new ThirteenOrphansWait(
-				"19m19s1199p123457".ToTiles(),
+				"19m19s1199p123457z".ToTiles(),
 				[
 					new Pair("19p".ToTiles()),
 					new Pair("19p".ToTiles()),
@@ -1217,14 +1217,14 @@ public class WaitTests
 		yield return
 		[
 			new ThirteenOrphansWait(
-				"19m19s1199p123457".ToTiles(),
+				"19m19s1199p123457z".ToTiles(),
 				[
 					new Pair("11p".ToTiles()),
 					new Pair("99p".ToTiles()),
 				]
 			),
 			new ThirteenOrphansWait(
-				"19m19s1199p123457".ToTiles(),
+				"19m19s1199p123457z".ToTiles(),
 				[
 					new Pair("11p".ToTiles()),
 					new Pair("99p".ToTiles()),

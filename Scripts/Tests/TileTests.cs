@@ -261,9 +261,56 @@ public class TileTests
 		PrefixInfo($"Checking that calling ToTiles on notation \"{notation}\"  produces correct tiles when {because}");
 		AssertArray(actualToTilesOutput).ContainsExactly(tiles);
 
+		if (tiles.Count == 1)
+		{
+			var actualToTileOutput = notation.ToTile();
+			PrefixInfo($"Checking that calling ToTile on notation \"{notation}\" produces the correct tile");
+			AssertThat(actualToTileOutput).IsEqual(tiles[0]);
+		}
+
 		var actualNotationFromTilesOutput = tiles.NotationFromTiles();
 		PrefixInfo($"Checking that NotationFromTiles produces matching notation \"{notation}\" when {because}");
 		AssertThat(notation).IsEqual(actualNotationFromTilesOutput);
+
+		if (tiles.Count == 1)
+		{
+			var actualNotationFromTileOutput = tiles[0].NotationFromTile();
+			PrefixInfo($"Checking that calling NotationFromTile produces matching notation \"{notation}\"");
+			AssertThat(actualNotationFromTileOutput).IsEqual(notation);
+		}
+	}
+
+	[TestCase]
+	[DataPoint(nameof(ToTilesEdgeTestCases))]
+	[ThrowsException(typeof(InvalidOperationException))]
+	public static void ToTilesEdgeCasesAreCorrect(string notation, string because)
+	{
+		LoggingPrefix = nameof(ToTilesEdgeCasesAreCorrect);
+
+		PrefixInfo($"Checking that ToTiles throws an InvalidOperationException given {because}");
+		// Have to use ToList to force enumeration.
+		var output = notation.ToTiles().ToList(); // Will throw
+	}
+
+	[TestCase]
+	[DataPoint(nameof(ToTileEdgeTestCases))]
+	[ThrowsException(typeof(InvalidOperationException))]
+	public static void ToTileEdgeCasesAreCorrect(string notation, string because)
+	{
+		LoggingPrefix = nameof(ToTileEdgeCasesAreCorrect);
+
+		PrefixInfo($"Checking that ToTile throws an InvalidOperationException given {because}");
+		notation.ToTile(); // Will throw
+	}
+
+	[TestCase]
+	public static void NotationFromTilesIsCorrectWhenGivenAnEmptyCollection()
+	{
+		LoggingPrefix = nameof(NotationFromTilesIsCorrectWhenGivenAnEmptyCollection);
+
+		List<Tile> emptyTileList = [];
+		PrefixInfo("Checking that NotationFromTiles returns an empty string when given an empty collection");
+		AssertThat(emptyTileList.NotationFromTiles()).IsEmpty();
 	}
 
 	[TestCase]
@@ -412,6 +459,59 @@ public class TileTests
 				new(Suit.Pin, 5),
 			},
 			"provided kong of 5s (one red 5)",
+		];
+	}
+
+	private static IEnumerable<object[]> ToTilesEdgeTestCases()
+	{
+		yield return
+		[
+			"",
+			"the empty string",
+		];
+		yield return
+		[
+			"1223s44q222z",
+			"notation with an invalid suit",
+		];
+		yield return
+		[
+			"1223",
+			"notation with no suit specified",
+		];
+		yield return
+		[
+			"mpsz",
+			"notation with only suits specified",
+		];
+	}
+
+	private static IEnumerable<object[]> ToTileEdgeTestCases()
+	{
+		yield return
+		[
+			"",
+			"the empty string",
+		];
+		yield return
+		[
+			"4q",
+			"notation with an invalid suit",
+		];
+		yield return
+		[
+			"1",
+			"notation with no suit specified",
+		];
+		yield return
+		[
+			"m",
+			"notation with only a suit specified",
+		];
+		yield return
+		[
+			"1223z",
+			"notation with multiple tiles specified",
 		];
 	}
 

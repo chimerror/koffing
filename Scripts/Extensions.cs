@@ -41,7 +41,12 @@ public static partial class Extensions
 
 	public static IEnumerable<Tile> ToTiles(this string input)
 	{
-		foreach (RE.Match match in TileNotationRegex().Matches(input))
+		if (!FullTileNotationRegex().IsMatch(input))
+		{
+			throw new InvalidOperationException($"Input was not in valid MPSZ notation: {input}");
+		}
+
+		foreach (RE.Match match in TileNotationGroupRegex().Matches(input))
 		{
 			var stringSuit = match.Groups["suit"].Value;
 			var suit = Suit.Man;
@@ -60,7 +65,6 @@ public static partial class Extensions
 				yield return new Tile(suit, rank);
 			}
 		}
-		yield break;
 	}
 
 	public static string NotationFromTile(this Tile input)
@@ -103,6 +107,8 @@ public static partial class Extensions
 	}
 
 	[RE.GeneratedRegex(@"(?<suitOfTiles>((?<ranks>[0-9]+)(?<suit>[mps])|(?<ranks>[1-7]+)(?<suit>z)))")]
-	private static partial RE.Regex TileNotationRegex();
+	private static partial RE.Regex TileNotationGroupRegex();
 
+	[RE.GeneratedRegex(@"^(?<suitOfTiles>((?<ranks>[0-9]+)(?<suit>[mps])|(?<ranks>[1-7]+)(?<suit>z)))+$")]
+	private static partial RE.Regex FullTileNotationRegex();
 }
