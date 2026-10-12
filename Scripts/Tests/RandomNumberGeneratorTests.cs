@@ -53,6 +53,9 @@ public class RandomNumberGeneratorTests
 		AssertArray(expectedTiles).ContainsExactly(shuffledTiles);
 		PrefixInfo("Checking that the original list was not modified by shuffling...");
 		AssertArray(tilesCopy).ContainsExactly(tiles);
+		PrefixInfo("Checking that Godot RNG can shuffle an empty list, returning an empty list...");
+		List<Tile> emptyTileList = [];
+		AssertArray(rng.Shuffle(emptyTileList)).IsEmpty();
 		PrefixInfo("Checking that Godot RNG can roll dice...");
 		AssertThat(rng.RollDice()).IsEqual(8);
 	}
@@ -79,6 +82,9 @@ public class RandomNumberGeneratorTests
 		AssertArray(expectedTiles).ContainsExactly(shuffledTiles);
 		PrefixInfo("Checking that the original list was not modified by shuffling...");
 		AssertArray(tilesCopy).ContainsExactly(tiles);
+		PrefixInfo("Checking that System RNG can shuffle an empty list, returning an empty list...");
+		List<Tile> emptyTileList = [];
+		AssertArray(rng.Shuffle(emptyTileList)).IsEmpty();
 		PrefixInfo("Checking that System RNG can roll dice...");
 		AssertThat(rng.RollDice()).IsEqual(11);
 	}
