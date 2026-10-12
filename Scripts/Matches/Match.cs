@@ -45,23 +45,25 @@ public class Match
 	/// <summary>
 	/// A read-only collection of the <see cref="Player"/>s in the match.
 	/// </summary>
-	/// <returns>A read-only collection of the <see cref="Player"/>s playing the match.</returns>
+	/// <value>A read-only collection of the <see cref="Player"/>s playing the match.</value>
 	public IEnumerable<Player> Players => _players.AsReadOnly();
 
 	/// <summary>
 	/// The current east <see cref="Player"/>.
 	/// </summary>
+	/// <value>The current east <see cref="Player"/>.</value>
 	public Player CurrentEastPlayer => _players[_currentEastIndex];
 
 	/// <summary>
 	/// A read-only dictionary mapping seat <see cref="Wind"/>s to the <see cref="Player"/> currently in the seat.
 	/// </summary>
-	/// <returns>A read-only dictionary mapping seat <see cref="Wind"/>s to <see cref="Player"/>s.</returns>
+	/// <value>A read-only dictionary mapping seat <see cref="Wind"/>s to <see cref="Player"/>s.</value>
 	public IDictionary<Wind, Player> WindsToPlayers => _windsToPlayers.AsReadOnly();
 
 	/// <summary>
 	/// The index (in <see cref="Players"/>) of the current east <see cref="Player"/>.
 	/// </summary>
+	/// <value>The index (in <see cref="Players"/>) of the current east <see cref="Player"/>.</value>
 	public int CurrentEastIndex => _currentEastIndex;
 
 	/// <summary>
