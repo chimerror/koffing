@@ -7,6 +7,24 @@ using static Koffing.Helpers;
 
 namespace Koffing.Matches;
 
+/// <summary>
+/// Represents a wall of <see cref="Tile"/>s.
+/// </summary>
+/// <remarks>
+/// <para>
+/// The wall of tiles is the set of shuffled tiles that are used to play a deal of a match. The wall is made up of 136
+/// tiles for a four-player or two-player game, and 108 tiles for a three-player game (due to dropping the 2-8 of the
+/// Man suit).
+/// </para>
+/// <para>
+/// When created, a wall is already "broken", which means that the point where tiles will be dealt to players and then
+/// drawn from has been decided, as the "live" wall. Breaking the wall also marks the "dead" wall, which is made up of
+/// 14 tiles in a four-player or two-player game, and 20 tiles in a three-player game. The dead wall is used for
+/// drawing replacement tiles for kan calls (and kita calls in three-player games), as well as tracking dora indicators.
+/// One dora indicator is revealed when the wall is created. More dora indicators are revealed each time a kan is made.
+/// Each indicator indicates a dora tile that receives the dora bonus of one han per tile during scoring.
+/// </para>
+/// </remarks>
 public class Wall
 {
 	// The last stack is listed first so that die roll % players is the right index.
@@ -24,24 +42,59 @@ public class Wall
 	private int _lastRevealedDoraIndicatorIndex;
 	private int _nextDoraIndicatorIndex;
 
+	/// <summary>
+	/// A read-only collection of the <see cref="Tile"/>s in the wall.
+	/// </summary>
+	/// <returns>A read-only collection of the <see cref="Tile"/>s in the wall.</returns>
 	public IEnumerable<Tile> Tiles => _tiles.AsReadOnly();
 
 	// TODO: Probably should add properties to get revealed dora and ura dora, a method to reveal a dora, a method to
 	// deal a tile, a method to take a replacement tile. These can wait until you get to them in the match code, but I
 	// wanted to make a list just in case one gets missed.
 
-	// These properties are here mostly for testing purposes.
+	/// <summary>
+	/// If a live tile can be taken from the wall.
+	/// </summary>
+	/// <value><see langword="true"/> if a live tile can be taken, <see langword="false"/> otherwise.</value>
+	public bool CanTakeLiveTile => _tilesLeftToPop > 0;
+
+	/// <summary>
+	/// If a replacement tile can be taken from the dead wall.
+	/// </summary>
+	/// <value><see langword="true"/> if a replacement tile can be taken, <see langword="false"/> otherwise.</value>
+	public bool CanTakeReplacementTile => _replacementTilesLeftToPop > 0;
+
+	/// <summary>
+	/// If a dora indicator can be revealed in the dead wall.
+	/// </summary>
+	/// <value><see langword="true"/> if a dora indicator can be revealed, <see langword="false"/> otherwise.</value>
+	public bool CanRevealDoraIndicator => _doraIndicatorsLeftToReveal > 0;
+
+	// These properties are here mostly for testing purposes, so I am not documenting them.
 	public int LiveWallStartIndex => _liveWallStartIndex;
 	public int DeadWallStartIndex => GetSafeIndex(_liveWallStartIndex - 2, _tiles.Count);
 	public int DeadWallEndIndex => GetSafeIndex(_liveWallStartIndex - _deadWallCount, _tiles.Count);
 	public int NextLiveTileIndex => _nextLiveTileIndex;
-	public bool CanTakeLiveTile => _tilesLeftToPop > 0;
-	public bool CanTakeReplacementTile => _replacementTilesLeftToPop > 0;
 	public int NextReplacementTileIndex => _nextReplacementTileIndex;
-	public bool CanRevealDoraIndicator => _doraIndicatorsLeftToReveal > 0;
 	public int LastRevealedDoraIndicatorIndex => _lastRevealedDoraIndicatorIndex;
 	public int NextDoraIndicatorIndex => _nextDoraIndicatorIndex;
 
+	/// <summary>
+	/// Constructor. Takes in an <see cref="IRandomNumberGenerator"/>, a <see cref="PlayerCount"/>, whether or not to
+	/// use red fives, and optionally a dice roll to use to break the wall (for testing purposes).
+	/// </summary>
+	/// <remarks>
+	/// Once created, the wall will already be "broken" based on either a dice roll from <paramref name="rng"/>, or a
+	/// roll provided by <paramref name="breakDiceRoll"/>, ready to deal tiles. Note that <paramref name="rng"/> will
+	/// be used for shuffling the wall regardless of the value of <paramref name="breakDiceRoll"/>.
+	/// </remarks>
+	/// <param name="rng">The <see cref="IRandomNumberGenerator"/> to use for random numbers.</param>
+	/// <param name="playerCount">The number of players in the match as a <see cref="PlayerCount"/>.</param>
+	/// <param name="hasRedFives">Whether or not red fives should be used.</param>
+	/// <param name="breakDiceRoll">
+	/// If specified (set to something besides <c>-1</c>), will be used as the roll to break the wall instead of getting
+	/// a dice roll from <paramref name="rng"/>. Parameter only meant for testing purposes.
+	/// </param>
 	public Wall(IRandomNumberGenerator rng, PlayerCount playerCount, bool hasRedFives, int breakDiceRoll = -1)
 	{
 		foreach (var suit in Enum.GetValues<Suit>())
@@ -100,6 +153,13 @@ public class Wall
 		_nextDoraIndicatorIndex = GetSafeIndex(_lastRevealedDoraIndicatorIndex - 2, _tiles.Count);
 	}
 
+	/// <summary>
+	/// If possible, pops the next tile off the live wall, updating indices to point to the tile after it.
+	/// </summary>
+	/// <returns>
+	/// The next live tile in the wall, or <see langword="null"/> if <see cref="CanTakeLiveTile"/> is
+	/// <see langword="false"/>.
+	/// </returns>
 	public Tile PopNextLiveTile()
 	{
 		if (!CanTakeLiveTile)
@@ -113,6 +173,13 @@ public class Wall
 		return nextTile;
 	}
 
+	/// <summary>
+	/// If possible, pops the next replacement tile off the dead wall, updating indices to point to the tile after it.
+	/// </summary>
+	/// <returns>
+	/// The next replacement tile in the dead wall, or <see langword="null"/> if <see cref="CanTakeReplacementTile"/> is
+	/// <see langword="false"/>.
+	/// </returns>
 	public Tile PopNextReplacementTile()
 	{
 		if (!CanTakeReplacementTile)
@@ -128,6 +195,14 @@ public class Wall
 		return nextReplacementTile;
 	}
 
+	/// <summary>
+	/// If possible, reveals the next dora indicator in the dead wall, turning it face-up and  updating indices to point
+	/// to the tile after it.
+	/// </summary>
+	/// <returns>
+	/// The newly revealed dora indicator in the dead wall, or <see langword="null"/> if
+	/// <see cref="CanRevealDoraIndicator"/> is <see langword="false"/>.
+	/// </returns>
 	public Tile RevealNextDoraIndicator()
 	{
 		if (!CanRevealDoraIndicator)

@@ -1,5 +1,8 @@
 namespace Koffing.Matches;
 
+/// <summary>
+/// Represents a seat wind or a round wind.
+/// </summary>
 public enum Wind
 {
 	East = 1,
