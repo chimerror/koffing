@@ -46,9 +46,12 @@ public class RandomNumberGeneratorTests
 		AssertThat(rng.GetIntegerInRange(-13, 13)).IsEqual(-4);
 		PrefixInfo("Checking that Godot RNG can shuffle tiles...");
 		List<Tile> tiles = [.. _windTileStrings.Select(s => s.ToTile())];
+		List<Tile> tilesCopy = [.. tiles];
 		var shuffledTiles = rng.Shuffle(tiles);
 		List<Tile> expectedTiles = [.. _godotExpectedShuffleTileStrings.Select(s => s.ToTile())];
 		AssertArray(expectedTiles).ContainsExactly(shuffledTiles);
+		PrefixInfo("Checking that the original list was not modified by shuffling...");
+		AssertArray(tilesCopy).ContainsExactly(tiles);
 		PrefixInfo("Checking that Godot RNG can roll dice...");
 		AssertThat(rng.RollDice()).IsEqual(8);
 	}
@@ -69,9 +72,12 @@ public class RandomNumberGeneratorTests
 		AssertThat(rng.GetIntegerInRange(-13, 13)).IsEqual(0);
 		PrefixInfo("Checking that System RNG can shuffle tiles...");
 		List<Tile> tiles = [.. _windTileStrings.Select(s => s.ToTile())];
+		List<Tile> tilesCopy = [.. tiles];
 		var shuffledTiles = rng.Shuffle(tiles);
 		List<Tile> expectedTiles = [.. _systemExpectedShuffleTileStrings.Select(s => s.ToTile())];
 		AssertArray(expectedTiles).ContainsExactly(shuffledTiles);
+		PrefixInfo("Checking that the original list was not modified by shuffling...");
+		AssertArray(tilesCopy).ContainsExactly(tiles);
 		PrefixInfo("Checking that System RNG can roll dice...");
 		AssertThat(rng.RollDice()).IsEqual(11);
 	}
