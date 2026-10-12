@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using GdUnit4;
@@ -80,5 +81,25 @@ public class RandomNumberGeneratorTests
 		AssertArray(tilesCopy).ContainsExactly(tiles);
 		PrefixInfo("Checking that System RNG can roll dice...");
 		AssertThat(rng.RollDice()).IsEqual(11);
+	}
+
+	[TestCase]
+	[DataPoint(nameof(RollDiceEdgeCases))]
+	[ThrowsException(typeof(ArgumentException))]
+	public static void RollDiceEdgeCasesAreCorrect(int numberOfDice, int sidesOfDie, string because)
+	{
+		LoggingPrefix = nameof(RollDiceEdgeCasesAreCorrect);
+
+		var rng = new SystemRandomNumberGenerator();
+		PrefixInfo($"Checking that RollDice throws an ArgumentException given {because}");
+		rng.RollDice(numberOfDice, sidesOfDie); // Will throw
+	}
+
+	private static IEnumerable<object[]> RollDiceEdgeCases()
+	{
+		yield return [0, 6, "zero dice to roll"];
+		yield return [-3, 6, "negative dice to roll"];
+		yield return [4, 0, "zero die sides"];
+		yield return [4, -2, "negative die sides"];
 	}
 }
