@@ -869,6 +869,30 @@ public class CalculationTests
 			]),
 			"a hand with a thirteen orphans wait",
 		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new SevenPairsWait(
+					"55m50s55p55z".ToTiles(),
+					[
+						new Pair("55m".ToTiles()),
+						new Pair("50s".ToTiles()),
+						new Pair("55p".ToTiles()),
+						new Pair("55z".ToTiles()),
+					]
+				),
+				new SevenPairsWait(
+					"11s22m33p".ToTiles(),
+					[
+						new Pair("11s".ToTiles()),
+						new Pair("22m".ToTiles()),
+						new Pair("33p".ToTiles()),
+					]
+				),
+			]),
+			"a hand with multiple seven pairs waits",
+		];
 	}
 
 	private static IEnumerable<object[]> ThirteenOrphansTilesToReadyTestCases()
@@ -1010,6 +1034,26 @@ public class CalculationTests
 				new Orphan("8s".ToTile()),
 			]),
 			"a hand with a seven pairs wait",
+		];
+		yield return
+		[
+			new BlockSet(
+			[
+				new ThirteenOrphansWait(
+					"11223344z".ToTiles(),
+					[
+						new Pair("11z".ToTiles()),
+						new Pair("22z".ToTiles()),
+						new Pair("33z".ToTiles()),
+						new Pair("44z".ToTiles()),
+					]
+				),
+				new ThirteenOrphansWait(
+					"19m1s19p".ToTiles(),
+					[ ]
+				),
+			]),
+			"a hand with multiple thirteen orphans waits"
 		];
 	}
 }
