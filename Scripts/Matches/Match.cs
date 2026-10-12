@@ -35,13 +35,18 @@ public class Match
 		NumberOfRounds = numberOfRounds;
 		_wall = new Wall(_rng, PlayerCount, HasRedFives);
 
-		_players = [.. Enumerable.Range(0, (int)PlayerCount)
+		List<Player> initialPlayers = [.. Enumerable.Range(0, (int)PlayerCount)
 			.Select(i => new Player()
 			{
 				Points = PlayerCount == PlayerCount.Four ? 25000 : 30000,
 			})
 		];
-		rng.Shuffle(_players);
+
+		// TODO: Right now, our tests don't really check that the players were shuffled, because there isn't an
+		// a priori way to know what players are going to end up where. When we add the ability to provide a list of
+		// players to a match where we can then check their final seats, make sure that the tests check that shuffling
+		// occurs as expected based on the seed.
+		_players = rng.Shuffle(initialPlayers);
 		_currentEastIndex = rng.GetIntegerInRange(0, _players.Count - 1);
 		UpdateWindsToPlayers();
 	}
