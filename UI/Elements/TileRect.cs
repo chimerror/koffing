@@ -81,11 +81,11 @@ public partial class TileRect : TextureRect
 	{
 		if (FaceUp)
 		{
-			Texture = GD.Load<CompressedTexture2D>($"res://Sprites/Tiles/{Rank}{Suit.ToString().ToLower()}.png");
+			Texture = GD.Load<CompressedTexture2D>($"res://Sprites/Tiles/Pink/Vertical/{Rank}{Suit.ToString().ToLower()}.png");
 		}
 		else
 		{
-			Texture = GD.Load<CompressedTexture2D>($"res://Sprites/Tiles/back.png");
+			Texture = GD.Load<CompressedTexture2D>($"res://Sprites/Tiles/Pink/Vertical/back.png");
 		}
 	}
 

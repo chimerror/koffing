@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://7x8sg627kqv5"]
 
-[ext_resource type="Texture2D" uid="uid://v0xc3pihs804" path="res://Sprites/Tiles/1sou.png" id="1_as6t5"]
+[ext_resource type="Texture2D" uid="uid://v0xc3pihs804" path="res://Sprites/Tiles/Pink/Vertical/1sou.png" id="1_as6t5"]
 [ext_resource type="Script" uid="uid://cwg2e7tlrpw7b" path="res://UI/Elements/TileRect.cs" id="2_efhwj"]
 
 [node name="TileRect" type="TextureRect" unique_id=1907166075]
