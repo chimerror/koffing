@@ -81,6 +81,13 @@ public class TileTests
 				AssertThat(tileA.Equals(tileB)).IsTrue();
 				PrefixInfo($"Checking that face-down tile B \"{tileB}\" should equal identical face-up tile A \"{tileB}\"");
 				AssertThat(tileB.Equals(tileA)).IsTrue();
+
+				tileB.FaceUp = true;
+				tileB.Rotated = true;
+				PrefixInfo($"Checking that upright tile A \"{tileA}\" should equal identical rotated tile B \"{tileB}\"");
+				AssertThat(tileA.Equals(tileB)).IsTrue();
+				PrefixInfo($"Checking that rotated tile B \"{tileB}\" should equal identical upright tile A \"{tileB}\"");
+				AssertThat(tileB.Equals(tileA)).IsTrue();
 			}
 		}
 	}
@@ -161,6 +168,13 @@ public class TileTests
 				AssertThat(tileA.RawEquals(tileB)).IsTrue();
 				PrefixInfo($"Checking that face-down tile B \"{tileB}\" should rawly equal identical face-up tile A \"{tileB}\"");
 				AssertThat(tileB.RawEquals(tileA)).IsTrue();
+
+				tileB.FaceUp = true;
+				tileB.Rotated = true;
+				PrefixInfo($"Checking that upright tile A \"{tileA}\" should equal identical rotated tile B \"{tileB}\"");
+				AssertThat(tileA.Equals(tileB)).IsTrue();
+				PrefixInfo($"Checking that rotated tile B \"{tileB}\" should equal identical upright tile A \"{tileB}\"");
+				AssertThat(tileB.Equals(tileA)).IsTrue();
 
 				if (rank == 0)
 				{

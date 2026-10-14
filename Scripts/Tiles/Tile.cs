@@ -24,6 +24,12 @@ public class Tile : IComparable<Tile>, IEquatable<Tile>
 	public bool FaceUp = true;
 
 	/// <summary>
+	/// If the tile has been rotated 90 degrees counter-clockwise, as to indicate it was taken as a called discard in an
+	/// open meld. Like <see cref="FaceUp"/>, UI is encouraged to ignore this if that would make the most sense.
+	/// </summary>
+	public bool Rotated = false;
+
+	/// <summary>
 	/// The "raw" rank of the tile, ignoring red fives. That is, it is the same as <see cref="Rank"/>, unless that is 0,
 	/// in which case this returns 5.
 	/// </summary>
@@ -121,7 +127,7 @@ public class Tile : IComparable<Tile>, IEquatable<Tile>
 			return false;
 		}
 
-		// Face-up doesn't count for this equals.
+		// Face-up and rotated don't count for this equals.
 		return (Suit == that.Suit) && (Rank == that.Rank);
 	}
 
@@ -155,7 +161,7 @@ public class Tile : IComparable<Tile>, IEquatable<Tile>
 			return false;
 		}
 
-		// Face-up doesn't count for this equals.
+		// Face-up and rotated don't count for this equals.
 		return (Suit == that.Suit) && (RawRank == that.RawRank);
 	}
 
