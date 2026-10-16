@@ -1,12 +1,11 @@
 using System;
 using GdUnit4;
 using Godot;
-using Koffing.Godot.UI.Elements;
 using Koffing.Tiles;
 using static GdUnit4.Assertions;
 using static TestLoggingHelpers;
 
-namespace Koffing.Tests;
+namespace Koffing.Godot.UI.Elements.Tests;
 
 [TestSuite]
 public class TileRectTests
