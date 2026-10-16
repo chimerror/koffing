@@ -71,6 +71,7 @@ public class Wall
 	public bool CanRevealDoraIndicator => _doraIndicatorsLeftToReveal > 0;
 
 	// These properties are here mostly for testing purposes, so I am not documenting them.
+	// TODO: I forgot about the internal access modifier. We can change it to use that.
 	public int LiveWallStartIndex => _liveWallStartIndex;
 	public int DeadWallStartIndex => GetSafeIndex(_liveWallStartIndex - 2, _tiles.Count);
 	public int DeadWallEndIndex => GetSafeIndex(_liveWallStartIndex - _deadWallCount, _tiles.Count);
