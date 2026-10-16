@@ -130,7 +130,9 @@ public partial class TileRect : TextureRect
 		}
 	}
 
-	private Label CurrentRankIndicator => Rotated ? _horizontalRankIndicator : _verticalRankIndicator;
+	// Internal for the sake of testing.
+	internal Label CurrentRankIndicator => Rotated ? _horizontalRankIndicator : _verticalRankIndicator;
+
 	public override string ToString()
 	{
 		return nameof(TileRect) + ":" + _tile?.NotationFromTile();
@@ -203,7 +205,6 @@ public partial class TileRect : TextureRect
 
 			// When rotated, move the tile down so that its bottom is the same place as the bottom of vertical tiles.
 			Position = new(0f, TileHeight - TileWidth);
-
 		}
 		else
 		{
