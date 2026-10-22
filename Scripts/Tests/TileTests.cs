@@ -337,7 +337,7 @@ public class TileTests
 		AssertThat(expectedHashCode).IsEqual(tile.GetHashCode());
 	}
 
-	// TODO: Could make a test that actually goes through all valid tiles, but I think this spot testing is good enough
+	// Could make a test that actually goes through all valid tiles, but I think this spot testing is good enough
 	// because I would have to essentially rewrite the function to skip the right tiles.
 	private static IEnumerable<object[]> IsValidTileTestCases()
 	{

@@ -48,9 +48,8 @@ public class Wall
 	/// <returns>A read-only collection of the <see cref="Tile"/>s in the wall.</returns>
 	public IEnumerable<Tile> Tiles => _tiles.AsReadOnly();
 
-	// TODO: Probably should add properties to get revealed dora and ura dora, a method to reveal a dora, a method to
-	// deal a tile, a method to take a replacement tile. These can wait until you get to them in the match code, but I
-	// wanted to make a list just in case one gets missed.
+	// TODO: Probably should add properties to get revealed dora and ura dora. These can wait until you get to them in
+	// the match code, but I wanted to make a list just in case one gets missed.
 
 	/// <summary>
 	/// If a live tile can be taken from the wall.
