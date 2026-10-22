@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using GdUnit4;
 using Godot;
 using Koffing.Tiles;
@@ -27,11 +28,12 @@ public class TileRectTests
 
 	[TestCase]
 	[RequireGodotRuntime]
-	public static void TileRectRotationWorksCorrectly()
+	public static async Task TileRectRotationWorksCorrectly()
 	{
 		LoggingPrefix = nameof(TileRectRotationWorksCorrectly);
 
-		var tileRect = ISceneRunner.Load(_tileRectScenePath)
+		var runner = ISceneRunner.Load(_tileRectScenePath);
+		var tileRect = runner
 			.Scene()
 			.GetTree()
 			.Root
@@ -47,9 +49,14 @@ public class TileRectTests
 
 		PrefixInfo("Checking that tile can be rotated...");
 		tileRect.Rotated = true;
+
+		// Simulating some frames so TileRect's size will be forced to update.
+		PrefixInfo("Simulating 13 frames...");
+		await runner.SimulateFrames(13);
+
 		PrefixInfo("Checking horizontal tile rect size...");
 		AssertThat(tileRect.Size).IsEqual(new Vector2(tileRect.TileHeight, tileRect.TileWidth));
-		var horizontalBase = tileRect.Position.Y + tileRect.Size.Y;
+		var horizontalBase = tileRect.Position.Y + tileRect.OffsetTransformPosition.Y + tileRect.Size.Y;
 		PrefixInfo("Checking that horizontal base is the same as vertical base...");
 		AssertThat(horizontalBase).IsEqual(verticalBase);
 	}

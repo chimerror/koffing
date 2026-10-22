@@ -46,10 +46,25 @@ public partial class TileRect : TextureRect
 	public float TileHeight { get; set; } = 240f;
 
 	[Export]
-	public Vector2 WestRankIndicatorOffset = new(0f, 0f);
+	public int RankIndicatorFontSize { get; set; } = 32;
 
 	[Export]
-	public Vector2 WhiteRankIndicatorOffset = new(0f, 0f);
+	public int RankIndicatorFontShadowSize { get; set; } = 14;
+
+	[Export]
+	public Vector2 RankIndicatorSize { get; set; } = new(32f, 45f);
+
+	[Export]
+	public Vector2 VerticalRankIndicatorPosition { get; set; } = new(118f, 40f);
+
+	[Export]
+	public Vector2 HorizontalRankIndicatorPosition { get; set; } = new(0f, 72f);
+
+	[Export]
+	public Vector2 WestRankIndicatorOffset = new(-6f, -6f);
+
+	[Export]
+	public Vector2 WhiteRankIndicatorOffset = new(-22f, -22f);
 
 	[Export]
 	public Suit Suit
@@ -201,22 +216,37 @@ public partial class TileRect : TextureRect
 		// the rank indicator position will not follow along with the new tile position.
 		if (Rotated)
 		{
-			Size = new(TileHeight, TileWidth);
+			CustomMaximumSize = new(TileHeight, TileWidth);
 
 			// When rotated, move the tile down so that its bottom is the same place as the bottom of vertical tiles.
-			Position = new(0f, TileHeight - TileWidth);
+			OffsetTransformPosition = new(0f, TileHeight - TileWidth);
+			OffsetTransformVisualOnly = false;
+			OffsetTransformEnabled = true;
 		}
 		else
 		{
-			Size = new(TileWidth, TileHeight);
-			Position = Vector2.Zero;
+			CustomMaximumSize = new(TileWidth, TileHeight);
+			OffsetTransformEnabled = false;
 		}
 	}
 
 	public override void _Ready()
 	{
 		_verticalRankIndicator = GetNode<Label>("%VerticalRankIndicator");
+		SetUpRankIndicator(_verticalRankIndicator, VerticalRankIndicatorPosition);
+
 		_horizontalRankIndicator = GetNode<Label>("%HorizontalRankIndicator");
+		SetUpRankIndicator(_horizontalRankIndicator, HorizontalRankIndicatorPosition);
+
 		UpdateTileRect();
+	}
+
+	private void SetUpRankIndicator(Label rankIndicatorLabel, Vector2 rankIndicatorPosition)
+	{
+		rankIndicatorLabel.AddThemeFontSizeOverride("font_size", RankIndicatorFontSize);
+		rankIndicatorLabel.AddThemeConstantOverride("shadow_outline_size", RankIndicatorFontShadowSize);
+		rankIndicatorLabel.CustomMinimumSize = new(RankIndicatorFontSize, 0f);
+		rankIndicatorLabel.Size = RankIndicatorSize;
+		rankIndicatorLabel.Position = rankIndicatorPosition;
 	}
 }

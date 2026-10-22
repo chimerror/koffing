@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://c6qiruni262sh"]
+
+[ext_resource type="Script" uid="uid://v6pdjluh5jkv" path="res://UI/Elements/HandDisplay.cs" id="1_3i7vw"]
+[ext_resource type="PackedScene" uid="uid://7x8sg627kqv5" path="res://UI/Elements/TileRect.tscn" id="2_0vhot"]
+
+[node name="HandDisplay" type="HBoxContainer" unique_id=764935681]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -507.5
+offset_top = -96.0
+offset_right = 507.5
+grow_horizontal = 2
+grow_vertical = 0
+script = ExtResource("1_3i7vw")
+
+[node name="TemplateTileRect" parent="." unique_id=1907166075 instance=ExtResource("2_0vhot")]
+unique_name_in_owner = true
+visible = false
+custom_maximum_size = Vector2(80, 96)
+layout_mode = 2
+TileWidth = 80.0
+TileHeight = 96.0
+RankIndicatorFontSize = 14
+RankIndicatorFontShadowSize = 6
+RankIndicatorSize = Vector2(14, 20)
+VerticalRankIndicatorPosition = Vector2(46, 17)
+HorizontalRankIndicatorPosition = Vector2(0, 32)
+WestRankIndicatorOffset = Vector2(-2.5, -2.5)
+WhiteRankIndicatorOffset = Vector2(-9.3, -9.3)
+ShowRankIndicator = true
+
+[node name="HandHBox" type="HBoxContainer" parent="." unique_id=1396289814]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = -15
+
+[node name="DrawnTileHBox" type="HBoxContainer" parent="." unique_id=87620533]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MeldedTilesHBox" type="HBoxContainer" parent="." unique_id=1720108954]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = -15
