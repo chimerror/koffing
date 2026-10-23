@@ -218,6 +218,11 @@ public partial class TileRect : TextureRect
 		{
 			CustomMaximumSize = new(TileHeight, TileWidth);
 
+			// TODO: This logic made sense when thinking about a rotated tile in the hand, but when declaring riichi,
+			// MajSoul places the rotated tile in the center of the vertical neighbor (so 0.5 * TileWidth), while the
+			// diagram in the WRC rules places it at the top of its neighbor (so 0 * TileWidth). This variation is
+			// enough to make me convinced it doesn't really matter if we keep it at the bottom, but consider if it
+			// would be clearer to choose one of the other options.
 			// When rotated, move the tile down so that its bottom is the same place as the bottom of vertical tiles.
 			OffsetTransformPosition = new(0f, TileHeight - TileWidth);
 			OffsetTransformVisualOnly = false;
