@@ -1,12 +1,14 @@
 using System.Collections.Generic;
+using Koffing.Melds;
 using Koffing.Tiles;
 
 namespace Koffing.Players;
 
 /// <summary>
-/// Base class for a player in a <see cref="Matches.Match"/>.
+/// A representation of the current state of a player in a <see cref="Match"/>, including their points, current hand,
+/// drawn tile, and melds.
 /// </summary>
-public class Player
+public class PlayerState
 {
 	/// <summary>
 	/// The number of points the player currently has.
@@ -21,5 +23,8 @@ public class Player
 	/// <value>The <see cref="List{T}"/> of <see cref="Tile"/>s the player currently has in their hand.</value>
 	public List<Tile> Hand { get; set; }
 
-	// TODD: Have players be able to respond to match situations. This will probably be an interface.
+	public Tile DrawnTile { get; set; }
+
+	public List<Meld> MadeMelds { get; set; }
+
 }

@@ -313,7 +313,7 @@ public class MatchTests
 		PrefixInfo("Checking that there are the right number of players...");
 		AssertThat((int)playerCount).IsEqual(actualPlayers.Count);
 		PrefixInfo("Checking that the players have the correct starting scores...");
-		AssertThat(actualPlayers.All(p => p.Points == (playerCount == PlayerCount.Four ? 25000 : 30000)));
+		AssertThat(actualPlayers.All(p => p.State.Points == (playerCount == PlayerCount.Four ? 25000 : 30000)));
 
 		PrefixInfo($"Checking that the correct player (index {expectedStartingEastIndex}) was chosen as East...");
 		AssertThat(createdMatch.CurrentEastIndex).IsEqual(expectedStartingEastIndex);
@@ -357,7 +357,7 @@ public class MatchTests
 		for (var currentPlayer = 0 ; currentPlayer < playerCountInt; currentPlayer++)
 		{
 			var expectedDealtHand = expectedDealtHands[currentPlayer].ToList();
-			var actualDealtHand = createdMatch.WindsToPlayers[currentWind].Hand;
+			var actualDealtHand = createdMatch.WindsToPlayers[currentWind].State.Hand;
 			PrefixInfo($"Checking that hand dealt for {currentWind}, \"{actualDealtHand.NotationFromTiles()}\", is the same as expected \"{expectedDealtHand.NotationFromTiles()}\"...");
 			AssertArray(expectedDealtHand).ContainsExactly(actualDealtHand);
 			currentWind++;

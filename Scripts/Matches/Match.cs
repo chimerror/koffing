@@ -14,8 +14,8 @@ public class Match
 {
 	private Wall _wall;
 	private int _currentEastIndex;
-	private readonly Dictionary<Wind, Player> _windsToPlayers = [];
-	private readonly List<Player> _players;
+	private readonly Dictionary<Wind, MatchPlayer> _windsToPlayers = [];
+	private readonly List<MatchPlayer> _players;
 	private readonly IRandomNumberGenerator _rng;
 
 	/// <summary>
@@ -46,19 +46,19 @@ public class Match
 	/// A read-only collection of the <see cref="Player"/>s in the match.
 	/// </summary>
 	/// <value>A read-only collection of the <see cref="Player"/>s playing the match.</value>
-	public IEnumerable<Player> Players => _players.AsReadOnly();
+	public IEnumerable<MatchPlayer> Players => _players.AsReadOnly();
 
 	/// <summary>
 	/// The current east <see cref="Player"/>.
 	/// </summary>
 	/// <value>The current east <see cref="Player"/>.</value>
-	public Player CurrentEastPlayer => _players[_currentEastIndex];
+	public MatchPlayer CurrentEastPlayer => _players[_currentEastIndex];
 
 	/// <summary>
 	/// A read-only dictionary mapping seat <see cref="Wind"/>s to the <see cref="Player"/> currently in the seat.
 	/// </summary>
 	/// <value>A read-only dictionary mapping seat <see cref="Wind"/>s to <see cref="Player"/>s.</value>
-	public IDictionary<Wind, Player> WindsToPlayers => _windsToPlayers.AsReadOnly();
+	public IDictionary<Wind, MatchPlayer> WindsToPlayers => _windsToPlayers.AsReadOnly();
 
 	/// <summary>
 	/// The index (in <see cref="Players"/>) of the current east <see cref="Player"/>.
@@ -91,10 +91,13 @@ public class Match
 		NumberOfRounds = numberOfRounds;
 		_wall = new Wall(_rng, PlayerCount, HasRedFives);
 
-		List<Player> initialPlayers = [.. Enumerable.Range(0, (int)PlayerCount)
-			.Select(i => new Player()
+		List<MatchPlayer> initialPlayers = [.. Enumerable.Range(0, (int)PlayerCount)
+			.Select(i => new MatchPlayer()
 			{
-				Points = PlayerCount == PlayerCount.Four ? 25000 : 30000,
+				State = new PlayerState()
+				{
+					Points = PlayerCount == PlayerCount.Four ? 25000 : 30000,
+				},
 			})
 		];
 
@@ -151,7 +154,7 @@ public class Match
 
 		foreach ((Wind playerWind, List<Tile> playerHand) in dealtHands)
 		{
-			_windsToPlayers[playerWind].Hand = playerHand;
+			_windsToPlayers[playerWind].State.Hand = playerHand;
 		}
 	}
 
