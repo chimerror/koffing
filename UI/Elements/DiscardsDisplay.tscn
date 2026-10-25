@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://o4nmq2oxejt2"]
+
+[ext_resource type="Script" uid="uid://h6at8sr14wdf" path="res://UI/Elements/DiscardsDisplay.cs" id="1_typ7j"]
+[ext_resource type="PackedScene" uid="uid://7x8sg627kqv5" path="res://UI/Elements/TileRect.tscn" id="2_rvymi"]
+
+[node name="DiscardsDisplay" type="HFlowContainer" unique_id=1944617679]
+custom_minimum_size = Vector2(190, 165)
+custom_maximum_size = Vector2(190, -1)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -95.0
+offset_top = -265.0
+offset_right = 95.0
+offset_bottom = -100.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/h_separation = -6
+theme_override_constants/v_separation = -6
+script = ExtResource("1_typ7j")
+
+[node name="TemplateTileRect" parent="." unique_id=1907166075 instance=ExtResource("2_rvymi")]
+unique_name_in_owner = true
+visible = false
+custom_maximum_size = Vector2(35.625, 45)
+layout_mode = 2
+offset_transform_position = Vector2(0, 9.375)
+TileWidth = 35.625
+TileHeight = 45.0
+RotatedTileVerticalHeight = 0.75
+RankIndicatorFontSize = 6
+RankIndicatorFontShadowSize = 3
+RankIndicatorSize = Vector2(6, 8.5)
+VerticalRankIndicatorPosition = Vector2(22.125, 7.5)
+HorizontalRankIndicatorPosition = Vector2(0, 13.5)
+WestRankIndicatorOffset = Vector2(-1.125, -1.125)
+WhiteRankIndicatorOffset = Vector2(-4.125, -4.125)
+ShowRankIndicator = true
