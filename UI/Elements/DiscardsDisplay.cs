@@ -16,6 +16,12 @@ public partial class DiscardsDisplay : HFlowContainer
 		{
 			var tileRect = (TileRect)_templateTileRect.Duplicate();
 			tileRect.Visible = true;
+
+			if (i == 13)
+			{
+				tileRect.Rotated = true;
+			}
+
 			AddChild(tileRect);
 			_tileRects.Add(tileRect);
 		}

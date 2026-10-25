@@ -37,4 +37,3 @@ VerticalRankIndicatorPosition = Vector2(22.125, 7.5)
 HorizontalRankIndicatorPosition = Vector2(0, 13.5)
 WestRankIndicatorOffset = Vector2(-1.125, -1.125)
 WhiteRankIndicatorOffset = Vector2(-4.125, -4.125)
-ShowRankIndicator = true
