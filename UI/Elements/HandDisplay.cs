@@ -13,6 +13,8 @@ public partial class HandDisplay : HBoxContainer
 	private readonly List<TileRect> _handTileRects = [];
 	private readonly List<TileRect> _meldedTileRects = [];
 
+	// UNTESTED: When we get to being able to add and update the tiles in this, it'll probably be worth testing that
+	// they end up in the correct HBoxes.
 	public override void _Ready()
 	{
 		_templateTileRect = GetNode<TileRect>("%TemplateTileRect");
