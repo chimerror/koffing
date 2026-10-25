@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://4c5ywqdxwo2j"]
+
+[ext_resource type="PackedScene" uid="uid://c6qiruni262sh" path="res://UI/Elements/HandDisplay.tscn" id="1_3mgu1"]
+[ext_resource type="PackedScene" uid="uid://o4nmq2oxejt2" path="res://UI/Elements/DiscardsDisplay.tscn" id="2_mqhcp"]
+
+[node name="MatchScreen" type="Control" unique_id=1782779487]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DiscardsDisplay" parent="." unique_id=1944617679 instance=ExtResource("2_mqhcp")]
+layout_mode = 1
+offset_top = -298.0
+offset_bottom = -133.0
+
+[node name="HandDisplay" parent="." unique_id=176305001 instance=ExtResource("1_3mgu1")]
+layout_mode = 1
