@@ -11,11 +11,18 @@ public interface IPlayerLogic
 	/// </summary>
 	/// <param name="match">The current match state for the player logic to make a decision on.</param>
 	/// <param name="playerIndex">The index of the player the logic should make a decision for.</param>
+	/// <param name="illegalDiscards">
+	/// An <see cref="IEnumerable{T}"/> of indices that would be illegal discards as per the swap-calling rules.
+	/// </param>
 	/// <returns>
 	/// The index (in <see cref="PlayerState.Hand"/>) to discard, or <c>-1</c> to discard the drawn tile in
 	/// <see cref="PlayerState.DrawnTile"/>.
 	/// </returns>
-	int MakeDiscard(Match match, int playerIndex);
+	/// <remarks>
+	/// Player logic is not strictly limited to making legal discards, though choosing to make one can result in
+	/// penalization.
+	/// </remarks>
+	int MakeDiscard(Match match, int playerIndex, IEnumerable<int> illegalDiscards);
 
 	/// <summary>
 	/// Prompts the player to make a call.
