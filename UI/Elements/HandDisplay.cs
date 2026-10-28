@@ -28,32 +28,36 @@ public partial class HandDisplay : Control
 		_peiDoraHBox = GetNode<HBoxContainer>("%PeiDoraHBox");
 
 		// TODO: Replace this testing code with code to fill this in based on properties with tiles set.
-		for (var i = 0; i < 10; i++)
+		if (this.IsRootNode())
 		{
-			var tileRect = InstantiateTileRect();
-			_handTileRects.Add(tileRect);
-			_handHBox.AddChild(tileRect);
-		}
-
-		_drawnTileRect = InstantiateTileRect();
-		_drawnTileHBox.AddChild(_drawnTileRect);
-
-		for (var i = 0; i < 3; i++)
-		{
-			var tileRect = InstantiateTileRect();
-			if (i == 1)
+			GD.Print("Adding testing tiles to HandDisplay!");
+			for (var i = 0; i < 10; i++)
 			{
-				tileRect.Rotated = true;
+				var tileRect = InstantiateTileRect();
+				_handTileRects.Add(tileRect);
+				_handHBox.AddChild(tileRect);
 			}
-			_meldedTileRects.Add(tileRect);
-			_meldedTilesHBox.AddChild(tileRect);
-		}
 
-		for (var i = 0; i < 4; i++)
-		{
-			var tileRect = InstantiateTileRect(_peiDoraTemplateTileRect);
-			_peiDoraTileRects.Add(tileRect);
-			_peiDoraHBox.AddChild(tileRect);
+			_drawnTileRect = InstantiateTileRect();
+			_drawnTileHBox.AddChild(_drawnTileRect);
+
+			for (var i = 0; i < 3; i++)
+			{
+				var tileRect = InstantiateTileRect();
+				if (i == 1)
+				{
+					tileRect.Rotated = true;
+				}
+				_meldedTileRects.Add(tileRect);
+				_meldedTilesHBox.AddChild(tileRect);
+			}
+
+			for (var i = 0; i < 4; i++)
+			{
+				var tileRect = InstantiateTileRect(_peiDoraTemplateTileRect);
+				_peiDoraTileRects.Add(tileRect);
+				_peiDoraHBox.AddChild(tileRect);
+			}
 		}
 	}
 

@@ -12,18 +12,22 @@ public partial class DiscardsDisplay : HFlowContainer
 	{
 		_templateTileRect = GetNode<TileRect>("%TemplateTileRect");
 
-		for (var i = 0; i < 19; i++)
+		if (this.IsRootNode())
 		{
-			var tileRect = (TileRect)_templateTileRect.Duplicate();
-			tileRect.Visible = true;
-
-			if (i == 13)
+			GD.Print("Adding testing tiles for DiscardsDisplay!");
+			for (var i = 0; i < 19; i++)
 			{
-				tileRect.Rotated = true;
-			}
+				var tileRect = (TileRect)_templateTileRect.Duplicate();
+				tileRect.Visible = true;
 
-			AddChild(tileRect);
-			_tileRects.Add(tileRect);
+				if (i == 13)
+				{
+					tileRect.Rotated = true;
+				}
+
+				AddChild(tileRect);
+				_tileRects.Add(tileRect);
+			}
 		}
 	}
 
