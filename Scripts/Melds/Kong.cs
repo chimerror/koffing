@@ -5,6 +5,8 @@ using Koffing.Tiles;
 
 namespace Koffing.Melds;
 
+// TODOTODO: Should likely have a property to mark if the kong is Called, Promoted, or Concealed.
+
 /// <summary>
 /// A meld made up of a quad of four of the same tile, such as 2 Zi, 2 Zi, 2 Zi, 2 Zi ("2222z").
 /// </summary>

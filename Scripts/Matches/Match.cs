@@ -142,6 +142,7 @@ public class Match
 				currentWind++;
 			}
 
+			// TODOTODO: Instead of East getting their first draw in hand, it should be in DrawnTile
 			if (setsOfFourToDeal == 0)
 			{
 				dealtHands[Wind.East].Add(_wall.PopNextLiveTile());
