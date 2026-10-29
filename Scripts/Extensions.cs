@@ -203,6 +203,8 @@ public static partial class Extensions
 		};
 	}
 
+	// TODO: Extend these Regexes to allow for rotated tiles with single quote, stacked tiles with double quote, and
+	// face down tiles with X.
 	[RE.GeneratedRegex(@"(?<suitOfTiles>((?<ranks>[0-9]+)(?<suit>[mps])|(?<ranks>[1-7]+)(?<suit>z)))")]
 	private static partial RE.Regex TileNotationGroupRegex();
 

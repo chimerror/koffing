@@ -23,11 +23,14 @@ public class Tile : IComparable<Tile>, IEquatable<Tile>
 	/// </summary>
 	public bool FaceUp = true;
 
+
 	/// <summary>
 	/// If the tile has been rotated 90 degrees counter-clockwise, as to indicate it was taken as a called discard in an
 	/// open meld. Like <see cref="FaceUp"/>, UI is encouraged to ignore this if that would make the most sense.
 	/// </summary>
 	public bool Rotated = false;
+
+	// TODO: Add Stacked property to represent a stacked (and thus rotated) tile.
 
 	/// <summary>
 	/// The "raw" rank of the tile, ignoring red fives. That is, it is the same as <see cref="Rank"/>, unless that is 0,
