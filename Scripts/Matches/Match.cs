@@ -120,6 +120,7 @@ public class Match
 		Dictionary<Wind, List<Tile>> dealtHands = [];
 		var setsOfFourToDeal = 3;
 		var currentWind = Wind.East;
+		Tile firstEastDraw;
 		do
 		{
 			for (var currentPlayer = 0; currentPlayer < _players.Count; currentPlayer++)
@@ -142,10 +143,9 @@ public class Match
 				currentWind++;
 			}
 
-			// TODOTODO: Instead of East getting their first draw in hand, it should be in DrawnTile
 			if (setsOfFourToDeal == 0)
 			{
-				dealtHands[Wind.East].Add(_wall.PopNextLiveTile());
+				firstEastDraw = _wall.PopNextLiveTile();
 				break;
 			}
 
@@ -156,6 +156,10 @@ public class Match
 		foreach ((Wind playerWind, List<Tile> playerHand) in dealtHands)
 		{
 			_windsToPlayers[playerWind].State.Hand = playerHand;
+			if (playerWind == Wind.East)
+			{
+				_windsToPlayers[playerWind].State.DrawnTile = firstEastDraw;
+			}
 		}
 	}
 

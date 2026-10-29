@@ -341,7 +341,8 @@ public class MatchTests
 		PlayerCount playerCount,
 		bool hasRedFives,
 		int numberOfRounds,
-		List<IEnumerable<Tile>> expectedDealtHands)
+		List<IEnumerable<Tile>> expectedDealtHands,
+		Tile expectedFirstEastDraw)
 	{
 		LoggingPrefix = nameof(DealHandsIsCorrect);
 
@@ -362,6 +363,10 @@ public class MatchTests
 			AssertArray(expectedDealtHand).ContainsExactly(actualDealtHand);
 			currentWind++;
 		}
+
+		var actualFirstEastDraw = createdMatch.WindsToPlayers[Wind.East].State.DrawnTile;
+		PrefixInfo($"Checking that first east draw, \"{actualFirstEastDraw.NotationFromTile()}\", is the same as expected \"{expectedFirstEastDraw.NotationFromTile()}\"...");
+		AssertThat(actualFirstEastDraw).IsEqual(expectedFirstEastDraw);
 	}
 
 	private static IEnumerable<object[]> WallCreationTestCases()
@@ -815,11 +820,12 @@ public class MatchTests
 			2,
 			new List<IEnumerable<Tile>> ()
 			{
-				"1z7615p0m9p6s2z6p260s2m".ToTiles(),
+				"1z7615p0m9p6s2z6p260s".ToTiles(),
 				"4p7m172z9m87p4z1s4z0p6s".ToTiles(),
 				"2z14m71z7s6m7p3s89p44s".ToTiles(),
 				"4m1p2m7s3p8m5s6p69s5m7p3z".ToTiles(),
 			},
+			"2m".ToTile(),
 		];
 		yield return
 		[
@@ -828,9 +834,10 @@ public class MatchTests
 			2,
 			new List<IEnumerable<Tile>> ()
 			{
-				"1z761p2z14m7z5p5m9p6s1z6m".ToTiles(),
+				"1z761p2z14m7z5p5m9p6s1z".ToTiles(),
 				"4p7m17z4m1p2m7s2z9m87p7s".ToTiles(),
 			},
+			"6m".ToTile(),
 		];
 		yield return
 		[
@@ -839,10 +846,11 @@ public class MatchTests
 			1,
 			new List<IEnumerable<Tile>> ()
 			{
-				"82s3z17s7p8s1z37s4z7p4s3p".ToTiles(),
+				"82s3z17s7p8s1z37s4z7p4s".ToTiles(),
 				"79s5z5s1m5p7s5z9m5z9s7z0p".ToTiles(),
 				"6z7p6s94p6z1m2p5s9m4z6s1p".ToTiles(),
 			},
+			"3p".ToTile(),
 		];
 	}
 }
