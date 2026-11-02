@@ -136,6 +136,34 @@ public class MeldTests
 	}
 
 	[TestCase]
+	public static void KongEqualsIsCorrect()
+	{
+		LoggingPrefix = nameof(KongEqualsIsCorrect);
+
+		Kong kongA = new("1111z".ToTiles(), Kong.Type.Called);
+		Kong kongB = new("1111z".ToTiles(), Kong.Type.Called);
+
+		PrefixInfo("Checking that kongs with the same kong type and tiles are considered equal...");
+		AssertThat(kongA.Equals(kongB)).IsTrue();
+		AssertThat(kongB.Equals(kongA)).IsTrue();
+
+		kongB.KongType = Kong.Type.Concealed;
+		PrefixInfo("Checking that kongs the same tiles but one is called and one is concealed are NOT considered equal...");
+		AssertThat(kongA.Equals(kongB)).IsFalse();
+		AssertThat(kongB.Equals(kongA)).IsFalse();
+
+		kongB.KongType = Kong.Type.Promoted;
+		PrefixInfo("Checking that kongs the same tiles but one is called and one is promoted are NOT considered equal...");
+		AssertThat(kongA.Equals(kongB)).IsFalse();
+		AssertThat(kongB.Equals(kongA)).IsFalse();
+
+		kongA.KongType = Kong.Type.Concealed;
+		PrefixInfo("Checking that kongs the same tiles but one is concealed and one is promoted are NOT considered equal...");
+		AssertThat(kongA.Equals(kongB)).IsFalse();
+		AssertThat(kongB.Equals(kongA)).IsFalse();
+	}
+
+	[TestCase]
 	[DataPoint(nameof(PungGetPossibleForTileTestCases))]
 	public static void PungGetPossibleForTileIsCorrect(
 		string tileNotation,
