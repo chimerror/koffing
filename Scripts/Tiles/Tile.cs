@@ -7,6 +7,13 @@ namespace Koffing.Tiles;
 /// </summary>
 public class Tile : IComparable<Tile>, IEquatable<Tile>
 {
+	public enum Orientation
+	{
+		Vertical,
+		Rotated,
+		Stacked,
+	}
+
 	/// <summary>
 	/// The suit of the tile.
 	/// </summary>
@@ -23,14 +30,63 @@ public class Tile : IComparable<Tile>, IEquatable<Tile>
 	/// </summary>
 	public bool FaceUp = true;
 
+	/// <summary>
+	/// The orientation of the tile as represented by <see cref="Orientation"/>.
+	/// </summary>
+	public Orientation TileOrientation = Orientation.Vertical;
 
 	/// <summary>
-	/// If the tile has been rotated 90 degrees counter-clockwise, as to indicate it was taken as a called discard in an
-	/// open meld. Like <see cref="FaceUp"/>, UI is encouraged to ignore this if that would make the most sense.
+	/// If the tile has a vertical orientation, that is neither rotated nor stacked.
 	/// </summary>
-	public bool Rotated = false;
+	/// <remarks>
+	/// Note that this only has a getter. To do the equivalent of setting this to <see langword="true"/>, set
+	/// <see cref="TileOrientation"/> to <see cref="Orientation.Vertical"/> instead.
+	/// </remarks>
+	public bool Vertical => TileOrientation == Orientation.Vertical;
 
-	// TODO: Add Stacked property to represent a stacked (and thus rotated) tile.
+	/// <summary>
+	/// If the tile has been rotated 90 degrees counter-clockwise, but NOT stacked on another rotated tile, as to
+	/// indicate it was taken as a called discard in an open meld.
+	/// </summary>
+	/// <value>
+	/// <see langword="true"/> if <see cref="TileOrientation"/> is equal to <see cref="Orientation.Rotated"/>, otherwise
+	/// <see langword="false"/>.
+	/// </value>
+	/// <remarks>
+	/// When setting this to <see langword="false"/>, <see cref="TileOrientation"/> will get set to
+	/// <see cref="Orientation.Vertical"/>. Like <see cref="FaceUp"/>, UI is encouraged to ignore this if that would
+	/// make the most sense.
+	/// </remarks>
+	public bool Rotated
+	{
+		get => TileOrientation == Orientation.Rotated;
+		set
+		{
+			TileOrientation = value ? Orientation.Rotated : Orientation.Vertical;
+		}
+	}
+
+	/// <summary>
+	/// If the tile has been rotated 90 degrees counter-clockwise and stacked on another rotated tile, to represent the
+	/// promotion tile in a promoted kong.
+	/// </summary>
+	/// <value>
+	/// <see langword="true"/> if <see cref="TileOrientation"/> is equal to <see cref="Orientation.Stacked"/>, otherwise
+	/// <see langword="false"/>.
+	/// </value>
+	/// <remarks>
+	/// When setting this to <see langword="false"/>, <see cref="TileOrientation"/> will get set to
+	/// <see cref="Orientation.Vertical"/>. Like <see cref="FaceUp"/>, UI is encouraged to ignore this if that would
+	/// make the most sense.
+	/// </remarks>
+	public bool Stacked
+	{
+		get => TileOrientation == Orientation.Stacked;
+		set
+		{
+			TileOrientation = value ? Orientation.Stacked : Orientation.Vertical;
+		}
+	}
 
 	/// <summary>
 	/// The "raw" rank of the tile, ignoring red fives. That is, it is the same as <see cref="Rank"/>, unless that is 0,
@@ -116,7 +172,7 @@ public class Tile : IComparable<Tile>, IEquatable<Tile>
 	/// 		if <see cref="Rank"/>s equal
 	/// 	</item>
 	/// </list>
-	/// Note that <see cref="FaceUp"/> is NOT considered.
+	/// Note that <see cref="FaceUp"/> and <see cref="TileOrientation"/> are NOT considered.
 	/// </remarks>
 	/// <param name="that">The <see cref="Tile"/> to compare with the current object.</param>
 	/// <returns>
@@ -130,7 +186,7 @@ public class Tile : IComparable<Tile>, IEquatable<Tile>
 			return false;
 		}
 
-		// Face-up and rotated don't count for this equals.
+		// Face-up and orientation don't count for this equals.
 		return (Suit == that.Suit) && (Rank == that.Rank);
 	}
 
@@ -150,7 +206,7 @@ public class Tile : IComparable<Tile>, IEquatable<Tile>
 	/// 		if <see cref="RawRank"/>s equal
 	/// 	</item>
 	/// </list>
-	/// Note that <see cref="FaceUp"/> is NOT considered.
+	/// Note that <see cref="FaceUp"/> and <see cref="TileOrientation"/> are NOT considered.
 	/// </remarks>
 	/// <param name="that">The tile to compare against.</param>
 	/// <returns>
@@ -164,7 +220,7 @@ public class Tile : IComparable<Tile>, IEquatable<Tile>
 			return false;
 		}
 
-		// Face-up and rotated don't count for this equals.
+		// Face-up and orientation don't count for this equals.
 		return (Suit == that.Suit) && (RawRank == that.RawRank);
 	}
 

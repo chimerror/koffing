@@ -83,10 +83,22 @@ public class TileTests
 				AssertThat(tileB.Equals(tileA)).IsTrue();
 
 				tileB.FaceUp = true;
-				tileB.Rotated = true;
-				PrefixInfo($"Checking that upright tile A \"{tileA}\" should equal identical rotated tile B \"{tileB}\"");
+				tileB.TileOrientation = Tile.Orientation.Rotated;
+				PrefixInfo($"Checking that vertical tile A \"{tileA}\" should equal identical rotated tile B \"{tileB}\"");
 				AssertThat(tileA.Equals(tileB)).IsTrue();
-				PrefixInfo($"Checking that rotated tile B \"{tileB}\" should equal identical upright tile A \"{tileB}\"");
+				PrefixInfo($"Checking that rotated tile B \"{tileB}\" should equal identical vertical tile A \"{tileB}\"");
+				AssertThat(tileB.Equals(tileA)).IsTrue();
+
+				tileB.TileOrientation = Tile.Orientation.Stacked;
+				PrefixInfo($"Checking that vertical tile A \"{tileA}\" should equal identical stacked tile B \"{tileB}\"");
+				AssertThat(tileA.Equals(tileB)).IsTrue();
+				PrefixInfo($"Checking that stacked tile B \"{tileB}\" should equal identical vertical tile A \"{tileB}\"");
+				AssertThat(tileB.Equals(tileA)).IsTrue();
+
+				tileA.TileOrientation = Tile.Orientation.Rotated;
+				PrefixInfo($"Checking that rotated tile A \"{tileA}\" should equal identical stacked tile B \"{tileB}\"");
+				AssertThat(tileA.Equals(tileB)).IsTrue();
+				PrefixInfo($"Checking that stacked tile B \"{tileB}\" should equal identical rotated tile A \"{tileB}\"");
 				AssertThat(tileB.Equals(tileA)).IsTrue();
 			}
 		}
@@ -170,10 +182,22 @@ public class TileTests
 				AssertThat(tileB.RawEquals(tileA)).IsTrue();
 
 				tileB.FaceUp = true;
-				tileB.Rotated = true;
-				PrefixInfo($"Checking that upright tile A \"{tileA}\" should equal identical rotated tile B \"{tileB}\"");
+				tileB.TileOrientation = Tile.Orientation.Rotated;
+				PrefixInfo($"Checking that vertical tile A \"{tileA}\" should rawly equal identical rotated tile B \"{tileB}\"");
 				AssertThat(tileA.Equals(tileB)).IsTrue();
-				PrefixInfo($"Checking that rotated tile B \"{tileB}\" should equal identical upright tile A \"{tileB}\"");
+				PrefixInfo($"Checking that rotated tile B \"{tileB}\" should rawly equal identical vertical tile A \"{tileB}\"");
+				AssertThat(tileB.Equals(tileA)).IsTrue();
+
+				tileB.TileOrientation = Tile.Orientation.Stacked;
+				PrefixInfo($"Checking that vertical tile A \"{tileA}\" should rawly equal identical stacked tile B \"{tileB}\"");
+				AssertThat(tileA.Equals(tileB)).IsTrue();
+				PrefixInfo($"Checking that stacked tile B \"{tileB}\" should rawly equal identical vertical tile A \"{tileB}\"");
+				AssertThat(tileB.Equals(tileA)).IsTrue();
+
+				tileA.TileOrientation = Tile.Orientation.Rotated;
+				PrefixInfo($"Checking that rotated tile A \"{tileA}\" should rawly equal identical stacked tile B \"{tileB}\"");
+				AssertThat(tileA.Equals(tileB)).IsTrue();
+				PrefixInfo($"Checking that stacked tile B \"{tileB}\" should rawly equal identical rotated tile A \"{tileB}\"");
 				AssertThat(tileB.Equals(tileA)).IsTrue();
 
 				if (rank == 0)
