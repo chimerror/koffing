@@ -8,7 +8,7 @@ public partial class DiscardsDisplay : HFlowContainer
 	private TileRect _templateTileRect;
 	private readonly List<TileRect> _tileRects = [];
 
-	public async override void _Ready()
+	public override void _Ready()
 	{
 		_templateTileRect = GetNode<TileRect>("%TemplateTileRect");
 
