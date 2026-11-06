@@ -291,13 +291,24 @@ public class TileTests
 
 	[TestCase]
 	[DataPoint(nameof(TileNotationTestCases))]
-	public static void ToTilesAndNotationFromTilesAreCorrect(string notation, List<Tile> tiles, string because)
+	public static void ToTilesAndNotationFromTilesAreCorrect(
+		string notation,
+		List<Tile> tiles,
+		bool canonicalNotation,
+		string because)
 	{
 		LoggingPrefix = nameof(ToTilesAndNotationFromTilesAreCorrect);
 
 		var actualToTilesOutput = notation.ToTiles().ToList();
 		PrefixInfo($"Checking that calling ToTiles on notation \"{notation}\"  produces correct tiles when {because}");
 		AssertArray(actualToTilesOutput).ContainsExactly(tiles);
+
+		PrefixInfo($"Checking that orientation and face-up/face-down are correct for all tiles");
+		foreach ((var actualTile, var expectedTile) in actualToTilesOutput.Zip(tiles))
+		{
+			AssertThat(expectedTile.TileOrientation).IsEqual(actualTile.TileOrientation);
+			AssertThat(expectedTile.FaceUp).IsEqual(actualTile.FaceUp);
+		}
 
 		if (tiles.Count == 1)
 		{
@@ -306,15 +317,18 @@ public class TileTests
 			AssertThat(actualToTileOutput).IsEqual(tiles[0]);
 		}
 
-		var actualNotationFromTilesOutput = tiles.NotationFromTiles();
-		PrefixInfo($"Checking that NotationFromTiles produces matching notation \"{notation}\" when {because}");
-		AssertThat(notation).IsEqual(actualNotationFromTilesOutput);
-
-		if (tiles.Count == 1)
+		if (canonicalNotation)
 		{
-			var actualNotationFromTileOutput = tiles[0].NotationFromTile();
-			PrefixInfo($"Checking that calling NotationFromTile produces matching notation \"{notation}\"");
-			AssertThat(actualNotationFromTileOutput).IsEqual(notation);
+			var actualNotationFromTilesOutput = tiles.NotationFromTiles();
+			PrefixInfo($"Checking that NotationFromTiles produces matching notation \"{notation}\" when {because}");
+			AssertThat(notation).IsEqual(actualNotationFromTilesOutput);
+
+			if (tiles.Count == 1)
+			{
+				var actualNotationFromTileOutput = tiles[0].NotationFromTile();
+				PrefixInfo($"Checking that calling NotationFromTile produces matching notation \"{notation}\"");
+				AssertThat(actualNotationFromTileOutput).IsEqual(notation);
+			}
 		}
 	}
 
@@ -419,8 +433,8 @@ public class TileTests
 
 	private static IEnumerable<object[]> TileNotationTestCases()
 	{
-		yield return ["1p", new List<Tile> { new(Suit.Pin, 1) }, "provided single number tile"];
-		yield return ["4z", new List<Tile> { new(Suit.Zi, 4) }, "provided single honor tile"];
+		yield return ["1p", new List<Tile> { new(Suit.Pin, 1) }, true, "provided single number tile"];
+		yield return ["4z", new List<Tile> { new(Suit.Zi, 4) }, true, "provided single honor tile"];
 
 		yield return [
 			"123p",
@@ -430,6 +444,7 @@ public class TileTests
 				new(Suit.Pin, 2),
 				new(Suit.Pin, 3),
 			},
+			true,
 			"provided multiple tiles in one suit",
 		];
 
@@ -441,6 +456,7 @@ public class TileTests
 				new(Suit.Pin, 2),
 				new(Suit.Pin, 9)
 			},
+			true,
 			"keeping order of multiple out-of-order tiles in one suit",
 		];
 
@@ -455,6 +471,7 @@ public class TileTests
 				new(Suit.Pin, 2),
 				new(Suit.Pin, 9),
 			},
+			true,
 			"keeping order of multiple out-of-order suits with out-of-order tiles",
 		];
 
@@ -468,6 +485,7 @@ public class TileTests
 				new(Suit.Zi, 3),
 				new(Suit.Man, 5),
 			},
+			true,
 			"provided multiple suits, some with single tiles",
 		];
 
@@ -484,6 +502,7 @@ public class TileTests
 				new(Suit.Man, 4),
 				new(Suit.Man, 5),
 			},
+			true,
 			"provided multiple suits, all with multiple tiles",
 		];
 
@@ -496,7 +515,97 @@ public class TileTests
 				new(Suit.Pin, 5),
 				new(Suit.Pin, 5),
 			},
+			true,
 			"provided kong of 5s (one red 5)",
+		];
+
+		yield return [
+			"2'm",
+			new List<Tile>
+			{
+				new(Suit.Man, 2){
+					TileOrientation = Tile.Orientation.Rotated,
+				},
+			},
+			true,
+			"provided rotated tile",
+		];
+
+		yield return [
+			"2'2\"m",
+			new List<Tile>
+			{
+				new(Suit.Man, 2){
+					TileOrientation = Tile.Orientation.Rotated,
+				},
+				new(Suit.Man, 2){
+					TileOrientation = Tile.Orientation.Stacked,
+				},
+			},
+			true,
+			"provided rotated and stacked tiles",
+		];
+
+		yield return [
+			"2Xm",
+			new List<Tile>
+			{
+				new(Suit.Man, 2){
+					FaceUp = false,
+				},
+			},
+			true,
+			"provided face-down tile",
+		];
+
+		yield return [
+			"2'Xm",
+			new List<Tile>
+			{
+				new(Suit.Man, 2){
+					TileOrientation = Tile.Orientation.Rotated,
+					FaceUp = false,
+				},
+			},
+			true,
+			"provided rotated face-down tile",
+		];
+
+		yield return [
+			"2X\"m",
+			new List<Tile>
+			{
+				new(Suit.Man, 2){
+					TileOrientation = Tile.Orientation.Stacked,
+					FaceUp = false,
+				},
+			},
+			false, // Not in canonical notation, rotated modifier before stacked modifier
+			"provided stacked face-down tile",
+		];
+
+		yield return [
+			"2'\"m",
+			new List<Tile>
+			{
+				new(Suit.Man, 2){
+					TileOrientation = Tile.Orientation.Stacked,
+				},
+			},
+			false, // Not in canonical notation, has both rotated and stacked modifier (stacked prevails)
+			"provided tile with rotated then stacked modifier",
+		];
+
+		yield return [
+			"2XXm",
+			new List<Tile>
+			{
+				new(Suit.Man, 2){
+					FaceUp = false,
+				},
+			},
+			false, // Not in canonical notation, has two face-down modifiers
+			"provided tile with two face-down modifiers",
 		];
 	}
 
@@ -521,6 +630,16 @@ public class TileTests
 		[
 			"mpsz",
 			"notation with only suits specified",
+		];
+		yield return
+		[
+			"33!p",
+			"notation with unimplemented modifier",
+		];
+		yield return
+		[
+			"33X\"'p",
+			"notation with too many modifiers",
 		];
 	}
 
@@ -550,6 +669,16 @@ public class TileTests
 		[
 			"1223z",
 			"notation with multiple tiles specified",
+		];
+		yield return
+		[
+			"3!p",
+			"notation with unimplemented modifier",
+		];
+		yield return
+		[
+			"3X\"'p",
+			"notation with too many modifiers",
 		];
 	}
 

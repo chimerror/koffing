@@ -113,11 +113,32 @@ public static partial class Extensions
 				"z" => Suit.Zi,
 				_ => throw new InvalidOperationException($"Unknown suit encountered: {stringSuit}"),
 			};
-			var stringRanks = match.Groups["ranks"].Value;
-			foreach (var charRank in stringRanks)
+
+			foreach (var tileString in match.Groups["tile"].Captures.Select(c => c.Value))
 			{
-				var rank = int.Parse(charRank.ToString());
-				yield return new Tile(suit, rank);
+				var rank = int.Parse(tileString[0].ToString());
+				var tile = new Tile(suit, rank);
+				foreach (var modifier in tileString.Skip(1))
+				{
+					switch (modifier)
+					{
+						case '\'':
+							tile.TileOrientation = Tile.Orientation.Rotated;
+							break;
+
+						case '"':
+							tile.TileOrientation = Tile.Orientation.Stacked;
+							break;
+
+						case 'X':
+							tile.FaceUp = false;
+							break;
+
+						default:
+							throw new InvalidOperationException($"Unimplemented tile modifier encountered!: {modifier}");
+					}
+				}
+				yield return tile;
 			}
 		}
 	}
@@ -155,6 +176,20 @@ public static partial class Extensions
 					currentSuit = tile.Suit;
 				}
 				builder.Append(tile.Rank);
+
+				if (tile.Rotated)
+				{
+					builder.Append('\'');
+				}
+				else if (tile.Stacked)
+				{
+					builder.Append('"');
+				}
+
+				if (!tile.FaceUp)
+				{
+					builder.Append('X');
+				}
 			}
 			builder.Append(currentSuit.GetSuitString());
 		}
@@ -203,11 +238,9 @@ public static partial class Extensions
 		};
 	}
 
-	// TODO: Extend these Regexes to allow for rotated tiles with single quote, stacked tiles with double quote, and
-	// face down tiles with X.
-	[RE.GeneratedRegex(@"(?<suitOfTiles>((?<ranks>[0-9]+)(?<suit>[mps])|(?<ranks>[1-7]+)(?<suit>z)))")]
+	[RE.GeneratedRegex("(?<suitOfTiles>(?<suitGroup>(?<tile>(?<rank>[0-9])(?<modifier>['\"X]){0,2})+(?<suit>[mps]))|(?<suitGroup>(?<tile>(?<rank>[1-7])(?<modifier>['\"X]){0,2})+(?<suit>z)))")]
 	private static partial RE.Regex TileNotationGroupRegex();
 
-	[RE.GeneratedRegex(@"^(?<suitOfTiles>((?<ranks>[0-9]+)(?<suit>[mps])|(?<ranks>[1-7]+)(?<suit>z)))+$")]
+	[RE.GeneratedRegex("^(?<suitOfTiles>(?<suitGroup>(?<tile>(?<rank>[0-9])(?<modifier>['\"X]){0,2})+(?<suit>[mps]))|(?<suitGroup>(?<tile>(?<rank>[1-7])(?<modifier>['\"X]){0,2})+(?<suit>z)))+$")]
 	private static partial RE.Regex FullTileNotationRegex();
 }
