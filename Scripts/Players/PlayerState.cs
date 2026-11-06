@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Koffing.Melds;
 using Koffing.Tiles;
 
@@ -36,7 +37,6 @@ public class PlayerState
 	/// The revealed <see cref="Meld"/>s that the player has made.
 	/// </summary>
 	/// <value>The <see cref="List{T}"/> of revealed <see cref="Meld"/>s the player currently has.</value>
-	// TODOTODO: Add PerformMeld method.
 	public List<Meld> MadeMelds { get; set; } = [];
 
 	/// <summary>
@@ -132,5 +132,111 @@ public class PlayerState
 			discardedTile.Rotated = true;
 		}
 		Discards.Add(discardedTile);
+	}
+
+	/// <summary>
+	/// Updates the state by performing a meld, moving the given <see cref="Meld"/> to <see cref="MadeMelds"/>, and
+	/// removing the necessary <see cref="Tile"/>s from the <see cref="Hand"/>.
+	/// </summary>
+	/// <param name="newlyMadeMeld">
+	/// The made <see cref="Meld"/>. It should already be arranged to put down on the table.
+	/// </param>
+	/// <exception cref="ArgumentException">
+	/// If <paramref name="newlyMadeMeld"/> is <see langword="null"/>.
+	/// </exception>
+	/// <exception cref="InvalidOperationException">
+	/// If it is not possible to make the given meld with the tiles in <see cref="Hand"/> or the
+	/// <see cref="DrawnTile"/>.
+	/// </exception>
+	/// <remarks>
+	/// By "already arranged", this means that any claimed <see cref="Tile"/> should be rotated and positioned in the
+	/// meld to represent the player claimed from, that promoted kans have the right tiles rotated and stacked, and that
+	/// concealed kans have the right tiles face-down. This method will only remove the necessary tiles in the
+	/// <see cref="Hand"/>, using the <see cref="Tile.Rotated"/> property for the tiles in the meld to judge which was
+	/// the claimed tile.
+	/// </remarks>
+	public void PerformMeld(Meld newlyMadeMeld)
+	{
+		if (newlyMadeMeld == null)
+		{
+			throw new ArgumentException("Null meld passed into PerformMeld!", nameof(newlyMadeMeld));
+		}
+
+		if (newlyMadeMeld is Kong newlyMadeKong && newlyMadeKong.KongType != Kong.Type.Called)
+		{
+			if (newlyMadeKong.KongType == Kong.Type.Concealed)
+			{
+				var kongTile = newlyMadeKong[0];
+				var meldedTiles = (DrawnTile is not null && DrawnTile.RawEquals(kongTile) ? Hand.Append(DrawnTile) : Hand)
+					.Where(t => t.RawEquals(kongTile))
+					.ToList();
+				if (meldedTiles.Count != 4)
+				{
+					throw new InvalidOperationException($"Attempted to perform concealed kong of \"{kongTile.NotationFromTile()}\" without four matching tiles in hand!");
+				}
+
+				if (DrawnTile is not null)
+				{
+					Hand.Add(DrawnTile);
+					DrawnTile = null;
+				}
+
+				Hand = [.. Hand.Where(t => !t.RawEquals(kongTile))];
+				MadeMelds.Add(newlyMadeKong);
+			}
+			else
+			{
+				var kongTile = newlyMadeKong[0];
+				var haveTileToPromoteWith =
+					(DrawnTile is not null && DrawnTile.RawEquals(kongTile)) ||
+					Hand.SingleOrDefault(t => t.RawEquals(kongTile)) != default;
+				var havePungToPromote =
+					MadeMelds.SingleOrDefault(m => m is Pung && m[0].RawEquals(kongTile)) != default;
+				if (!haveTileToPromoteWith)
+				{
+					throw new InvalidOperationException($"Attempted to perform promoted kong of \"{kongTile.NotationFromTile()}\" without a matching tile in hand or drawn tile!");
+				}
+				else if (!havePungToPromote)
+				{
+					throw new InvalidOperationException($"Attempted to perform promoted kong of \"{kongTile.NotationFromTile()}\" without a matching pung in made melds!");
+				}
+
+				if (DrawnTile is not null)
+				{
+					Hand.Add(DrawnTile);
+					DrawnTile = null;
+				}
+
+				Hand = [.. Hand.Where(t => !t.RawEquals(kongTile))];
+				MadeMelds =
+				[
+					.. MadeMelds.TakeWhile(m => m is not Pung || !m[0].RawEquals(kongTile)),
+					newlyMadeKong,
+					.. MadeMelds.SkipWhile(m => m is not Pung || !m[0].RawEquals(kongTile)).Skip(1)
+				];
+			}
+		}
+		else
+		{
+			List<Tile> possibleMeldTiles = DrawnTile is not null ? [.. Hand, DrawnTile] : [.. Hand];
+			foreach (var meldTile in newlyMadeMeld)
+			{
+				if (meldTile.Rotated == true)
+				{
+					continue; // Skip claimed tile
+				}
+
+				if (!possibleMeldTiles.Any(t => t.Equals(meldTile)))
+				{
+					throw new InvalidOperationException($"Attempted to perform called meld \"{newlyMadeMeld}\" but did not find tile \"{meldTile.NotationFromTile()}\" in hand or drawn tile!");
+				}
+
+				possibleMeldTiles.Remove(meldTile);
+			}
+
+			DrawnTile = null;
+			Hand = possibleMeldTiles;
+			MadeMelds.Add(newlyMadeMeld);
+		}
 	}
 }
