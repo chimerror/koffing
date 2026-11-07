@@ -43,7 +43,6 @@ public class PlayerState
 	/// The claimed pei dora that the player has made.
 	/// </summary>
 	/// <value>The <see cref="List{T}"/> of pei dora the player has made.</value>
-	// TODOTODO: Add PerformPeiDoraClaim method.
 	public List<Tile> PeiDora { get; set; } = [];
 
 	/// <summary>
@@ -238,5 +237,43 @@ public class PlayerState
 			Hand = possibleMeldTiles;
 			MadeMelds.Add(newlyMadeMeld);
 		}
+	}
+
+	/// <summary>
+	/// Updates the state by claiming a pei dora from a north tile (4z) from the combination of <see cref="Hand"/> and
+	/// <see cref="DrawnTile"/> and adding it to <see cref="PeiDora"/>.
+	/// </summary>
+	/// <exception cref="InvalidOperationException">
+	/// If there are no north tiles in the combination of <see cref="Hand"/> and <see cref="DrawnTile"/>.
+	/// </exception>
+	public void PerformPeiDoraClaim()
+	{
+		if (PeiDora.Count == 4)
+		{
+			throw new InvalidOperationException("Attempted to claim fifth pei dora!");
+		}
+
+		var northTile = new Tile(Suit.Zi, 4);
+		var northTiles = (DrawnTile is not null ? Hand.Append(DrawnTile) : Hand)
+			.Where(t => t.Equals(northTile))
+			.ToList();
+
+		if (northTiles.Count <= 0)
+		{
+			throw new InvalidOperationException("Attempted to claim pei dora with no north tiles in hand or drawn tile!");
+		}
+
+		if (DrawnTile is not null)
+		{
+			Hand.Add(DrawnTile);
+			DrawnTile = null;
+		}
+
+		Hand =
+		[
+			.. Hand.TakeWhile(t => !t.Equals(northTile)),
+			.. Hand.SkipWhile(t => !t.Equals(northTile)).Skip(1)
+		];
+		PeiDora.Add(northTile);
 	}
 }

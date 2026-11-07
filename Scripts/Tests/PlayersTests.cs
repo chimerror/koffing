@@ -221,6 +221,62 @@ public class PlayersTests
 		playerState.PerformMeld(newlyMadeMeld); // Should throw
 	}
 
+	[TestCase]
+	[DataPoint(nameof(PlayerStatePerformPeiDoraClaimPositiveTestCases))]
+	public static void PlayerStatePerformPeiDoraClaimWorksCorrectly(
+		string handNotation,
+		Tile drawnTile,
+		int startingNumberOfPeiDora,
+		string expectedPostMeldHandNotation,
+		string because)
+	{
+		LoggingPrefix = nameof(PlayerStatePerformPeiDoraClaimWorksCorrectly);
+
+		var startingHand = handNotation.ToTiles().ToList();
+		PlayerState playerState = new()
+		{
+			// Use collection syntax to force new separate lists
+			Hand = [.. startingHand],
+			DrawnTile = drawnTile,
+			PeiDora = [.. Enumerable.Range(1, startingNumberOfPeiDora).Select(_ => new Tile(Suit.Zi, 4))]
+		};
+
+		PrefixInfo($"Checking that it is possible to claim a pei dora with hand \"{handNotation}\", drawn tile \"{drawnTile}\", and {startingNumberOfPeiDora} starting pei dora, given {because}...");
+		playerState.PerformPeiDoraClaim();
+		AssertThat(playerState.PeiDora.Count).IsEqual(startingNumberOfPeiDora + 1);
+		AssertThat(playerState.PeiDora.All(t => t.Suit == Suit.Zi && t.Rank == 4)).IsTrue();
+		AssertObject(playerState.DrawnTile).IsNull();
+		AssertArray(playerState.MadeMelds).IsEmpty();
+		AssertArray(playerState.Discards).IsEmpty();
+
+		var expectedPostMeldHand = expectedPostMeldHandNotation.ToTiles().ToList();
+		AssertThat(playerState.Hand).IsEqual(expectedPostMeldHand);
+	}
+
+	[TestCase]
+	[DataPoint(nameof(PlayerStatePerformPeiDoraClaimNegativeTestCases))]
+	[ThrowsException(typeof(InvalidOperationException))]
+	public static void PlayerStatePerformPeiDoraClaimRejectsInvalidMelds(
+		string handNotation,
+		Tile drawnTile,
+		int startingNumberOfPeiDora,
+		string because)
+	{
+		LoggingPrefix = nameof(PlayerStatePerformPeiDoraClaimRejectsInvalidMelds);
+
+		var startingHand = handNotation.ToTiles().ToList();
+		PlayerState playerState = new()
+		{
+			// Use collection syntax to force new separate lists
+			Hand = [.. startingHand],
+			DrawnTile = drawnTile,
+			PeiDora = [.. Enumerable.Range(1, startingNumberOfPeiDora).Select(_ => new Tile(Suit.Zi, 4))]
+		};
+
+		PrefixInfo($"Checking that attempting to claim a pei dora with hand \"{handNotation}\", drawn tile \"{drawnTile}\", and {startingNumberOfPeiDora} starting pei dora, throws an InvalidOperation because {because}...");
+		playerState.PerformPeiDoraClaim(); // Should throw
+	}
+
 	private static IEnumerable<object[]> PlayerStatePerformDiscardPositiveTestCases()
 	{
 		yield return
@@ -846,6 +902,100 @@ public class PlayersTests
 			new List<Meld>(),
 			new Chow("123'p".ToTiles()),
 			"there are missing tiles for a called chow",
+		];
+	}
+
+	private static IEnumerable<object[]> PlayerStatePerformPeiDoraClaimPositiveTestCases()
+	{
+		yield return
+		[
+			"19m19p19s1234567z",
+			"3m".ToTile(),
+			0,
+			"19m19p19s123567z3m",
+			"a single in-hand north tile",
+		];
+
+		yield return
+		[
+			"139m19p19s123456z",
+			null,
+			0,
+			"139m19p19s12356z",
+			"a single in-hand north tile with null drawn tile",
+		];
+
+		yield return
+		[
+			"19m19p19s1233567z",
+			"4z".ToTile(),
+			0,
+			"19m19p19s1233567z",
+			"a single just drawn north tile",
+		];
+
+		yield return
+		[
+			"19m19p19s1234467z",
+			"3m".ToTile(),
+			0,
+			"19m19p19s123467z3m",
+			"multiple north tiles in hand with none claimed",
+		];
+
+		yield return
+		[
+			"19m19p19s1234467z",
+			"4z".ToTile(),
+			0,
+			"19m19p19s1234674z",
+			"multiple north tiles in hand and drawn with none claimed",
+		];
+
+		yield return
+		[
+			"19m19p19s1234567z",
+			"3m".ToTile(),
+			1,
+			"19m19p19s123567z3m",
+			"a single in-hand north tile with one claimed",
+		];
+
+		yield return
+		[
+			"19m19p19s1234567z",
+			"3m".ToTile(),
+			2,
+			"19m19p19s123567z3m",
+			"a single in-hand north tile with two claimed",
+		];
+
+		yield return
+		[
+			"19m19p19s1234567z",
+			"3m".ToTile(),
+			3,
+			"19m19p19s123567z3m",
+			"a single in-hand north tile with three claimed",
+		];
+	}
+
+	private static IEnumerable<object[]> PlayerStatePerformPeiDoraClaimNegativeTestCases()
+	{
+		yield return
+		[
+			"19m19p19s1233567z",
+			"3m".ToTile(),
+			0,
+			"there aren't any north tiles in hand or the drawn tile",
+		];
+
+		yield return
+		[
+			"19m19p19s1234567z",
+			"3m".ToTile(),
+			4,
+			"there are already 4 claimed pei dora",
 		];
 	}
 }
